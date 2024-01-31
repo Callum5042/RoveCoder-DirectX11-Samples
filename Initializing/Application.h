@@ -7,6 +7,7 @@
 #include <memory>
 
 class Window;
+class Renderer;
 
 class Application
 {
@@ -23,6 +24,7 @@ public:
 
 private:
 	std::unique_ptr<Window> m_Window = nullptr;
+	std::unique_ptr<Renderer> m_Renderer = nullptr;
 
 	bool m_Running = true;
 };

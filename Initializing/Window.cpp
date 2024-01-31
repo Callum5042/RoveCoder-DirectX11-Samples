@@ -109,3 +109,12 @@ void Window::Destroy()
 {
 	DestroyWindow(m_Hwnd);
 }
+
+void Window::GetSize(int* width, int* height)
+{
+	RECT rect;
+	GetClientRect(m_Hwnd, &rect);
+
+	*width = rect.right - rect.left;
+	*height = rect.bottom - rect.top;
+}

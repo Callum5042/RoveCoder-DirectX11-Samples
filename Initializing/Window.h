@@ -25,6 +25,9 @@ public:
 	// Destroys the window
 	void Destroy();
 
+	// Get window size
+	void GetSize(int* width, int* height);
+
 	// Get native window handle
 	inline HWND GetHwnd() const { return m_Hwnd; }
 

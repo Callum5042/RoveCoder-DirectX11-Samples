@@ -1,10 +1,12 @@
 #include "Application.h"
+#include "Renderer.h"
 #include "Window.h"
 #include <iostream>
 
 Application::Application()
 {
 	m_Window = std::make_unique<Window>(this);
+	m_Renderer = std::make_unique<Renderer>(this);
 }
 
 int Application::Execute()
@@ -12,7 +14,7 @@ int Application::Execute()
 	std::cout << "Hello, Application\n";
 
 	m_Window->Create("Initializing", 800, 600, false);
-
+	m_Renderer->Create();
 
 	// Main application loop
 	while (m_Running)
@@ -30,7 +32,11 @@ int Application::Execute()
 		}
 		else
 		{
+			// Clear the buffers
+			m_Renderer->Clear();
 
+			// Display the rendered scene
+			m_Renderer->Present();
 		}
 	}
 
