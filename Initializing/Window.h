@@ -31,6 +31,9 @@ public:
 	// Get native window handle
 	inline HWND GetHwnd() const { return m_Hwnd; }
 
+	// Get application
+	inline Application* GetApplication() const { return m_Application; }
+
 private:
 	HWND m_Hwnd = NULL;
 };

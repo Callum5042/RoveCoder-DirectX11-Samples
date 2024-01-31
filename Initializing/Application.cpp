@@ -5,17 +5,17 @@
 
 Application::Application()
 {
+	// Create window
 	m_Window = std::make_unique<Window>(this);
+	m_Window->Create("Initializing", 800, 600, false);
+
+	// Create renderer
 	m_Renderer = std::make_unique<Renderer>(this);
+	m_Renderer->Create();
 }
 
 int Application::Execute()
 {
-	std::cout << "Hello, Application\n";
-
-	m_Window->Create("Initializing", 800, 600, false);
-	m_Renderer->Create();
-
 	// Main application loop
 	while (m_Running)
 	{
@@ -50,7 +50,24 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
+
+		case WM_SIZE:
+			this->OnResized(hwnd, msg, wParam, lParam);
+			return 0;
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	// Get window size
+	int window_width = LOWORD(lParam);
+	int window_height = HIWORD(lParam);
+
+	// Resize renderer
+	if (m_Renderer != nullptr)
+	{
+		m_Renderer->Resize(window_width, window_height);
+	}
 }

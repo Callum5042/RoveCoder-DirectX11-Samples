@@ -40,6 +40,9 @@ public:
 	// Display the rendered scene
 	void Present();
 
+	// Resizing
+	void Resize(int width, int height);
+
 private:
 	// Device and device context
 	ComPtr<ID3D11Device> m_Device = nullptr;

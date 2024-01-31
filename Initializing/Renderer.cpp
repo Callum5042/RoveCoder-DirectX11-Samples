@@ -182,3 +182,19 @@ void Renderer::Present()
 		DX::Check(m_SwapChain->Present(0, 0));
 	}
 }
+
+void Renderer::Resize(int width, int height)
+{
+	// Releases the current render target and depth stencil view
+	m_DepthStencilView.ReleaseAndGetAddressOf();
+	m_RenderTargetView.ReleaseAndGetAddressOf();
+
+	// Resize the swapchain
+	DX::Check(m_SwapChain->ResizeBuffers(2, width, height, DXGI_FORMAT_R8G8B8A8_UNORM, DXGI_SWAP_CHAIN_FLAG_ALLOW_TEARING));
+
+	// Creates a new render target and depth stencil view with the new window size
+	CreateRenderTargetAndDepthStencilView(width, height);
+
+	// Sets a new viewport with the new window size
+	SetViewport(width, height);
+}

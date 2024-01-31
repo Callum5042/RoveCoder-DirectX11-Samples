@@ -27,4 +27,7 @@ private:
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 
 	bool m_Running = true;
+
+	// On resized event
+	void OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 };

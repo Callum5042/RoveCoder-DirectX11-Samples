@@ -9,7 +9,7 @@ namespace
 		if (uMsg == WM_NCCREATE)
 		{
 			CREATESTRUCT* pCreate = reinterpret_cast<CREATESTRUCT*>(lParam);
-			application = reinterpret_cast<Application*>(pCreate->lpCreateParams);
+			application = reinterpret_cast<Window*>(pCreate->lpCreateParams)->GetApplication();
 			SetWindowLongPtr(hwnd, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(application));
 		}
 		else
