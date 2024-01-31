@@ -37,7 +37,7 @@ void Model::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
-	// We need the stride and offset
+	// We need to define the stride and offset
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
 
