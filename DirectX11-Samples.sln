@@ -5,6 +5,8 @@ VisualStudioVersion = 17.8.34408.163
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Initializing", "Initializing\Initializing.vcxproj", "{949FC980-7B95-4A5B-81CC-A1491D54E87E}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Drawing - Triangle", "Drawing - Triangle\Drawing - Triangle.vcxproj", "{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{949FC980-7B95-4A5B-81CC-A1491D54E87E}.Release|x64.Build.0 = Release|x64
 		{949FC980-7B95-4A5B-81CC-A1491D54E87E}.Release|x86.ActiveCfg = Release|Win32
 		{949FC980-7B95-4A5B-81CC-A1491D54E87E}.Release|x86.Build.0 = Release|Win32
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Debug|x64.ActiveCfg = Debug|x64
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Debug|x64.Build.0 = Debug|x64
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Debug|x86.ActiveCfg = Debug|Win32
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Debug|x86.Build.0 = Debug|Win32
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Release|x64.ActiveCfg = Release|x64
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Release|x64.Build.0 = Release|x64
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Release|x86.ActiveCfg = Release|Win32
+		{3AE0CEC7-809B-4B9F-8D17-DC7381DC2BD9}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
