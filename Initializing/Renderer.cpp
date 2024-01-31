@@ -175,7 +175,7 @@ void Renderer::Present()
 		// Use IDXGISwapChain1::Present1 for presenting instead
 		// This is a requirement for using variable refresh rate displays
 		DXGI_PRESENT_PARAMETERS presentParameters = {};
-		DX::Check(m_SwapChain1->Present1(0, 0, &presentParameters));
+		DX::Check(m_SwapChain1->Present1(0, DXGI_PRESENT_ALLOW_TEARING, &presentParameters));
 	}
 	else
 	{

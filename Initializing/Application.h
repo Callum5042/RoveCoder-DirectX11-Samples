@@ -31,4 +31,8 @@ private:
 
 	// On resized event
 	void OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	// Calculate frame stats
+	void CalculateFrameStats(float delta_time);
+	int m_FrameCount = 0;
 };

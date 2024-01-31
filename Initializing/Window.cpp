@@ -120,3 +120,8 @@ void Window::GetSize(int* width, int* height)
 	*width = rect.right - rect.left;
 	*height = rect.bottom - rect.top;
 }
+
+void Window::SetTitle(const std::string& title)
+{
+	SetWindowText(m_Hwnd, ConvertToWString(title).c_str());
+}

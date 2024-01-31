@@ -23,7 +23,8 @@ int Application::Execute()
 	// Main application loop
 	while (m_Running)
 	{
-		timer.Tick();
+		// timer.Tick();
+		// this->CalculateFrameStats(timer.DeltaTime());
 
 		MSG msg = {};
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -77,4 +78,21 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	// Resize renderer
 	m_Renderer->Resize(window_width, window_height);
+}
+
+void Application::CalculateFrameStats(float delta_time)
+{
+	static float time = 0.0f;
+
+	m_FrameCount++;
+	time += delta_time;
+
+	// Update window title every second with FPS
+	if (time > 1.0f)
+	{
+		m_Window->SetTitle("Initializing (FPS: " + std::to_string(m_FrameCount) + ")");
+
+		time = 0.0f;
+		m_FrameCount = 0;
+	}
 }

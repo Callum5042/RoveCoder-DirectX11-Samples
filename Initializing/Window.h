@@ -34,6 +34,9 @@ public:
 	// Get application
 	inline Application* GetApplication() const { return m_Application; }
 
+	// Set title
+	void SetTitle(const std::string& title);
+
 private:
 	HWND m_Hwnd = NULL;
 };
