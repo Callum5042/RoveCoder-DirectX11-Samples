@@ -43,6 +43,12 @@ public:
 	// Resizing
 	void Resize(int width, int height);
 
+	// Get render device
+	inline ID3D11Device* GetDevice() const { return m_Device.Get(); }
+
+	// Get render context
+	inline ID3D11DeviceContext* GetDeviceContext() const { return m_DeviceContext.Get(); }
+
 private:
 	// Device and device context
 	ComPtr<ID3D11Device> m_Device = nullptr;

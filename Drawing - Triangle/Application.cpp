@@ -1,8 +1,9 @@
 #include "Application.h"
-#include "Renderer.h"
 #include "Window.h"
 #include "Timer.h"
-#include <iostream>
+#include "Renderer.h"
+#include "Shader.h"
+#include "Model.h"
 
 Application::Application()
 {
@@ -13,12 +14,20 @@ Application::Application()
 	// Create renderer
 	m_Renderer = std::make_unique<Renderer>(this);
 	m_Renderer->Create();
+
+	// Create shader
+	m_Shader = std::make_unique<Shader>(m_Renderer.get());
+	m_Shader->Load();
 }
 
 int Application::Execute()
 {
 	Timer timer;
 	timer.Start();
+
+	// Model
+	m_Model = std::make_unique<Model>(m_Renderer.get());
+	m_Model->Create();
 
 	// Main application loop
 	while (m_Running)
@@ -41,6 +50,12 @@ int Application::Execute()
 		{
 			// Clear the buffers
 			m_Renderer->Clear();
+
+			// Bind the shader to the pipeline
+			m_Shader->Use();
+
+			// Render the model
+			m_Model->Render();
 
 			// Display the rendered scene
 			m_Renderer->Present();

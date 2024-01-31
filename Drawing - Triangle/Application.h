@@ -9,6 +9,9 @@
 
 class Window;
 class Renderer;
+class Shader;
+
+class Model;
 
 class Application
 {
@@ -26,6 +29,8 @@ public:
 private:
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
+	std::unique_ptr<Shader> m_Shader = nullptr;
+	std::unique_ptr<Model> m_Model = nullptr;
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
