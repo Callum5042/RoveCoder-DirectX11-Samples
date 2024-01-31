@@ -1,13 +1,14 @@
 #include "Application.h"
 #include "Renderer.h"
 #include "Window.h"
+#include "Timer.h"
 #include <iostream>
 
 Application::Application()
 {
 	// Create window
 	m_Window = std::make_unique<Window>(this);
-	m_Window->Create("Initializing", 800, 600, false);
+	m_WindowCreated = m_Window->Create("Initializing", 800, 600, false);
 
 	// Create renderer
 	m_Renderer = std::make_unique<Renderer>(this);
@@ -16,9 +17,14 @@ Application::Application()
 
 int Application::Execute()
 {
+	Timer timer;
+	timer.Start();
+
 	// Main application loop
 	while (m_Running)
 	{
+		timer.Tick();
+
 		MSG msg = {};
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
 		{
@@ -61,13 +67,14 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 
 void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
+	// Window resized is called upon window creation, so ignore if the window has not finished being created
+	if (!m_WindowCreated)
+		return;
+
 	// Get window size
 	int window_width = LOWORD(lParam);
 	int window_height = HIWORD(lParam);
 
 	// Resize renderer
-	if (m_Renderer != nullptr)
-	{
-		m_Renderer->Resize(window_width, window_height);
-	}
+	m_Renderer->Resize(window_width, window_height);
 }

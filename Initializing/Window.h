@@ -20,7 +20,7 @@ public:
 	virtual ~Window();
 
 	// Create the window
-	void Create(const std::string& title, int width, int height, bool fullscreen);
+	bool Create(const std::string& title, int width, int height, bool fullscreen);
 
 	// Destroys the window
 	void Destroy();

@@ -66,7 +66,7 @@ Window::~Window()
 	this->Destroy();
 }
 
-void Window::Create(const std::string& title, int width, int height, bool fullscreen)
+bool Window::Create(const std::string& title, int width, int height, bool fullscreen)
 {
 	HINSTANCE hInstance = GetModuleHandle(NULL);
 	std::wstring window_name = ConvertToWString(title);
@@ -103,6 +103,8 @@ void Window::Create(const std::string& title, int width, int height, bool fullsc
 	// Show window
 	int cmd_show = (fullscreen ? SW_MAXIMIZE : SW_SHOWNORMAL);
 	ShowWindow(m_Hwnd, cmd_show);
+
+	return true;
 }
 
 void Window::Destroy()
