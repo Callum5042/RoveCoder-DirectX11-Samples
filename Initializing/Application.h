@@ -5,6 +5,7 @@
 #include <Windows.h>
 
 #include <memory>
+#include <string>
 
 class Window;
 class Renderer;
@@ -28,6 +29,7 @@ private:
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
+	std::string m_ApplicationTitle = "Initializing";
 
 	// On resized event
 	void OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);

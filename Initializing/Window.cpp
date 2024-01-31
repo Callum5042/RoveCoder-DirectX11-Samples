@@ -52,7 +52,9 @@ std::string ConvertToString(const std::wstring& str)
 
 	int str_size = WideCharToMultiByte(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), NULL, 0, NULL, NULL);
 
-	std::string conversion(str_size, 0);
+	std::string conversion;
+	conversion.resize(str_size);
+
 	WideCharToMultiByte(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), conversion.data(), str_size, NULL, NULL);
 	return conversion;
 }

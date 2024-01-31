@@ -8,7 +8,7 @@ Application::Application()
 {
 	// Create window
 	m_Window = std::make_unique<Window>(this);
-	m_WindowCreated = m_Window->Create("Initializing", 800, 600, false);
+	m_WindowCreated = m_Window->Create(m_ApplicationTitle, 800, 600, false);
 
 	// Create renderer
 	m_Renderer = std::make_unique<Renderer>(this);
@@ -23,8 +23,8 @@ int Application::Execute()
 	// Main application loop
 	while (m_Running)
 	{
-		// timer.Tick();
-		// this->CalculateFrameStats(timer.DeltaTime());
+		timer.Tick();
+		this->CalculateFrameStats(timer.DeltaTime());
 
 		MSG msg = {};
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -90,7 +90,8 @@ void Application::CalculateFrameStats(float delta_time)
 	// Update window title every second with FPS
 	if (time > 1.0f)
 	{
-		m_Window->SetTitle("Initializing (FPS: " + std::to_string(m_FrameCount) + ")");
+		std::string frame_title = "(FPS: " + std::to_string(m_FrameCount) + ")";
+		m_Window->SetTitle(m_ApplicationTitle + " " + frame_title);
 
 		time = 0.0f;
 		m_FrameCount = 0;
