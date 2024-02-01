@@ -170,12 +170,16 @@ void Renderer::Clear()
 
 void Renderer::Present()
 {
+	// Use IDXGISwapChain1::Present1 for presenting instead
+	// This is a requirement for using variable refresh rate displays
 	if (m_SwapChain1 != nullptr)
 	{
-		// Use IDXGISwapChain1::Present1 for presenting instead
-		// This is a requirement for using variable refresh rate displays
+		BOOL fullscreen;
+		DX::Check(m_SwapChain1->GetFullscreenState(&fullscreen, nullptr));
+
 		DXGI_PRESENT_PARAMETERS presentParameters = {};
-		DX::Check(m_SwapChain1->Present1(0, DXGI_PRESENT_ALLOW_TEARING, &presentParameters));
+		UINT present_flags = (fullscreen ? 0 : DXGI_PRESENT_ALLOW_TEARING);
+		DX::Check(m_SwapChain1->Present1(0, present_flags, &presentParameters));
 	}
 	else
 	{
