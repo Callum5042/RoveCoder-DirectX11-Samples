@@ -185,6 +185,10 @@ void Renderer::Present()
 
 void Renderer::Resize(int width, int height)
 {
+	// Can only resize if width or height has a positive value to avoid crashing
+	if (width <= 0 || height <= 0)
+		return;
+
 	// Releases the current render target and depth stencil view
 	m_DepthStencilView.ReleaseAndGetAddressOf();
 	m_RenderTargetView.ReleaseAndGetAddressOf();
