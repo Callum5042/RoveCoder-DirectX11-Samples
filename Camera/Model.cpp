@@ -20,10 +20,30 @@ void Model::CreateVertexBuffer()
 	// Vertex data
 	std::vector<Vertex> vertices =
 	{
-		{ VertexPosition(-0.5f, +0.5f, 0.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) }, // Top left vertex
-		{ VertexPosition(+0.5f, +0.5f, 0.0f), VertexColour(0.0f, 1.0f, 0.0f, 1.0f) }, // Top right vertex
-		{ VertexPosition(+0.5f, -0.5f, 0.0f), VertexColour(0.0f, 0.0f, 1.0f, 1.0f) }, // Bottom Right vertex
-		{ VertexPosition(-0.5f, -0.5f, 0.0f), VertexColour(1.0f, 1.0f, 0.0f, 1.0f) }, // Bottom left vertex
+		{ VertexPosition(-1.0f, -1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, +1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, +1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, -1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, -1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, -1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, +1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, +1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, +1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, +1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, +1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, +1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, -1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, -1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, -1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, -1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, -1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, +1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, +1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(-1.0f, -1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, -1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, +1.0f, -1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, +1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) },
+		{ VertexPosition(+1.0f, -1.0f, +1.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) }
 	};
 
 	// Create vertex buffer
@@ -45,8 +65,18 @@ void Model::CreateIndexBuffer()
 	// Set Indices
 	std::vector<UINT> indices =
 	{
-		0, 1, 2, // Triangle 1
-		2, 3, 0, // Triangle 2
+		0, 1, 2,
+		0, 2, 3,
+		4, 5, 6,
+		4, 6, 7,
+		8, 9, 10,
+		8, 10, 11,
+		12, 13, 14,
+		12, 14, 15,
+		16, 17, 18,
+		16, 18, 19,
+		20, 21, 22,
+		20, 22, 23,
 	};
 
 	m_IndexCount = static_cast<UINT>(indices.size());
