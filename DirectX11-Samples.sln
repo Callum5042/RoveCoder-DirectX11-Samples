@@ -9,7 +9,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Drawing - Triangle", "Drawi
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Drawing - Rectangle", "Drawing - Rectangle\Drawing - Rectangle.vcxproj", "{B7128B76-294B-4B0C-B68D-73A47769F019}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Foundations", "Foundations", "{55C615B9-8A88-4EA4-9CCC-BAE7ABE8FC87}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Foundations", "01 Foundations", "{55C615B9-8A88-4EA4-9CCC-BAE7ABE8FC87}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Texturing", "Texturing\Texturing.vcxproj", "{C9854DA9-BC9B-4742-8B2A-9EA31D2A1025}"
 EndProject

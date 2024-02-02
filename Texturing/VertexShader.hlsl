@@ -9,7 +9,7 @@ PixelInput main(VertexInput input)
     pixel_input.position = float4(input.position, 1.0f);
 
 	// Set the vertex colour
-    pixel_input.colour = input.colour;
+    pixel_input.tex = input.tex;
 
     return pixel_input;
 }

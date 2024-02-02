@@ -1,7 +1,10 @@
 #include "Model.h"
 #include "Renderer.h"
 #include "Vertex.h"
+#include "../External/WICTextureLoader.h"
 #include <vector>
+#include <string>
+#include <filesystem>
 
 Model::Model(Renderer* renderer) : m_Renderer(renderer)
 {
@@ -11,6 +14,7 @@ void Model::Create()
 {
 	CreateVertexBuffer();
 	CreateIndexBuffer();
+	LoadTexture();
 }
 
 void Model::CreateVertexBuffer()
@@ -20,10 +24,10 @@ void Model::CreateVertexBuffer()
 	// Vertex data
 	std::vector<Vertex> vertices =
 	{
-		{ VertexPosition(-0.5f, +0.5f, 0.0f), VertexColour(1.0f, 0.0f, 0.0f, 1.0f) }, // Top left vertex
-		{ VertexPosition(+0.5f, +0.5f, 0.0f), VertexColour(0.0f, 1.0f, 0.0f, 1.0f) }, // Top right vertex
-		{ VertexPosition(+0.5f, -0.5f, 0.0f), VertexColour(0.0f, 0.0f, 1.0f, 1.0f) }, // Bottom Right vertex
-		{ VertexPosition(-0.5f, -0.5f, 0.0f), VertexColour(1.0f, 1.0f, 0.0f, 1.0f) }, // Bottom left vertex
+		{ VertexPosition(-0.5f, +0.5f, 0.0f), VertexTextureUV(1.0f, 0.0f) }, // Top left vertex
+		{ VertexPosition(+0.5f, +0.5f, 0.0f), VertexTextureUV(0.0f, 1.0f) }, // Top right vertex
+		{ VertexPosition(+0.5f, -0.5f, 0.0f), VertexTextureUV(0.0f, 0.0f) }, // Bottom Right vertex
+		{ VertexPosition(-0.5f, -0.5f, 0.0f), VertexTextureUV(1.0f, 1.0f) }, // Bottom left vertex
 	};
 
 	// Create vertex buffer
@@ -61,6 +65,24 @@ void Model::CreateIndexBuffer()
 	index_subdata.pSysMem = indices.data();
 
 	DX::Check(device->CreateBuffer(&index_buffer_desc, &index_subdata, m_IndexBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Model::LoadTexture()
+{
+	std::wstring path = L"Wood_Crate_001_basecolor.png";
+
+	// Check if file exists
+	if (!std::filesystem::exists(path))
+	{
+		std::wstring error = L"Could not load file: " + path;
+		MessageBox(NULL, error.c_str(), L"Error", MB_OK);
+		return;
+	}
+
+	// Load texture into a resource shader view
+	ID3D11Device* device = m_Renderer->GetDevice();
+	ComPtr<ID3D11Resource> resource = nullptr;
+	DX::Check(DirectX::CreateWICTextureFromFile(device, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
 }
 
 void Model::Render()

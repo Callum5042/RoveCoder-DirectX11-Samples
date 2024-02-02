@@ -9,18 +9,16 @@ struct VertexPosition
 	float z = 0;
 };
 
-struct VertexColour
+struct VertexTextureUV
 {
-	VertexColour(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {}
+	VertexTextureUV(float u, float v) : u(u), v(v) {}
 
-	float r = 0;
-	float g = 0;
-	float b = 0;
-	float a = 0;
+	float u = 0;
+	float v = 0;
 };
 
 struct Vertex
 {
 	VertexPosition position;
-	VertexColour colour;
+	VertexTextureUV texture;
 };

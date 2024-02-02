@@ -33,4 +33,8 @@ private:
 	// Index buffer
 	void CreateIndexBuffer();
 	ComPtr<ID3D11Buffer> m_IndexBuffer = nullptr;
+
+	// Texture buffer
+	void LoadTexture();
+	ComPtr<ID3D11ShaderResourceView> m_DiffuseTexture = nullptr;
 };
