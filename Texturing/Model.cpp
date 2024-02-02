@@ -24,10 +24,10 @@ void Model::CreateVertexBuffer()
 	// Vertex data
 	std::vector<Vertex> vertices =
 	{
-		{ VertexPosition(-0.5f, +0.5f, 0.0f), VertexTextureUV(1.0f, 0.0f) }, // Top left vertex
-		{ VertexPosition(+0.5f, +0.5f, 0.0f), VertexTextureUV(0.0f, 1.0f) }, // Top right vertex
-		{ VertexPosition(+0.5f, -0.5f, 0.0f), VertexTextureUV(0.0f, 0.0f) }, // Bottom Right vertex
-		{ VertexPosition(-0.5f, -0.5f, 0.0f), VertexTextureUV(1.0f, 1.0f) }, // Bottom left vertex
+		{ VertexPosition(-0.5f, +0.5f, 0.0f), VertexTextureUV(0.0f, 1.0f) }, // Top left vertex
+		{ VertexPosition(+0.5f, +0.5f, 0.0f), VertexTextureUV(1.0f, 1.0f) }, // Top right vertex
+		{ VertexPosition(+0.5f, -0.5f, 0.0f), VertexTextureUV(1.0f, 0.0f) }, // Bottom Right vertex
+		{ VertexPosition(-0.5f, -0.5f, 0.0f), VertexTextureUV(0.0f, 0.0f) }, // Bottom left vertex
 	};
 
 	// Create vertex buffer
@@ -101,6 +101,9 @@ void Model::Render()
 
 	// Bind the geometry topology to the pipeline's Input Assembler stage
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// Bind texture to the pixel shader
+	context->PSSetShaderResources(0, 1, m_DiffuseTexture.GetAddressOf());
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);
