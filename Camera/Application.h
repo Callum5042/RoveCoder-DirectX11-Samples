@@ -44,4 +44,7 @@ private:
 	// Calculate frame stats
 	void CalculateFrameStats(float delta_time);
 	int m_FrameCount = 0;
+
+	// Compute model view projection of the camera
+	void ComputeModelViewProjectionMatrix();
 };

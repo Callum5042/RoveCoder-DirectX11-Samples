@@ -6,6 +6,9 @@
 #include "Model.h"
 #include "Camera.h"
 
+#include <DirectXMath.h>
+using namespace DirectX;
+
 Application::Application()
 {
 	const int window_width = 800;
@@ -60,6 +63,9 @@ int Application::Execute()
 
 			// Bind the shader to the pipeline
 			m_Shader->Use();
+
+			// Update the model view projection constant buffer
+			this->ComputeModelViewProjectionMatrix();
 
 			// Render the model
 			m_Model->Render();
@@ -121,4 +127,13 @@ void Application::CalculateFrameStats(float delta_time)
 		time = 0.0f;
 		m_FrameCount = 0;
 	}
+}
+
+void Application::ComputeModelViewProjectionMatrix()
+{
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= m_Camera->GetView();
+	matrix *= m_Camera->GetProjection();
+
+	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 }

@@ -11,3 +11,9 @@ struct PixelInput
     float4 position : SV_POSITION;
     float4 colour : COLOUR;
 };
+
+// World constant buffer
+cbuffer WorldBuffer : register(b0)
+{
+    matrix cModelViewProjection;
+}
