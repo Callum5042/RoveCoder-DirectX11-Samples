@@ -9,6 +9,8 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+#include <windowsx.h>
+
 Application::Application()
 {
 	const int window_width = 800;
@@ -89,6 +91,10 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 		case WM_SIZE:
 			this->OnResized(hwnd, msg, wParam, lParam);
 			return 0;
+
+		case WM_MOUSEMOVE:
+			this->OnMouseMove(hwnd, msg, wParam, lParam);
+			return 0;
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -109,6 +115,30 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	// Update camera
 	m_Camera->UpdateAspectRatio(window_width, window_height);
+}
+
+void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	static int previous_mouse_x = 0;
+	static int previous_mouse_y = 0;
+
+	float mouse_x = static_cast<float>(GET_X_LPARAM(lParam));
+	float mouse_y = static_cast<float>(GET_Y_LPARAM(lParam));
+
+	if (wParam & MK_LBUTTON)
+	{
+		float relative_mouse_x = mouse_x - previous_mouse_x;
+		float relative_mouse_y = mouse_y - previous_mouse_y;
+
+		// Rotate camera
+		float yaw = relative_mouse_x * 0.01f;
+		float pitch = relative_mouse_y * 0.01f;
+
+		m_Camera->Rotate(pitch, yaw);
+	}
+
+	previous_mouse_x = mouse_x;
+	previous_mouse_y = mouse_y;
 }
 
 void Application::CalculateFrameStats(float delta_time)
