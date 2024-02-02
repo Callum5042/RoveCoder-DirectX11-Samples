@@ -4,12 +4,16 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "Model.h"
+#include "Camera.h"
 
 Application::Application()
 {
+	const int window_width = 800;
+	const int window_height = 600;
+
 	// Create window
 	m_Window = std::make_unique<Window>(this);
-	m_WindowCreated = m_Window->Create(m_ApplicationTitle, 800, 600, false);
+	m_WindowCreated = m_Window->Create(m_ApplicationTitle, window_width, window_height, false);
 
 	// Create renderer
 	m_Renderer = std::make_unique<Renderer>(this);
@@ -18,6 +22,9 @@ Application::Application()
 	// Create shader
 	m_Shader = std::make_unique<Shader>(m_Renderer.get());
 	m_Shader->Load();
+
+	// Create camera
+	m_Camera = std::make_unique<Camera>(window_width, window_height);
 }
 
 int Application::Execute()
@@ -93,6 +100,9 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	// Resize renderer
 	m_Renderer->Resize(window_width, window_height);
+
+	// Update camera
+	m_Camera->UpdateAspectRatio(window_width, window_height);
 }
 
 void Application::CalculateFrameStats(float delta_time)

@@ -10,6 +10,7 @@
 class Window;
 class Renderer;
 class Shader;
+class Camera;
 
 class Model;
 
@@ -31,6 +32,7 @@ private:
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
 	std::unique_ptr<Model> m_Model = nullptr;
+	std::unique_ptr<Camera> m_Camera = nullptr;
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
