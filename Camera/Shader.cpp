@@ -38,7 +38,8 @@ void Shader::Use()
 	context->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 
 	// Bind the world constant buffer to the vertex shader
-	context->VSSetConstantBuffers(0, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+	const int constant_buffer_slot = 0;
+	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
 }
 
 void Shader::LoadVertexShader()

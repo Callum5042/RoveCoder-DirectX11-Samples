@@ -12,6 +12,8 @@ class Renderer;
 class Shader;
 class Camera;
 
+class RasterState;
+
 class Model;
 
 class Application
@@ -33,6 +35,7 @@ private:
 	std::unique_ptr<Shader> m_Shader = nullptr;
 	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
+	std::unique_ptr<RasterState> m_RasterState = nullptr;
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
@@ -43,6 +46,9 @@ private:
 
 	// On mouse move event
 	void OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+	// On keydown event
+	void OnKeyDown(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	// Calculate frame stats
 	void CalculateFrameStats(float delta_time);

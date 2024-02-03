@@ -5,6 +5,7 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
+#include "RasterState.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -41,6 +42,10 @@ int Application::Execute()
 	m_Model = std::make_unique<Model>(m_Renderer.get());
 	m_Model->Create();
 
+	// Raster state
+	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
+	m_RasterState->ToggleWireframe();
+
 	// Main application loop
 	while (m_Running)
 	{
@@ -69,6 +74,9 @@ int Application::Execute()
 			// Update the model view projection constant buffer
 			this->ComputeModelViewProjectionMatrix();
 
+			// Bind the raster state (solid/wireframe) to the pipeline
+			m_RasterState->Use();
+
 			// Render the model
 			m_Model->Render();
 
@@ -94,6 +102,10 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 
 		case WM_MOUSEMOVE:
 			this->OnMouseMove(hwnd, msg, wParam, lParam);
+			return 0;
+
+		case WM_KEYDOWN:
+			this->OnKeyDown(hwnd, msg, wParam, lParam);
 			return 0;
 	}
 
@@ -122,13 +134,13 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	static int previous_mouse_x = 0;
 	static int previous_mouse_y = 0;
 
-	float mouse_x = static_cast<float>(GET_X_LPARAM(lParam));
-	float mouse_y = static_cast<float>(GET_Y_LPARAM(lParam));
+	int mouse_x = static_cast<int>(GET_X_LPARAM(lParam));
+	int mouse_y = static_cast<int>(GET_Y_LPARAM(lParam));
 
 	if (wParam & MK_LBUTTON)
 	{
-		float relative_mouse_x = mouse_x - previous_mouse_x;
-		float relative_mouse_y = mouse_y - previous_mouse_y;
+		float relative_mouse_x = static_cast<float>(mouse_x - previous_mouse_x);
+		float relative_mouse_y = static_cast<float>(mouse_y - previous_mouse_y);
 
 		// Rotate camera
 		float yaw = relative_mouse_x * 0.01f;
@@ -139,6 +151,17 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	previous_mouse_x = mouse_x;
 	previous_mouse_y = mouse_y;
+}
+
+void Application::OnKeyDown(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	WORD flags = HIWORD(lParam);
+	BOOL key_repeat = (flags & KF_REPEAT) == KF_REPEAT;
+
+	if (!key_repeat)
+	{
+		m_RasterState->ToggleWireframe();
+	}
 }
 
 void Application::CalculateFrameStats(float delta_time)
