@@ -12,6 +12,12 @@ struct PixelInput
     float2 tex : TEXTURE;
 };
 
+// World constant buffer
+cbuffer WorldBuffer : register(b0)
+{
+    matrix cModelViewProjection;
+}
+
 // Texture sampler
 SamplerState gTextureSampler : register(s0);
 
