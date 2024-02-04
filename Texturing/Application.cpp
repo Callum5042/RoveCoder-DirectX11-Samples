@@ -45,7 +45,6 @@ int Application::Execute()
 
 	// Raster state
 	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
-	m_RasterState->ToggleWireframe();
 
 	// Texture sampler
 	m_TextureSampler = std::make_unique<TextureSampler>(m_Renderer.get());
