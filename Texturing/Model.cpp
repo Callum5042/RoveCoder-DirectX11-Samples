@@ -120,8 +120,10 @@ void Model::LoadTexture()
 
 	// Load texture into a resource shader view
 	ID3D11Device* device = m_Renderer->GetDevice();
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
 	ComPtr<ID3D11Resource> resource = nullptr;
-	DX::Check(DirectX::CreateWICTextureFromFile(device, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
 }
 
 void Model::Render()
