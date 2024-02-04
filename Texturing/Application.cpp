@@ -4,12 +4,22 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "Model.h"
+#include "Camera.h"
+#include "RasterState.h"
+
+#include <DirectXMath.h>
+using namespace DirectX;
+
+#include <windowsx.h>
 
 Application::Application()
 {
+	const int window_width = 800;
+	const int window_height = 600;
+
 	// Create window
 	m_Window = std::make_unique<Window>(this);
-	m_WindowCreated = m_Window->Create(m_ApplicationTitle, 800, 600, false);
+	m_WindowCreated = m_Window->Create(m_ApplicationTitle, window_width, window_height, false);
 
 	// Create renderer
 	m_Renderer = std::make_unique<Renderer>(this);
@@ -18,6 +28,9 @@ Application::Application()
 	// Create shader
 	m_Shader = std::make_unique<Shader>(m_Renderer.get());
 	m_Shader->Load();
+
+	// Create camera
+	m_Camera = std::make_unique<Camera>(window_width, window_height);
 }
 
 int Application::Execute()
@@ -28,6 +41,10 @@ int Application::Execute()
 	// Model
 	m_Model = std::make_unique<Model>(m_Renderer.get());
 	m_Model->Create();
+
+	// Raster state
+	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
+	m_RasterState->ToggleWireframe();
 
 	// Main application loop
 	while (m_Running)
@@ -54,6 +71,12 @@ int Application::Execute()
 			// Bind the shader to the pipeline
 			m_Shader->Use();
 
+			// Update the model view projection constant buffer
+			this->ComputeModelViewProjectionMatrix();
+
+			// Bind the raster state (solid/wireframe) to the pipeline
+			m_RasterState->Use();
+
 			// Render the model
 			m_Model->Render();
 
@@ -76,6 +99,14 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 		case WM_SIZE:
 			this->OnResized(hwnd, msg, wParam, lParam);
 			return 0;
+
+		case WM_MOUSEMOVE:
+			this->OnMouseMove(hwnd, msg, wParam, lParam);
+			return 0;
+
+		case WM_KEYDOWN:
+			this->OnKeyDown(hwnd, msg, wParam, lParam);
+			return 0;
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -95,6 +126,41 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	m_Renderer->Resize(window_width, window_height);
 }
 
+void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	static int previous_mouse_x = 0;
+	static int previous_mouse_y = 0;
+
+	int mouse_x = static_cast<int>(GET_X_LPARAM(lParam));
+	int mouse_y = static_cast<int>(GET_Y_LPARAM(lParam));
+
+	if (wParam & MK_LBUTTON)
+	{
+		float relative_mouse_x = static_cast<float>(mouse_x - previous_mouse_x);
+		float relative_mouse_y = static_cast<float>(mouse_y - previous_mouse_y);
+
+		// Rotate camera
+		float yaw = relative_mouse_x * 0.01f;
+		float pitch = relative_mouse_y * 0.01f;
+
+		m_Camera->Rotate(pitch, yaw);
+	}
+
+	previous_mouse_x = mouse_x;
+	previous_mouse_y = mouse_y;
+}
+
+void Application::OnKeyDown(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	WORD flags = HIWORD(lParam);
+	BOOL key_repeat = (flags & KF_REPEAT) == KF_REPEAT;
+
+	if (!key_repeat)
+	{
+		m_RasterState->ToggleWireframe();
+	}
+}
+
 void Application::CalculateFrameStats(float delta_time)
 {
 	static float time = 0.0f;
@@ -111,4 +177,13 @@ void Application::CalculateFrameStats(float delta_time)
 		time = 0.0f;
 		m_FrameCount = 0;
 	}
+}
+
+void Application::ComputeModelViewProjectionMatrix()
+{
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= m_Camera->GetView();
+	matrix *= m_Camera->GetProjection();
+
+	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 }

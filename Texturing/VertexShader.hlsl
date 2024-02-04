@@ -6,7 +6,7 @@ PixelInput main(VertexInput input)
     PixelInput pixel_input;
 
 	// Transform to homogeneous clip space
-    pixel_input.position = float4(input.position, 1.0f);
+    pixel_input.position = mul(float4(input.position, 1.0f), cModelViewProjection);
 
 	// Set the vertex colour
     pixel_input.tex = input.tex;
