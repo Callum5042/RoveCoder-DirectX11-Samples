@@ -6,6 +6,7 @@
 #include "Model.h"
 #include "Camera.h"
 #include "RasterState.h"
+#include "TextureSampler.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -46,6 +47,9 @@ int Application::Execute()
 	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
 	m_RasterState->ToggleWireframe();
 
+	// Texture sampler
+	m_TextureSampler = std::make_unique<TextureSampler>(m_Renderer.get());
+
 	// Main application loop
 	while (m_Running)
 	{
@@ -76,6 +80,9 @@ int Application::Execute()
 
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();
+
+			// Bind texture sampler to the pipeline
+			m_TextureSampler->Use();
 
 			// Render the model
 			m_Model->Render();
@@ -124,6 +131,9 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	// Resize renderer
 	m_Renderer->Resize(window_width, window_height);
+
+	// Update camera
+	m_Camera->UpdateAspectRatio(window_width, window_height);
 }
 
 void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
