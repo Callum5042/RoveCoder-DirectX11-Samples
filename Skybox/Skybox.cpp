@@ -1,7 +1,7 @@
 #include "Skybox.h"
 #include "Renderer.h"
 #include "Vertex.h"
-#include "../External/WICTextureLoader.h"
+#include "../External/DDSTextureLoader.h"
 #include <vector>
 #include <string>
 #include <filesystem>
@@ -108,7 +108,7 @@ void Skybox::CreateIndexBuffer()
 
 void Skybox::LoadTexture()
 {
-	std::wstring path = L"Wood_Crate_001_basecolor.png";
+	std::wstring path = L"grass_cubemap.dds";
 
 	// Check if file exists
 	if (!std::filesystem::exists(path))
@@ -123,7 +123,7 @@ void Skybox::LoadTexture()
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
 	ComPtr<ID3D11Resource> resource = nullptr;
-	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
+	DX::Check(DirectX::CreateDDSTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
 }
 
 void Skybox::Render()

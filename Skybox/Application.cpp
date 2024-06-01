@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "SkyboxShader.h"
 #include "Model.h"
 #include "Skybox.h"
 #include "Camera.h"
@@ -28,8 +29,12 @@ Application::Application()
 	m_Renderer->Create();
 
 	// Create shader
-	m_Shader = std::make_unique<Shader>(m_Renderer.get());
-	m_Shader->Load();
+	/*m_Shader = std::make_unique<Shader>(m_Renderer.get());
+	m_Shader->Load();*/
+
+	// Create shader
+	m_SkyboxShader = std::make_unique<SkyboxShader>(m_Renderer.get());
+	m_SkyboxShader->Load();
 
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);
@@ -77,7 +82,7 @@ int Application::Execute()
 			m_Renderer->Clear();
 
 			// Bind the shader to the pipeline
-			m_Shader->Use();
+			//m_Shader->Use();
 
 			// Update the model view projection constant buffer
 			this->ComputeModelViewProjectionMatrix();
@@ -89,6 +94,7 @@ int Application::Execute()
 			m_TextureSampler->Use();
 
 			// Render the model
+			m_SkyboxShader->Use();
 			m_Skybox->Render();
 
 			// Display the rendered scene
@@ -199,5 +205,6 @@ void Application::ComputeModelViewProjectionMatrix()
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	// m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	m_SkyboxShader->UpdateModelViewProjectionBuffer(matrix);
 }

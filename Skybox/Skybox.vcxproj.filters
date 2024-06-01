@@ -19,6 +19,18 @@
     <Filter Include="External">
       <UniqueIdentifier>{f5c7a55e-c1f1-40ca-af9c-abf40cdaffbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders Files\Default">
+      <UniqueIdentifier>{870af113-6cc0-4e85-abfd-a3aece5d4e28}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders Files\Skybox">
+      <UniqueIdentifier>{e311392e-830d-4867-874e-79a911e98955}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Shaders">
+      <UniqueIdentifier>{39d72238-07bb-4ee8-834a-04be081d6eb6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Shaders">
+      <UniqueIdentifier>{70933c8a-45f8-4187-b5c4-2a82300a9e2c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -56,6 +68,12 @@
     </ClCompile>
     <ClCompile Include="Skybox.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="SkyboxShader.cpp">
+      <Filter>Source Files\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="..\External\DDSTextureLoader.cpp">
+      <Filter>External</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -95,23 +113,41 @@
     <ClInclude Include="Skybox.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="SkyboxShader.h">
+      <Filter>Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\DDSTextureLoader.h">
+      <Filter>External</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
-      <Filter>Shaders Files</Filter>
+      <Filter>Shaders Files\Default</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
-      <Filter>Shaders Files</Filter>
+      <Filter>Shaders Files\Default</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ShaderData.hlsli">
-      <Filter>Shaders Files</Filter>
-    </None>
+    <FxCompile Include="SkyboxPixelShader.hlsl">
+      <Filter>Shaders Files\Skybox</Filter>
+    </FxCompile>
+    <FxCompile Include="SkyboxVertexShader.hlsl">
+      <Filter>Shaders Files\Skybox</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\grass_cubemap.dds">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ShaderData.hlsli">
+      <Filter>Shaders Files\Default</Filter>
+    </None>
+    <None Include="SkyboxShaderData.hlsli">
+      <Filter>Shaders Files\Skybox</Filter>
+    </None>
   </ItemGroup>
 </Project>

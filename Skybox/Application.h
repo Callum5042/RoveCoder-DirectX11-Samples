@@ -17,6 +17,8 @@ class Skybox;
 class RasterState;
 class TextureSampler;
 
+class SkyboxShader;
+
 class Application
 {
 public:
@@ -34,6 +36,7 @@ private:
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
+	std::unique_ptr<SkyboxShader> m_SkyboxShader = nullptr;
 	// std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Skybox> m_Skybox = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
