@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "Model.h"
+#include "Skybox.h"
 #include "Camera.h"
 #include "RasterState.h"
 #include "TextureSampler.h"
@@ -40,8 +41,12 @@ int Application::Execute()
 	timer.Start();
 
 	// Model
-	m_Model = std::make_unique<Model>(m_Renderer.get());
-	m_Model->Create();
+	// m_Model = std::make_unique<Model>(m_Renderer.get());
+	// m_Model->Create();
+
+	// Skybox
+	m_Skybox = std::make_unique<Skybox>(m_Renderer.get());
+	m_Skybox->Create();
 
 	// Raster state
 	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
@@ -84,7 +89,7 @@ int Application::Execute()
 			m_TextureSampler->Use();
 
 			// Render the model
-			m_Model->Render();
+			m_Skybox->Render();
 
 			// Display the rendered scene
 			m_Renderer->Present();
