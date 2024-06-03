@@ -108,7 +108,7 @@ void Skybox::CreateIndexBuffer()
 
 void Skybox::LoadTexture()
 {
-	std::wstring path = L"grass_cubemap.dds";
+	std::wstring path = L"cloudy_skybox.dds";
 
 	// Check if file exists
 	if (!std::filesystem::exists(path))
