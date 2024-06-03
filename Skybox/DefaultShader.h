@@ -9,13 +9,13 @@ using Microsoft::WRL::ComPtr;
 
 class Renderer;
 
-class Shader
+class DefaultShader
 {
 	Renderer* m_Renderer = nullptr;
 
 public:
-	Shader(Renderer* renderer);
-	virtual ~Shader() = default;
+	DefaultShader(Renderer* renderer);
+	virtual ~DefaultShader() = default;
 
 	// Load the shader
 	void Load();

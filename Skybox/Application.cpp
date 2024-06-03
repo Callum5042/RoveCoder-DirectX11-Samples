@@ -2,7 +2,7 @@
 #include "Window.h"
 #include "Timer.h"
 #include "Renderer.h"
-#include "Shader.h"
+#include "DefaultShader.h"
 #include "SkyboxShader.h"
 #include "Model.h"
 #include "Skybox.h"

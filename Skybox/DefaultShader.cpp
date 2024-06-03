@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "DefaultShader.h"
 #include "Renderer.h"
 
 #include <Windows.h>
@@ -15,18 +15,18 @@ namespace
 	};
 }
 
-Shader::Shader(Renderer* renderer) : m_Renderer(renderer)
+DefaultShader::DefaultShader(Renderer* renderer) : m_Renderer(renderer)
 {
 }
 
-void Shader::Load()
+void DefaultShader::Load()
 {
 	this->LoadVertexShader();
 	this->LoadPixelShader();
 	this->CreateWorldViewProjectionConstantBuffer();
 }
 
-void Shader::Use()
+void DefaultShader::Use()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
@@ -44,7 +44,7 @@ void Shader::Use()
 	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
 }
 
-void Shader::LoadVertexShader()
+void DefaultShader::LoadVertexShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -62,13 +62,13 @@ void Shader::LoadVertexShader()
 	DX::Check(device->CreateInputLayout(layout, number_elements, g_VertexShader, sizeof(g_VertexShader), m_VertexLayout.ReleaseAndGetAddressOf()));
 }
 
-void Shader::LoadPixelShader()
+void DefaultShader::LoadPixelShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 	device->CreatePixelShader(g_PixelShader, sizeof(g_PixelShader), nullptr, m_PixelShader.ReleaseAndGetAddressOf());
 }
 
-void Shader::CreateWorldViewProjectionConstantBuffer()
+void DefaultShader::CreateWorldViewProjectionConstantBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -81,7 +81,7 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(DirectX::XMMATRIX matrix)
+void DefaultShader::UpdateModelViewProjectionBuffer(DirectX::XMMATRIX matrix)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);

@@ -159,7 +159,7 @@
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="RasterState.cpp" />
     <ClCompile Include="Renderer.cpp" />
-    <ClCompile Include="Shader.cpp" />
+    <ClCompile Include="DefaultShader.cpp" />
     <ClCompile Include="Skybox.cpp" />
     <ClCompile Include="SkyboxShader.cpp" />
     <ClCompile Include="TextureSampler.cpp" />
@@ -174,7 +174,7 @@
     <ClInclude Include="Model.h" />
     <ClInclude Include="RasterState.h" />
     <ClInclude Include="Renderer.h" />
-    <ClInclude Include="Shader.h" />
+    <ClInclude Include="DefaultShader.h" />
     <ClInclude Include="Skybox.h" />
     <ClInclude Include="SkyboxShader.h" />
     <ClInclude Include="TextureSampler.h" />

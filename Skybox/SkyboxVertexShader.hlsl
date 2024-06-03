@@ -8,9 +8,6 @@ PixelInput main(VertexInput input)
 	// Transform to homogeneous clip space
     pixel_input.positionClipSpace = mul(float4(input.position, 1.0f), cModelViewProjection);
 
-	// Set the vertex colour
-    pixel_input.tex = input.tex;
-    
     // Use local vertex position as cubemap lookup vector.
     pixel_input.position = input.position;
 

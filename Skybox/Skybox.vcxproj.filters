@@ -51,9 +51,6 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\External\WICTextureLoader.cpp">
       <Filter>External</Filter>
     </ClCompile>
@@ -75,6 +72,9 @@
     <ClCompile Include="..\External\DDSTextureLoader.cpp">
       <Filter>External</Filter>
     </ClCompile>
+    <ClCompile Include="DefaultShader.cpp">
+      <Filter>Source Files\Shaders</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application.h">
@@ -87,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
@@ -118,6 +115,9 @@
     </ClInclude>
     <ClInclude Include="..\External\DDSTextureLoader.h">
       <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="DefaultShader.h">
+      <Filter>Header Files\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

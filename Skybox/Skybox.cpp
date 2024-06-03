@@ -26,43 +26,43 @@ void Skybox::CreateVertexBuffer()
 	const float depth = 1.0f;
 
 	// Vertex data
-	std::vector<Vertex> vertices =
+	std::vector<SkyboxVertex> vertices =
 	{
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
+		{ VertexPosition(-width, -height, -depth) },
+		{ VertexPosition(-width, +height, -depth) },
+		{ VertexPosition(+width, +height, -depth) },
+		{ VertexPosition(+width, -height, -depth) },
 
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
+		{ VertexPosition(-width, -height, +depth) },
+		{ VertexPosition(+width, -height, +depth) },
+		{ VertexPosition(+width, +height, +depth) },
+		{ VertexPosition(-width, +height, +depth) },
 
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 1.0f) },
+		{ VertexPosition(-width, +height, -depth) },
+		{ VertexPosition(-width, +height, +depth) },
+		{ VertexPosition(+width, +height, +depth) },
+		{ VertexPosition(+width, +height, -depth) },
 
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 0.0f) },
+		{ VertexPosition(-width, -height, -depth) },
+		{ VertexPosition(+width, -height, -depth) },
+		{ VertexPosition(+width, -height, +depth) },
+		{ VertexPosition(-width, -height, +depth) },
 
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
+		{ VertexPosition(-width, -height, +depth) },
+		{ VertexPosition(-width, +height, +depth) },
+		{ VertexPosition(-width, +height, -depth) },
+		{ VertexPosition(-width, -height, -depth) },
 
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(1.0f, 1.0f) }
+		{ VertexPosition(+width, -height, -depth) },
+		{ VertexPosition(+width, +height, -depth) },
+		{ VertexPosition(+width, +height, +depth) },
+		{ VertexPosition(+width, -height, +depth) }
 	};
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC vertexbuffer_desc = {};
 	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(Vertex) * vertices.size());
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(SkyboxVertex) * vertices.size());
 	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA vertex_subdata = {};
@@ -131,7 +131,7 @@ void Skybox::Render()
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
 	// We need to define the stride and offset
-	UINT stride = sizeof(Vertex);
+	UINT stride = sizeof(SkyboxVertex);
 	UINT offset = 0;
 
 	// Bind the vertex buffer to the pipeline's Input Assembler stage

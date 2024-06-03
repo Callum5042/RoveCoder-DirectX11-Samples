@@ -22,3 +22,8 @@ struct Vertex
 	VertexPosition position;
 	VertexTextureUV texture;
 };
+
+struct SkyboxVertex
+{
+	VertexPosition position;
+};
