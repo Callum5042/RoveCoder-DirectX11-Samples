@@ -19,10 +19,10 @@ public:
 	void UpdateFov(float fov);
 
 	// Get projection matrix
-	inline DirectX::XMMATRIX GetProjection() const { return m_Projection; }
+	inline const DirectX::XMMATRIX& GetProjection() const { return m_Projection; }
 
 	// Get view matrix
-	inline DirectX::XMMATRIX GetView() const { return m_View; }
+	inline const DirectX::XMMATRIX& GetView() const { return m_View; }
 
 	// Get position
 	inline const DirectX::XMFLOAT3& GetPosition() const { return m_Position; }

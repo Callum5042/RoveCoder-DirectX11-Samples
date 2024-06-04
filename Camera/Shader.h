@@ -24,7 +24,7 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateModelViewProjectionBuffer(DirectX::XMMATRIX matrix);
+	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix);
 
 private:
 	// Create vertex shader
