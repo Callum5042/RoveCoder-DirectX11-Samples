@@ -15,6 +15,9 @@ void Skybox::Create()
 	CreateVertexBuffer();
 	CreateIndexBuffer();
 	LoadTexture();
+
+	CreateRasterState();
+	CreateDepthStencilState();
 }
 
 void Skybox::CreateVertexBuffer()
@@ -130,6 +133,12 @@ void Skybox::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
+	// Apply raster state
+	context->RSSetState(m_RasterState.Get());
+
+	// Set depth stencil
+	context->OMSetDepthStencilState(m_DepthStencilState.Get(), 0);
+
 	// We need to define the stride and offset
 	UINT stride = sizeof(SkyboxVertex);
 	UINT offset = 0;
@@ -148,4 +157,27 @@ void Skybox::Render()
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);
+}
+
+void Skybox::CreateRasterState()
+{
+	D3D11_RASTERIZER_DESC rasterizerState = {};
+	rasterizerState.CullMode = D3D11_CULL_BACK;
+	rasterizerState.FillMode = D3D11_FILL_SOLID;
+	rasterizerState.DepthClipEnable = true;
+	rasterizerState.FrontCounterClockwise = true;
+
+	ID3D11Device* device = m_Renderer->GetDevice();
+	DX::Check(device->CreateRasterizerState(&rasterizerState, m_RasterState.ReleaseAndGetAddressOf()));
+}
+
+void Skybox::CreateDepthStencilState()
+{
+	D3D11_DEPTH_STENCIL_DESC depth_stencil_desc = {};
+	depth_stencil_desc.DepthEnable = true;
+	depth_stencil_desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
+	depth_stencil_desc.DepthFunc = D3D11_COMPARISON_LESS_EQUAL;
+
+	ID3D11Device* device = m_Renderer->GetDevice();
+	device->CreateDepthStencilState(&depth_stencil_desc, &m_DepthStencilState);
 }

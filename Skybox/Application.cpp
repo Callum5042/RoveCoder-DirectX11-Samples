@@ -29,8 +29,8 @@ Application::Application()
 	m_Renderer->Create();
 
 	// Create shader
-	/*m_Shader = std::make_unique<Shader>(m_Renderer.get());
-	m_Shader->Load();*/
+	m_Shader = std::make_unique<DefaultShader>(m_Renderer.get());
+	m_Shader->Load();
 
 	// Create shader
 	m_SkyboxShader = std::make_unique<SkyboxShader>(m_Renderer.get());
@@ -46,8 +46,8 @@ int Application::Execute()
 	timer.Start();
 
 	// Model
-	// m_Model = std::make_unique<Model>(m_Renderer.get());
-	// m_Model->Create();
+	m_Model = std::make_unique<Model>(m_Renderer.get());
+	m_Model->Create();
 
 	// Skybox
 	m_Skybox = std::make_unique<Skybox>(m_Renderer.get());
@@ -82,7 +82,7 @@ int Application::Execute()
 			m_Renderer->Clear();
 
 			// Bind the shader to the pipeline
-			//m_Shader->Use();
+			m_Shader->Use();
 
 			// Update the model view projection constant buffer
 			this->ComputeModelViewProjectionMatrix();
@@ -93,7 +93,10 @@ int Application::Execute()
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
-			// Render the model
+			// Render crate
+			m_Model->Render();
+
+			// Render skybox
 			m_SkyboxShader->Use();
 			m_Skybox->Render();
 
@@ -201,10 +204,17 @@ void Application::CalculateFrameStats(float delta_time)
 
 void Application::ComputeModelViewProjectionMatrix()
 {
+	// Model
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= DirectX::XMMatrixTranslation(0.0f, 0.0f, 25.0f);
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	// m_Shader->UpdateModelViewProjectionBuffer(matrix);
-	m_SkyboxShader->UpdateModelViewProjectionBuffer(matrix);
+	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+
+	// Skybox
+	DirectX::XMMATRIX skybox_matrix = DirectX::XMMatrixIdentity();
+	skybox_matrix *= m_Camera->GetView();
+	skybox_matrix *= m_Camera->GetProjection();
+	m_SkyboxShader->UpdateModelViewProjectionBuffer(skybox_matrix);
 }

@@ -37,7 +37,7 @@ private:
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<DefaultShader> m_Shader = nullptr;
 	std::unique_ptr<SkyboxShader> m_SkyboxShader = nullptr;
-	// std::unique_ptr<Model> m_Model = nullptr;
+	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Skybox> m_Skybox = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;

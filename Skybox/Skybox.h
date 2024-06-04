@@ -37,4 +37,12 @@ private:
 	// Texture buffer
 	void LoadTexture();
 	ComPtr<ID3D11ShaderResourceView> m_DiffuseTexture = nullptr;
+
+	// Raster state
+	ComPtr<ID3D11RasterizerState> m_RasterState = nullptr;
+	void CreateRasterState();
+
+	// Depth stencil
+	ComPtr<ID3D11DepthStencilState> m_DepthStencilState = nullptr;
+	void CreateDepthStencilState();
 };

@@ -130,6 +130,8 @@ void Model::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
+	context->OMSetDepthStencilState(nullptr, 0);
+
 	// We need to define the stride and offset
 	UINT stride = sizeof(Vertex);
 	UINT offset = 0;
