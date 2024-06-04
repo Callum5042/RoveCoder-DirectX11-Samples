@@ -206,15 +206,18 @@ void Application::ComputeModelViewProjectionMatrix()
 {
 	// Model
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
-	matrix *= DirectX::XMMatrixTranslation(0.0f, 0.0f, 25.0f);
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 
 	// Skybox
+	const DirectX::XMFLOAT3& camera_position = m_Camera->GetPosition();
+
 	DirectX::XMMATRIX skybox_matrix = DirectX::XMMatrixIdentity();
+	skybox_matrix *= DirectX::XMMatrixTranslation(camera_position.x, camera_position.y, camera_position.z);
 	skybox_matrix *= m_Camera->GetView();
 	skybox_matrix *= m_Camera->GetProjection();
+
 	m_SkyboxShader->UpdateModelViewProjectionBuffer(skybox_matrix);
 }
