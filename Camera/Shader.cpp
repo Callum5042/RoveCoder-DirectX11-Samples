@@ -79,7 +79,7 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(DirectX::XMMATRIX matrix)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
