@@ -1,6 +1,8 @@
 #pragma once
 
 #include <d3d11.h>
+#include <vector>
+#include "Vertex.h"
 
 // This include is requires for using DirectX smart pointers (ComPtr)
 #include <wrl\client.h>
@@ -29,8 +31,10 @@ private:
 	// Vertex buffer
 	void CreateVertexBuffer();
 	ComPtr<ID3D11Buffer> m_VertexBuffer = nullptr;
+	std::vector<Vertex> m_Vertices;
 
 	// Index buffer
 	void CreateIndexBuffer();
 	ComPtr<ID3D11Buffer> m_IndexBuffer = nullptr;
+	std::vector<UINT> m_Indices;
 };

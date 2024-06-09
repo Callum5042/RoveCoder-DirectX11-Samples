@@ -162,6 +162,10 @@
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\External\TinyGLTF\json.hpp" />
+    <ClInclude Include="..\External\TinyGLTF\stb_image.h" />
+    <ClInclude Include="..\External\TinyGLTF\stb_image_write.h" />
+    <ClInclude Include="..\External\TinyGLTF\tiny_gltf.h" />
     <ClInclude Include="Application.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Model.h" />
@@ -227,6 +231,9 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Models\Monkey\monkey.glb">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <None Include="ShaderData.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

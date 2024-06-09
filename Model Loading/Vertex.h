@@ -2,6 +2,7 @@
 
 struct VertexPosition
 {
+	VertexPosition() {}
 	VertexPosition(float x, float y, float z) : x(x), y(y), z(z) {}
 
 	float x = 0;
@@ -11,6 +12,7 @@ struct VertexPosition
 
 struct VertexColour
 {
+	VertexColour() {}
 	VertexColour(float r, float g, float b, float a) : r(r), g(g), b(b), a(a) {}
 
 	float r = 0;

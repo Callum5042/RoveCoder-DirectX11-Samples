@@ -16,6 +16,9 @@
     <Filter Include="Shaders Files">
       <UniqueIdentifier>{5a987980-7a73-4487-a2f9-e2c65c0b9812}</UniqueIdentifier>
     </Filter>
+    <Filter Include="External">
+      <UniqueIdentifier>{ec71969d-f0bc-43d1-9ef5-d124377cf0d2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -74,6 +77,18 @@
     <ClInclude Include="RasterState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\External\TinyGLTF\json.hpp">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\TinyGLTF\stb_image.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\TinyGLTF\stb_image_write.h">
+      <Filter>External</Filter>
+    </ClInclude>
+    <ClInclude Include="..\External\TinyGLTF\tiny_gltf.h">
+      <Filter>External</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -87,5 +102,10 @@
     <None Include="ShaderData.hlsli">
       <Filter>Shaders Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Models\Monkey\monkey.glb">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>
