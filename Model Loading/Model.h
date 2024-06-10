@@ -37,4 +37,7 @@ private:
 	void CreateIndexBuffer();
 	ComPtr<ID3D11Buffer> m_IndexBuffer = nullptr;
 	std::vector<UINT> m_Indices;
+
+	// Load model
+	void LoadModel();
 };

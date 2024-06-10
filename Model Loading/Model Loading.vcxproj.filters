@@ -104,6 +104,9 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Models\Monkey\monkey_on_box.glb">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="..\Resources\Models\Monkey\monkey.glb">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>

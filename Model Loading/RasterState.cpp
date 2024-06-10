@@ -48,7 +48,7 @@ void RasterState::CreateRasterStateWireframe()
 {
 	D3D11_RASTERIZER_DESC rasterizerState = {};
 	rasterizerState.AntialiasedLineEnable = true;
-	rasterizerState.CullMode = D3D11_CULL_NONE;
+	rasterizerState.CullMode = D3D11_CULL_FRONT;
 	rasterizerState.FillMode = D3D11_FILL_WIREFRAME;
 	rasterizerState.DepthClipEnable = true;
 	rasterizerState.FrontCounterClockwise = true;

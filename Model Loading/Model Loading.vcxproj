@@ -231,6 +231,9 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Models\Monkey\monkey_on_box.glb">
+      <FileType>Document</FileType>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="..\Resources\Models\Monkey\monkey.glb">
       <FileType>Document</FileType>
     </CopyFileToFolders>
