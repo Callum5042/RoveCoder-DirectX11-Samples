@@ -10,6 +10,9 @@ PixelInput main(VertexInput input)
 
 	// Set the vertex colour
     pixel_input.tex = input.tex;
+    
+    // Set the normal
+    pixel_input.normal = input.normal;
 
     return pixel_input;
 }

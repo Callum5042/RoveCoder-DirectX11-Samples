@@ -17,8 +17,18 @@ struct VertexTextureUV
 	float v = 0;
 };
 
+struct VertexNormal
+{
+	VertexNormal(float nx, float ny, float nz) : normal_x(nx), normal_y(ny), normal_z(nz) {}
+
+	float normal_x = 0;
+	float normal_y = 0;
+	float normal_z = 0;
+};
+
 struct Vertex
 {
 	VertexPosition position;
 	VertexTextureUV texture;
+	VertexNormal normal;
 };

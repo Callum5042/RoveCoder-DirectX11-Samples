@@ -3,6 +3,7 @@ struct VertexInput
 {
     float3 position : POSITION;
     float2 tex : TEXTURE;
+    float3 normal : NORMAL;
 };
 
 // Pixel input structure
@@ -10,6 +11,7 @@ struct PixelInput
 {
     float4 position : SV_POSITION;
     float2 tex : TEXTURE;
+    float3 normal : NORMAL;
 };
 
 // World constant buffer
