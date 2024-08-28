@@ -9,7 +9,7 @@ PixelInput main(VertexInput input)
     pixel_input.positionClipSpace = mul(float4(input.position, 1.0f), cModelViewProjection);
 
     // Transform to world space.
-    pixel_input.position = input.position;
+    pixel_input.position = mul(float4(input.position, 1.0f), cModel).xyz;
     
 	// Set the vertex colour
     pixel_input.tex = input.tex;
