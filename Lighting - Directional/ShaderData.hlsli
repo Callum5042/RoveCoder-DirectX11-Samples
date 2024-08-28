@@ -19,6 +19,7 @@ struct PixelInput
 cbuffer WorldBuffer : register(b0)
 {
     matrix cModelViewProjection;
+    matrix cModelInverse;
     float4 cCameraPosition;
 }
 

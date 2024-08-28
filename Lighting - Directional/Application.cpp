@@ -192,10 +192,16 @@ void Application::CalculateFrameStats(float delta_time)
 
 void Application::ComputeModelViewProjectionMatrix()
 {
+	// Model matrix
+	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
+
+	// View Projection
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= model;
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
 	DirectX::XMFLOAT3 position = m_Camera->GetPosition();
-	m_Shader->UpdateModelViewProjectionBuffer(matrix, position);
+	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, model);
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
 }

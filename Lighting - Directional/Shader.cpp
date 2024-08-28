@@ -12,8 +12,9 @@ namespace
 {
 	struct ModelViewProjectionBuffer
 	{
-		DirectX::XMMATRIX modelViewProjection;
-		DirectX::XMFLOAT3 cameraPosition;
+		DirectX::XMMATRIX model_view_projection;
+		DirectX::XMMATRIX model_inverse;
+		DirectX::XMFLOAT3 camera_position;
 		float padding;
 	};
 
@@ -96,11 +97,12 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMFLOAT3& cameraPosition)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& inverse_model, const DirectX::XMFLOAT3& cameraPosition)
 {
 	ModelViewProjectionBuffer buffer = {};
-	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
-	buffer.cameraPosition = cameraPosition;
+	buffer.model_view_projection = DirectX::XMMatrixTranspose(matrix);
+	buffer.model_inverse = DirectX::XMMatrixTranspose(inverse_model);
+	buffer.camera_position = cameraPosition;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
