@@ -233,9 +233,6 @@
   <ItemGroup>
     <None Include="ShaderData.hlsli" />
   </ItemGroup>
-  <ItemGroup>
-    <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

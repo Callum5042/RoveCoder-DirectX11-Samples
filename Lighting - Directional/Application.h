@@ -35,8 +35,6 @@ private:
 	std::unique_ptr<Shader> m_Shader = nullptr;
 	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
-	std::unique_ptr<RasterState> m_RasterState = nullptr;
-	std::unique_ptr<TextureSampler> m_TextureSampler = nullptr;
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
@@ -47,9 +45,6 @@ private:
 
 	// On mouse move event
 	void OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
-	// On keydown event
-	void OnKeyDown(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	// Calculate frame stats
 	void CalculateFrameStats(float delta_time);
