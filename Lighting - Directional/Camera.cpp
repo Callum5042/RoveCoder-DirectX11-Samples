@@ -21,6 +21,9 @@ void Camera::Rotate(float pitch_radians, float yaw_radians)
 	DirectX::XMVECTOR position = DirectX::XMVectorSet(0.0f, 0.0f, radius, 0.0f);
 	position = XMVector3TransformCoord(position, rotation_matrix);
 
+	// Store camera position
+	DirectX::XMStoreFloat4(&m_Position, position);
+
 	// Calculate camera's view
 	DirectX::XMVECTOR eye = position;
 	DirectX::XMVECTOR at = DirectX::XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);

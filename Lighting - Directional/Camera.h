@@ -24,12 +24,18 @@ public:
 	// Get view matrix
 	inline DirectX::XMMATRIX GetView() const { return m_View; }
 
+	// Get camera position in world space
+	inline DirectX::XMFLOAT4 GetPosition() { return m_Position; }
+
 private:
 	// Projection matrix
 	DirectX::XMMATRIX m_Projection;
 
 	// View matrix
 	DirectX::XMMATRIX m_View;
+
+	// Position
+	DirectX::XMFLOAT4 m_Position;
 
 	// Camera pitch in radians
 	float m_PitchRadians = 0.0f;

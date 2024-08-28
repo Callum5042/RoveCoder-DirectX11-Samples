@@ -18,6 +18,13 @@ struct PixelInput
 cbuffer WorldBuffer : register(b0)
 {
     matrix cModelViewProjection;
+    float4 cCameraPosition;
+}
+
+// Directional light constant buffer
+cbuffer DirectionalLightBuffer : register(b1)
+{
+    float4 cLightDirection;
 }
 
 // Texture sampler

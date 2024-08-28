@@ -30,6 +30,8 @@ Application::Application()
 	m_Shader = std::make_unique<Shader>(m_Renderer.get());
 	m_Shader->Load();
 
+	m_Shader->UpdateDirectionalLightBuffer(DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f));
+
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);
 }
@@ -194,5 +196,6 @@ void Application::ComputeModelViewProjectionMatrix()
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	DirectX::XMFLOAT4 position = m_Camera->GetPosition();
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, position);
 }

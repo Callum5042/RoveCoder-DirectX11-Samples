@@ -6,12 +6,19 @@
 #include "CompiledVertexShader.hlsl.h"
 
 #include <Windows.h>
+#include <DirectXMath.h>
 
 namespace
 {
 	struct ModelViewProjectionBuffer
 	{
 		DirectX::XMMATRIX modelViewProjection;
+		DirectX::XMFLOAT4 cameraPosition;
+	};
+
+	struct DirectionalLightBuffer
+	{
+		DirectX::XMFLOAT4 direction;
 	};
 }
 
@@ -24,6 +31,7 @@ void Shader::Load()
 	this->LoadVertexShader();
 	this->LoadPixelShader();
 	this->CreateWorldViewProjectionConstantBuffer();
+	this->CreateDirectionalLightBuffer();
 }
 
 void Shader::Use()
@@ -42,6 +50,10 @@ void Shader::Use()
 	// Bind the world constant buffer to the vertex shader
 	const int constant_buffer_slot = 0;
 	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+
+	// Bind the world constant buffer to the vertex shader
+	const int light_buffer_slot = 1;
+	context->PSSetConstantBuffers(light_buffer_slot, 1, m_DirectionalLightBuffer.GetAddressOf());
 }
 
 void Shader::LoadVertexShader()
@@ -82,11 +94,34 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMFLOAT4& cameraPosition)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
+	buffer.cameraPosition = cameraPosition;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+}
+
+void Shader::CreateDirectionalLightBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create world constant buffer
+	D3D11_BUFFER_DESC bd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(DirectionalLightBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_DirectionalLightBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Shader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction)
+{
+	DirectionalLightBuffer buffer = {};
+	buffer.direction = direction;
+
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+	context->UpdateSubresource(m_DirectionalLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
