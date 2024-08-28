@@ -5,8 +5,6 @@
 #include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
-#include "RasterState.h"
-#include "TextureSampler.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
