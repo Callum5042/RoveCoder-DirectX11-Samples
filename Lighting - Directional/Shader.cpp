@@ -13,7 +13,8 @@ namespace
 	struct ModelViewProjectionBuffer
 	{
 		DirectX::XMMATRIX modelViewProjection;
-		DirectX::XMFLOAT4 cameraPosition;
+		DirectX::XMFLOAT3 cameraPosition;
+		float padding;
 	};
 
 	struct DirectionalLightBuffer
@@ -47,9 +48,10 @@ void Shader::Use()
 	// Bind the pixel shader to the pipeline's Pixel Shader stage
 	context->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 
-	// Bind the world constant buffer to the vertex shader
+	// Bind the world constant buffer to the vertex and pixel shader
 	const int constant_buffer_slot = 0;
 	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
 
 	// Bind the world constant buffer to the vertex shader
 	const int light_buffer_slot = 1;
@@ -94,7 +96,7 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMFLOAT4& cameraPosition)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMFLOAT3& cameraPosition)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);

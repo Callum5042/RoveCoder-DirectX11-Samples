@@ -9,7 +9,8 @@ struct VertexInput
 // Pixel input structure
 struct PixelInput
 {
-    float4 position : SV_POSITION;
+    float4 positionClipSpace : SV_POSITION;
+    float3 position : POSITION;
     float2 tex : TEXTURE;
     float3 normal : NORMAL;
 };

@@ -22,7 +22,7 @@ void Camera::Rotate(float pitch_radians, float yaw_radians)
 	position = XMVector3TransformCoord(position, rotation_matrix);
 
 	// Store camera position
-	DirectX::XMStoreFloat4(&m_Position, position);
+	DirectX::XMStoreFloat3(&m_Position, position);
 
 	// Calculate camera's view
 	DirectX::XMVECTOR eye = position;

@@ -196,6 +196,6 @@ void Application::ComputeModelViewProjectionMatrix()
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	DirectX::XMFLOAT4 position = m_Camera->GetPosition();
+	DirectX::XMFLOAT3 position = m_Camera->GetPosition();
 	m_Shader->UpdateModelViewProjectionBuffer(matrix, position);
 }
