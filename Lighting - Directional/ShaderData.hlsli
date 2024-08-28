@@ -28,9 +28,3 @@ cbuffer DirectionalLightBuffer : register(b1)
 {
     float4 cLightDirection;
 }
-
-// Texture sampler
-SamplerState gTextureSampler : register(s0);
-
-// Textures
-Texture2D gTextureDiffuse : register(t0);

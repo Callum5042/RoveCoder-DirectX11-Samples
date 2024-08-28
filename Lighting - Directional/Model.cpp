@@ -1,7 +1,6 @@
 #include "Model.h"
 #include "Renderer.h"
 #include "Vertex.h"
-#include "../External/WICTextureLoader.h"
 #include <vector>
 #include <string>
 #include <filesystem>
@@ -14,7 +13,6 @@ void Model::Create()
 {
 	CreateVertexBuffer();
 	CreateIndexBuffer();
-	LoadTexture();
 }
 
 void Model::CreateVertexBuffer()
@@ -106,26 +104,6 @@ void Model::CreateIndexBuffer()
 	DX::Check(device->CreateBuffer(&index_buffer_desc, &index_subdata, m_IndexBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Model::LoadTexture()
-{
-	std::wstring path = L"Wood_Crate_001_basecolor.png";
-
-	// Check if file exists
-	if (!std::filesystem::exists(path))
-	{
-		std::wstring error = L"Could not load file: " + path;
-		MessageBox(NULL, error.c_str(), L"Error", MB_OK);
-		return;
-	}
-
-	// Load texture into a resource shader view
-	ID3D11Device* device = m_Renderer->GetDevice();
-	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
-
-	ComPtr<ID3D11Resource> resource = nullptr;
-	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
-}
-
 void Model::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
@@ -142,9 +120,6 @@ void Model::Render()
 
 	// Bind the geometry topology to the pipeline's Input Assembler stage
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
-
-	// Bind texture to the pixel shader
-	context->PSSetShaderResources(0, 1, m_DiffuseTexture.GetAddressOf());
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);
