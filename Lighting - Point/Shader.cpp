@@ -19,10 +19,19 @@ namespace
 		float padding;
 	};
 
+	struct Attenuation
+	{
+		float constant;
+		float linear;
+		float quadratic;
+	};
+
 	struct PointLightBuffer
 	{
 		DirectX::XMFLOAT3 position;
-		float length;
+		float padding1;
+		Attenuation attenuation;
+		float padding2;
 	};
 }
 
@@ -124,11 +133,13 @@ void Shader::CreatePointLightBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_PointLightBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdatePointLightBuffer(const DirectX::XMFLOAT4& direction)
+void Shader::UpdatePointLightBuffer()
 {   
 	PointLightBuffer buffer = {};
-	buffer.position = DirectX::XMFLOAT3(0.0f, -80.0f, 100.0f);
-	buffer.length = 100.0f;
+	buffer.position = DirectX::XMFLOAT3(1.0f, 3.0f, -2.0f);
+	buffer.attenuation.constant = 1.0f;
+	buffer.attenuation.linear = 0.22f;
+	buffer.attenuation.quadratic = 0.20f;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_PointLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);

@@ -2,8 +2,6 @@
 #include "Renderer.h"
 #include "Vertex.h"
 #include <vector>
-#include <string>
-#include <filesystem>
 
 Model::Model(Renderer* renderer) : m_Renderer(renderer)
 {
