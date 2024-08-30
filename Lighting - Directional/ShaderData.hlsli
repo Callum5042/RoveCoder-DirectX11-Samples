@@ -2,7 +2,6 @@
 struct VertexInput
 {
     float3 position : POSITION;
-    float2 tex : TEXTURE;
     float3 normal : NORMAL;
 };
 
@@ -11,7 +10,6 @@ struct PixelInput
 {
     float4 positionClipSpace : SV_POSITION;
     float3 position : POSITION;
-    float2 tex : TEXTURE;
     float3 normal : NORMAL;
 };
 

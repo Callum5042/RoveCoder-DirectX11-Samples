@@ -26,35 +26,35 @@ void Model::CreateVertexBuffer()
 	// Vertex data
 	std::vector<Vertex> vertices =
 	{
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
+		{ VertexPosition(+width, -height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
 
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
 		
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
 
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
+		{ VertexPosition(+width, -height, -depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
 
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
 
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+1.0f, +0.0f, +0.0f) }
+		{ VertexPosition(+width, -height, -depth), VertexNormal(+1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexNormal(+1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexNormal(+1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexNormal(+1.0f, +0.0f, +0.0f) }
 	};
 
 	// Create vertex buffer
