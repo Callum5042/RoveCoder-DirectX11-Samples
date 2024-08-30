@@ -19,10 +19,19 @@ namespace
 		float padding;
 	};
 
+	struct Attenuation
+	{
+		float constant;
+		float linear;
+		float quadratic;
+	};
+
 	struct PointLightBuffer
 	{
 		DirectX::XMFLOAT3 position;
-		float length;
+		float padding1;
+		Attenuation attenuation;
+		float padding2;
 	};
 }
 
@@ -72,8 +81,7 @@ void Shader::LoadVertexShader()
 	D3D11_INPUT_ELEMENT_DESC layout[] =
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "TEXTURE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	UINT number_elements = ARRAYSIZE(layout);
@@ -124,11 +132,13 @@ void Shader::CreatePointLightBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_PointLightBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdatePointLightBuffer(const DirectX::XMFLOAT4& direction)
+void Shader::UpdatePointLightBuffer()
 {   
 	PointLightBuffer buffer = {};
-	buffer.position = DirectX::XMFLOAT3(0.0f, -80.0f, 100.0f);
-	buffer.length = 100.0f;
+	buffer.position = DirectX::XMFLOAT3(1.0f, 3.0f, -2.0f);
+	buffer.attenuation.constant = 1.0f;
+	buffer.attenuation.linear = 0.22f;
+	buffer.attenuation.quadratic = 0.20f;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_PointLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);

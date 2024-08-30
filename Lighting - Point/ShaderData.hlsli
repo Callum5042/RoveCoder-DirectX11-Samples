@@ -2,7 +2,6 @@
 struct VertexInput
 {
     float3 position : POSITION;
-    float2 tex : TEXTURE;
     float3 normal : NORMAL;
 };
 
@@ -11,7 +10,6 @@ struct PixelInput
 {
     float4 positionClipSpace : SV_POSITION;
     float3 position : POSITION;
-    float2 tex : TEXTURE;
     float3 normal : NORMAL;
 };
 
@@ -24,9 +22,18 @@ cbuffer WorldBuffer : register(b0)
     float4 cCameraPosition;
 }
 
+struct Attenuation
+{
+    float constant;
+    float linear_;
+    float quadratic;
+};
+
 // Directional light constant buffer
 cbuffer DirectionalLightBuffer : register(b1)
 {
     float3 cLightPosition;
-    float cLightLength;
+    float _padding1;
+    Attenuation CLightAttenuate;
+    float _padding2;
 }

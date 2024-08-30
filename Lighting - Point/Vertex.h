@@ -9,14 +9,6 @@ struct VertexPosition
 	float z = 0;
 };
 
-struct VertexTextureUV
-{
-	VertexTextureUV(float u, float v) : u(u), v(v) {}
-
-	float u = 0;
-	float v = 0;
-};
-
 struct VertexNormal
 {
 	VertexNormal(float nx, float ny, float nz) : normal_x(nx), normal_y(ny), normal_z(nz) {}
@@ -29,6 +21,5 @@ struct VertexNormal
 struct Vertex
 {
 	VertexPosition position;
-	VertexTextureUV texture;
 	VertexNormal normal;
 };
