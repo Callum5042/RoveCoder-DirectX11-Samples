@@ -1,6 +1,6 @@
 #include "ShaderData.hlsli"
 
-float4 CalculatePointLighting(float3 position, float3 normal)
+float4 CalculateSpotLighting(float3 position, float3 normal)
 {
     float4 diffuse_light_colour = float4(0.8f, 0.8f, 0.8f, 1.0f);
     float4 ambient_light_colour = float4(0.2f, 0.2f, 0.2f, 1.0f);
@@ -8,18 +8,27 @@ float4 CalculatePointLighting(float3 position, float3 normal)
 
     // Calculate distance from the point light source
     float light_distance = length(distance(cLightPosition.xyz, position));
+        
+    // Scale by spotlight factor and attenuate.
+    float Spot1 = 96.0f;
+    // float Range1 = 10000.0f;
+    float3 direction1 = float3(0.0f, -1.0f, 0.0f);
+    
+    float3 light_vector = normalize(cLightPosition.xyz - position);
+    
+    float spot = pow(max(dot(-light_vector, direction1), 0.0f), Spot1);
     
     // Attenuate
     float3 attenuate_constants = float3(CLightAttenuate.constant, CLightAttenuate.linear_, CLightAttenuate.quadratic);
-    float attenuate = 1.0f / dot(attenuate_constants, float3(1.0f, light_distance, light_distance * light_distance));
+    float attenuate = spot / dot(attenuate_constants, float3(1.0f, light_distance, light_distance * light_distance));
     
     // Diffuse lighting
-    float3 light_vector = normalize(cLightPosition.xyz - position);
+    
     float diffuse_factor = saturate(dot(light_vector, normal));
     float4 diffuse_light = diffuse_factor * diffuse_light_colour * attenuate;
 
     // Ambient lighting
-    float4 ambient_light = ambient_light_colour;
+    float4 ambient_light = ambient_light_colour * spot;
 
     // Specular lighting
     float4 specular_light = 0.0f;
@@ -43,7 +52,7 @@ float4 main(PixelInput input) : SV_TARGET
     input.normal = normalize(input.normal);
 
 	// Calculate point light
-    float4 light_colour = CalculatePointLighting(input.position.xyz, input.normal);
+    float4 light_colour = CalculateSpotLighting(input.position.xyz, input.normal);
 
     return light_colour;
 }

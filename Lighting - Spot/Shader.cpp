@@ -26,7 +26,7 @@ namespace
 		float quadratic;
 	};
 
-	struct PointLightBuffer
+	struct SpotLightBuffer
 	{
 		DirectX::XMFLOAT3 position;
 		float padding1;
@@ -126,7 +126,7 @@ void Shader::CreatePointLightBuffer()
 	// Create world constant buffer
 	D3D11_BUFFER_DESC bd = {};
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(PointLightBuffer);
+	bd.ByteWidth = sizeof(SpotLightBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_PointLightBuffer.ReleaseAndGetAddressOf()));
@@ -134,11 +134,11 @@ void Shader::CreatePointLightBuffer()
 
 void Shader::UpdatePointLightBuffer()
 {   
-	PointLightBuffer buffer = {};
-	buffer.position = DirectX::XMFLOAT3(1.0f, 3.0f, -2.0f);
+	SpotLightBuffer buffer = {};
+	buffer.position = DirectX::XMFLOAT3(0.0f, 300.0f, 200.0f);
 	buffer.attenuation.constant = 1.0f;
-	buffer.attenuation.linear = 0.22f;
-	buffer.attenuation.quadratic = 0.20f;
+	buffer.attenuation.linear = 0.0f;
+	buffer.attenuation.quadratic = 0.01f;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_PointLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);

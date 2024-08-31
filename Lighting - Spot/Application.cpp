@@ -165,8 +165,8 @@ void Application::ComputeModelViewProjectionMatrix()
 {
 	// Model matrix
 	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
-	/*model *= DirectX::XMMatrixScaling(1000.0f, 0.1f, 1000.0f);
-	model *= DirectX::XMMatrixTranslation(0.0f, -100.0f, 0.0f);*/
+	model *= DirectX::XMMatrixScaling(1000.0f, 0.1f, 1000.0f);
+	model *= DirectX::XMMatrixTranslation(0.0f, -100.0f, 0.0f);
 
 	// View Projection
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
