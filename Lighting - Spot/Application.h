@@ -38,7 +38,7 @@ private:
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
-	std::string m_ApplicationTitle = "Lighting - Spot";
+	std::string m_ApplicationTitle = "Lighting - Point";
 
 	// On resized event
 	void OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
