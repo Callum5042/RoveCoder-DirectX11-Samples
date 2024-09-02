@@ -28,7 +28,7 @@ Application::Application()
 	m_Shader = std::make_unique<Shader>(m_Renderer.get());
 	m_Shader->Load();
 
-	m_Shader->UpdatePointLightBuffer();
+	m_Shader->UpdateSpotLightBuffer();
 
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);

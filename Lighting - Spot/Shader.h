@@ -27,7 +27,7 @@ public:
 	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& model, const DirectX::XMFLOAT3& cameraPosition);
 
 	// Update the light buffer
-	void UpdatePointLightBuffer();
+	void UpdateSpotLightBuffer();
 
 private:
 	// Create vertex shader
@@ -44,6 +44,6 @@ private:
 	void CreateWorldViewProjectionConstantBuffer();
 
 	// Create the DirectionalLightBuffer
-	ComPtr<ID3D11Buffer> m_PointLightBuffer = nullptr;
-	void CreatePointLightBuffer();
+	ComPtr<ID3D11Buffer> m_SpotLightBuffer = nullptr;
+	void CreateSpotLightBuffer();
 };

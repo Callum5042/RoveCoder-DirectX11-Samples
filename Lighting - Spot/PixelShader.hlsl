@@ -10,13 +10,12 @@ float4 CalculateSpotLighting(float3 position, float3 normal)
     float light_distance = length(distance(cLightPosition.xyz, position));
         
     // Scale by spotlight factor and attenuate.
-    float Spot1 = 96.0f;
-    // float Range1 = 10000.0f;
-    float3 direction1 = float3(0.0f, -1.0f, 0.0f);
+    float cone_size = cLightSpotCone; // 96.0f;
+    float3 direction = cLightDirection; // loat3(0.0f, -1.0f, 0.0f);
     
     float3 light_vector = normalize(cLightPosition.xyz - position);
     
-    float spot = pow(max(dot(-light_vector, direction1), 0.0f), Spot1);
+    float spot = pow(max(dot(-light_vector, direction), 0.0f), cone_size);
     
     // Attenuate
     float3 attenuate_constants = float3(CLightAttenuate.constant, CLightAttenuate.linear_, CLightAttenuate.quadratic);

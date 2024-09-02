@@ -32,6 +32,9 @@ namespace
 		float padding1;
 		Attenuation attenuation;
 		float padding2;
+
+		DirectX::XMFLOAT3 direction;
+		float spot_cone;
 	};
 }
 
@@ -44,7 +47,7 @@ void Shader::Load()
 	this->LoadVertexShader();
 	this->LoadPixelShader();
 	this->CreateWorldViewProjectionConstantBuffer();
-	this->CreatePointLightBuffer();
+	this->CreateSpotLightBuffer();
 }
 
 void Shader::Use()
@@ -67,7 +70,7 @@ void Shader::Use()
 
 	// Bind the world constant buffer to the vertex shader
 	const int light_buffer_slot = 1;
-	context->PSSetConstantBuffers(light_buffer_slot, 1, m_PointLightBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(light_buffer_slot, 1, m_SpotLightBuffer.GetAddressOf());
 }
 
 void Shader::LoadVertexShader()
@@ -119,7 +122,7 @@ void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, co
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
 
-void Shader::CreatePointLightBuffer()
+void Shader::CreateSpotLightBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -129,10 +132,10 @@ void Shader::CreatePointLightBuffer()
 	bd.ByteWidth = sizeof(SpotLightBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
-	DX::Check(device->CreateBuffer(&bd, nullptr, m_PointLightBuffer.ReleaseAndGetAddressOf()));
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_SpotLightBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdatePointLightBuffer()
+void Shader::UpdateSpotLightBuffer()
 {   
 	SpotLightBuffer buffer = {};
 	buffer.position = DirectX::XMFLOAT3(0.0f, 300.0f, 200.0f);
@@ -140,6 +143,9 @@ void Shader::UpdatePointLightBuffer()
 	buffer.attenuation.linear = 0.0f;
 	buffer.attenuation.quadratic = 0.01f;
 
+	buffer.direction = DirectX::XMFLOAT3(0.0f, -1.0f, 0.0f);
+	buffer.spot_cone = 96.0f;
+
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
-	context->UpdateSubresource(m_PointLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+	context->UpdateSubresource(m_SpotLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }

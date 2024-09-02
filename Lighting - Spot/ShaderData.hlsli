@@ -29,11 +29,14 @@ struct Attenuation
     float quadratic;
 };
 
-// Directional light constant buffer
-cbuffer DirectionalLightBuffer : register(b1)
+// Spot light constant buffer
+cbuffer SpotLightBuffer : register(b1)
 {
     float3 cLightPosition;
     float _padding1;
     Attenuation CLightAttenuate;
     float _padding2;
+    
+    float3 cLightDirection;
+    float cLightSpotCone;
 }
