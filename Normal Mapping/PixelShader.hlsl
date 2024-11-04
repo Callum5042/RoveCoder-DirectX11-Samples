@@ -38,11 +38,17 @@ float4 main(PixelInput input) : SV_TARGET
 {
     // Interpolating normal can unnormalize it, so normalize it.
     input.normal = normalize(input.normal);
-
+    
+    // Diffuse texture
+    float4 diffuse_texture = gTextureDiffuse.Sample(gTextureSampler, input.tex_coord);
+    
 	// Calculate directional light
     float4 light_colour = CalculateDirectionalLighting(input.position.xyz, input.normal);
 
+    // Gamma correction
     light_colour = pow(light_colour, 1.0f / 2.2f);
     
-    return light_colour;
+    // Final colour
+    float4 final_colour = diffuse_texture * light_colour;
+    return final_colour;
 }
