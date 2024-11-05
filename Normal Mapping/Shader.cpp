@@ -13,6 +13,7 @@ namespace
 	struct ModelViewProjectionBuffer
 	{
 		DirectX::XMMATRIX model_view_projection;
+		DirectX::XMMATRIX model;
 		DirectX::XMMATRIX model_inverse;
 		DirectX::XMFLOAT3 camera_position;
 		float padding;
@@ -74,6 +75,7 @@ void Shader::LoadVertexShader()
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "TEXTURE", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 20, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 32, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	UINT number_elements = ARRAYSIZE(layout);
@@ -99,10 +101,15 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& inverse_model, const DirectX::XMFLOAT3& cameraPosition, const DirectX::XMMATRIX& texture_transform)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, 
+	const DirectX::XMMATRIX& inverse_model,
+	const DirectX::XMMATRIX& model,
+	const DirectX::XMFLOAT3& cameraPosition, 
+	const DirectX::XMMATRIX& texture_transform)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.model_view_projection = DirectX::XMMatrixTranspose(matrix);
+	buffer.model = DirectX::XMMatrixTranspose(model);
 	buffer.model_inverse = DirectX::XMMatrixTranspose(inverse_model);
 	buffer.camera_position = cameraPosition;
 	buffer.texture_transform = DirectX::XMMatrixTranspose(texture_transform);

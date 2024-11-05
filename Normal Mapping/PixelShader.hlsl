@@ -33,11 +33,38 @@ float4 CalculateDirectionalLighting(float3 position, float3 normal)
     return diffuse_light + ambient_light + specular_light;
 }
 
+float3 CalculateNormalsFromNormalMap(float2 texture_uv, float3 normal, float3 tangent)
+{
+    float3 normalMapSample = gTextureNormal.Sample(gTextureSampler, texture_uv).rgb;
+
+	// Uncompress each component from [0,1] to [-1,1].
+    float3 normalT = normalize(normalMapSample * 2.0f - 1.0f);
+
+    // Strength
+    float3 normalStrength = 0.1f;
+    normalT *= normalStrength + float3(0, 0, 1) * (1.0f - normalStrength);
+    
+	// Build orthonormal basis.
+    float3 N = normal; // Normal
+    float3 T = normalize(tangent - dot(tangent, N) * N); // Tangent
+    float3 B = cross(N, T); // Bi-Tangent
+
+    float3x3 TBN = float3x3(T, B, N);
+
+	// Transform from tangent space to world space.
+    float3 bumpedNormalW = mul(normalT, TBN);
+
+    return normalize(bumpedNormalW);
+}
+
 // Entry point for the vertex shader - will be executed for each pixel
 float4 main(PixelInput input) : SV_TARGET
 {
     // Interpolating normal can unnormalize it, so normalize it.
     input.normal = normalize(input.normal);
+    
+    // Apply normal map
+    input.normal = CalculateNormalsFromNormalMap(input.tex_coord, input.normal, input.tangent);
     
     // Diffuse texture
     float4 diffuse_texture = gTextureDiffuse.Sample(gTextureSampler, input.tex_coord);

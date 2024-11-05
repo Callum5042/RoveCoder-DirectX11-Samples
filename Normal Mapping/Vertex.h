@@ -26,9 +26,19 @@ struct VertexNormal
 	float normal_z = 0;
 };
 
+struct VertexTangent
+{
+	VertexTangent(float tx, float ty, float tz) : tangent_x(tx), tangent_y(ty), tangent_z(tz) {}
+
+	float tangent_x = 0;
+	float tangent_y = 0;
+	float tangent_z = 0;
+};
+
 struct Vertex
 {
 	VertexPosition position;
 	VertexTextureUV tex_coords;
 	VertexNormal normal;
+	VertexTangent tangent;
 };

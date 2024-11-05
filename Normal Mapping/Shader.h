@@ -24,7 +24,11 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& inverse_model, const DirectX::XMFLOAT3& cameraPosition, const DirectX::XMMATRIX& texture_transform);
+	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, 
+		const DirectX::XMMATRIX& model, 
+		const DirectX::XMMATRIX& inverse_model, 
+		const DirectX::XMFLOAT3& cameraPosition, 
+		const DirectX::XMMATRIX& texture_transform);
 
 	// Update the light buffer
 	void UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction);

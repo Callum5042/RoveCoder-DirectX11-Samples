@@ -15,7 +15,9 @@ void Model::Create()
 {
 	CreateVertexBuffer();
 	CreateIndexBuffer();
+
 	LoadTexture();
+	LoadNormalTexture();
 }
 
 void Model::CreateVertexBuffer()
@@ -29,36 +31,37 @@ void Model::CreateVertexBuffer()
 	// Vertex data
 	std::vector<Vertex> vertices =
 	{
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +0.0f, -1.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +0.0f, -1.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +0.0f, -1.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +0.0f, -1.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +0.0f, -1.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
 
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +0.0f, +1.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +0.0f, +1.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +0.0f, +1.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +0.0f, +1.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +0.0f, +1.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
 
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +1.0f, +0.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, +1.0f, +0.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, +1.0f, +0.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, +1.0f, +0.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, +1.0f, +0.0f), VertexTangent(+1.0f, 0.0f, +0.0f) },
 
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, -1.0f, +0.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+0.0f, -1.0f, +0.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+0.0f, -1.0f, +0.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+0.0f, -1.0f, +0.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+0.0f, -1.0f, +0.0f), VertexTangent(-1.0f, 0.0f, +0.0f) },
 
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(-1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(-1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, -1.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(-1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, -1.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(-1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, -1.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(-1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, -1.0f) },
 
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+1.0f, +0.0f, +0.0f) }
+		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f), VertexNormal(+1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, +1.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexTextureUV(0.0f, 0.0f), VertexNormal(+1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, +1.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f), VertexNormal(+1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, +1.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexTextureUV(1.0f, 1.0f), VertexNormal(+1.0f, +0.0f, +0.0f), VertexTangent(+0.0f, 0.0f, +1.0f) }
 	};
+
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC vertexbuffer_desc = {};
@@ -127,6 +130,26 @@ void Model::LoadTexture()
 	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
 }
 
+void Model::LoadNormalTexture()
+{
+	std::wstring path = L"PavingStones005_1K-JPG_NormalDX.jpg";
+
+	// Check if file exists
+	if (!std::filesystem::exists(path))
+	{
+		std::wstring error = L"Could not load file: " + path;
+		MessageBox(NULL, error.c_str(), L"Error", MB_OK);
+		return;
+	}
+
+	// Load texture into a resource shader view
+	ID3D11Device* device = m_Renderer->GetDevice();
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
+	ComPtr<ID3D11Resource> resource = nullptr;
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_NormalTexture.ReleaseAndGetAddressOf()));
+}
+
 void Model::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
@@ -146,6 +169,7 @@ void Model::Render()
 
 	// Bind texture to the pixel shader
 	context->PSSetShaderResources(0, 1, m_DiffuseTexture.GetAddressOf());
+	context->PSSetShaderResources(1, 1, m_NormalTexture.GetAddressOf());
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);

@@ -37,4 +37,8 @@ private:
 	// Texture buffer
 	void LoadTexture();
 	ComPtr<ID3D11ShaderResourceView> m_DiffuseTexture = nullptr;
+
+	// Texture Normal buffer
+	void LoadNormalTexture();
+	ComPtr<ID3D11ShaderResourceView> m_NormalTexture = nullptr;
 };

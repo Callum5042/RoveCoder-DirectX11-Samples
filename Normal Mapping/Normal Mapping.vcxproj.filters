@@ -104,5 +104,8 @@
     <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_NormalDX.jpg">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_NormalGL.jpg">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

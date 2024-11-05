@@ -235,6 +235,9 @@
     <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_Color.jpg" />
     <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_NormalDX.jpg" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_NormalGL.jpg" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

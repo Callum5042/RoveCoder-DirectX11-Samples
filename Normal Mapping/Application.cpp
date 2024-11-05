@@ -187,5 +187,5 @@ void Application::ComputeModelViewProjectionMatrix()
 
 	DirectX::XMFLOAT3 position = m_Camera->GetPosition();
 	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, model);
-	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position, texture_transform);
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, model, inverse_model, position, texture_transform);
 }

@@ -14,8 +14,10 @@ PixelInput main(VertexInput input)
     // Pass the texture's UV coordinates
     pixel_input.tex_coord = mul(float4(input.tex_coord, 0.0f, 1.0f), cTextureTransform).xy;
     
-    // Transform the normals by the inverse world space
+    // Transform the normals and tangents by the inverse world space
     pixel_input.normal = mul(input.normal, (float3x3) cModelInverse).xyz;
-
+    pixel_input.tangent = input.tangent;
+    // pixel_input.tangent = mul(input.tangent, (float3x3) cModel);
+    
     return pixel_input;
 }
