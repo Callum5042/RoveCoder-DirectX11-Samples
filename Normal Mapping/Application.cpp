@@ -29,14 +29,8 @@ Application::Application()
 	m_Shader = std::make_unique<Shader>(m_Renderer.get());
 	m_Shader->Load();
 
-	DirectX::XMVECTOR light = DirectX::XMVectorSet(2.0f, 10.f, 20.0f, 1.0f);
-
-	light = DirectX::XMVector3Normalize(light);
-	light = DirectX::XMVectorNegate(light);
-
-	DirectX::XMFLOAT4 light_direction;
-	DirectX::XMStoreFloat4(&light_direction, light);
-
+	// Light direction
+	DirectX::XMFLOAT4 light_direction = DirectX::XMFLOAT4(-0.0890870839f, -0.445435405f, -0.890870810f, 1.0f);
 	m_Shader->UpdateDirectionalLightBuffer(light_direction);
 
 	// Create camera
@@ -187,7 +181,11 @@ void Application::ComputeModelViewProjectionMatrix()
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
+	// Texture transform
+	DirectX::XMMATRIX texture_transform = DirectX::XMMatrixIdentity();
+	texture_transform *= DirectX::XMMatrixScaling(5.0f, 5.0f, 5.0f);
+
 	DirectX::XMFLOAT3 position = m_Camera->GetPosition();
 	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, model);
-	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position, texture_transform);
 }

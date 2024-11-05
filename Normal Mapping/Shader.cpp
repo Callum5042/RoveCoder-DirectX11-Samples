@@ -16,6 +16,8 @@ namespace
 		DirectX::XMMATRIX model_inverse;
 		DirectX::XMFLOAT3 camera_position;
 		float padding;
+
+		DirectX::XMMATRIX texture_transform;
 	};
 
 	struct DirectionalLightBuffer
@@ -97,12 +99,13 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& inverse_model, const DirectX::XMFLOAT3& cameraPosition)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& inverse_model, const DirectX::XMFLOAT3& cameraPosition, const DirectX::XMMATRIX& texture_transform)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.model_view_projection = DirectX::XMMatrixTranspose(matrix);
 	buffer.model_inverse = DirectX::XMMatrixTranspose(inverse_model);
 	buffer.camera_position = cameraPosition;
+	buffer.texture_transform = DirectX::XMMatrixTranspose(texture_transform);
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
