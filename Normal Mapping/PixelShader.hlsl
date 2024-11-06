@@ -39,10 +39,6 @@ float3 CalculateNormalsFromNormalMap(float2 texture_uv, float3 normal, float3 ta
 
 	// Uncompress each component from [0,1] to [-1,1].
     float3 normalT = normalize(normalMapSample * 2.0f - 1.0f);
-
-    // Strength
-    float3 normalStrength = 0.1f;
-    normalT *= normalStrength + float3(0, 0, 1) * (1.0f - normalStrength);
     
 	// Build orthonormal basis.
     float3 N = normal; // Normal

@@ -98,13 +98,10 @@
     </None>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_Color.jpg">
+    <CopyFileToFolders Include="..\Resources\Textures\PavingStones142_1K-PNG_Color.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_NormalDX.jpg">
-      <Filter>Resource Files</Filter>
-    </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Resources\Textures\PavingStones005_1K-JPG_NormalGL.jpg">
+    <CopyFileToFolders Include="..\Resources\Textures\PavingStones142_1K-PNG_NormalDX.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>

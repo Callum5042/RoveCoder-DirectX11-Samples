@@ -112,7 +112,7 @@ void Model::CreateIndexBuffer()
 
 void Model::LoadTexture()
 {
-	std::wstring path = L"PavingStones005_1K-JPG_Color.jpg";
+	std::wstring path = L"PavingStones142_1K-PNG_Color.png";
 
 	// Check if file exists
 	if (!std::filesystem::exists(path))
@@ -132,7 +132,7 @@ void Model::LoadTexture()
 
 void Model::LoadNormalTexture()
 {
-	std::wstring path = L"PavingStones005_1K-JPG_NormalDX.jpg";
+	std::wstring path = L"PavingStones142_1K-PNG_NormalDX.png";
 
 	// Check if file exists
 	if (!std::filesystem::exists(path))
