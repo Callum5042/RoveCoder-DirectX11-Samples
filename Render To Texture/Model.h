@@ -22,6 +22,9 @@ public:
 	// Render the model
 	void Render();
 
+	void SetTexture(ID3D11ShaderResourceView* texture);
+	void SetDefaultTexture();
+
 private:
 	// Number of indices to draw
 	UINT m_IndexCount = 0;
@@ -37,4 +40,5 @@ private:
 	// Texture buffer
 	void LoadTexture();
 	ComPtr<ID3D11ShaderResourceView> m_DiffuseTexture = nullptr;
+	ComPtr<ID3D11ShaderResourceView> m_DefaultDiffuseTexture = nullptr;
 };

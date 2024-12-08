@@ -123,8 +123,8 @@ void Model::LoadTexture()
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
 	ComPtr<ID3D11Resource> resource = nullptr;
-	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
-}
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DefaultDiffuseTexture.ReleaseAndGetAddressOf()));
+} 
 
 void Model::Render()
 {
@@ -148,4 +148,14 @@ void Model::Render()
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);
+}
+
+void Model::SetTexture(ID3D11ShaderResourceView* texture)
+{
+	m_DiffuseTexture = texture;
+}
+
+void Model::SetDefaultTexture()
+{
+	m_DiffuseTexture = m_DefaultDiffuseTexture;
 }

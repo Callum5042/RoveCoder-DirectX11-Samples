@@ -68,6 +68,25 @@ int Application::Execute()
 		}
 		else
 		{
+			/* Render to the texture */
+			// Clear the buffers
+			m_Renderer->SetRenderTargetView();
+
+			// Bind the shader to the pipeline
+			m_Shader->Use();
+
+			// Update the model view projection constant buffer
+			this->ComputeModelViewProjectionMatrix();
+
+			// Bind the raster state (solid/wireframe) to the pipeline
+			m_RasterState->Use();
+
+			// Render the model
+			m_Model->SetDefaultTexture();
+			m_Model->Render();
+
+			/* Render to the screen */
+
 			// Clear the buffers
 			m_Renderer->Clear();
 
@@ -84,6 +103,7 @@ int Application::Execute()
 			m_TextureSampler->Use();
 
 			// Render the model
+			m_Model->SetTexture(m_Renderer->GetTexture());
 			m_Model->Render();
 
 			// Display the rendered scene

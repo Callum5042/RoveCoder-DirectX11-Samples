@@ -49,6 +49,10 @@ public:
 	// Get render context
 	inline ID3D11DeviceContext* GetDeviceContext() const { return m_DeviceContext.Get(); }
 
+	inline ID3D11ShaderResourceView* GetTexture() const { return m_RenderedTexture.Get(); }
+
+	void SetRenderTargetView();
+
 private:
 	// Device and device context
 	ComPtr<ID3D11Device> m_Device = nullptr;
@@ -67,4 +71,12 @@ private:
 
 	// Viewport
 	void SetViewport(int width, int height);
+
+	// Create render texture target
+	ComPtr<ID3D11ShaderResourceView> m_RenderedTexture = nullptr;
+	ComPtr<ID3D11Texture2D> m_Texture = nullptr;
+
+	ComPtr<ID3D11RenderTargetView> m_TextureRenderTargetView = nullptr;
+	ComPtr<ID3D11DepthStencilView> m_TextureDepthStencilView = nullptr;
+	void CreateRenderTextureTargetAndDepthStencilView(int width, int height);
 };
