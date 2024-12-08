@@ -7,6 +7,7 @@
 #include "Camera.h"
 #include "RasterState.h"
 #include "TextureSampler.h"
+#include "RenderTarget.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -32,6 +33,10 @@ Application::Application()
 
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);
+
+	// Create render target
+	m_RenderTarget = std::make_unique<RenderTarget>(m_Renderer.get());
+	m_RenderTarget->Create(window_width, window_height);
 }
 
 int Application::Execute()
@@ -70,7 +75,7 @@ int Application::Execute()
 		{
 			/* Render to the texture */
 			// Clear the buffers
-			m_Renderer->SetRenderTargetView();
+			m_RenderTarget->Bind();
 
 			// Bind the shader to the pipeline
 			m_Shader->Use();
@@ -103,7 +108,7 @@ int Application::Execute()
 			m_TextureSampler->Use();
 
 			// Render the model
-			m_Model->SetTexture(m_Renderer->GetTexture());
+			m_Model->SetTexture(m_RenderTarget->GetTexture());
 			m_Model->Render();
 
 			// Display the rendered scene
@@ -153,6 +158,9 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 	// Update camera
 	m_Camera->UpdateAspectRatio(window_width, window_height);
+
+	// Resize render target
+	m_RenderTarget->Create(window_width, window_height);
 }
 
 void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)

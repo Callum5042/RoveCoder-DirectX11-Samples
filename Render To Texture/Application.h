@@ -15,6 +15,7 @@ class Camera;
 class Model;
 class RasterState;
 class TextureSampler;
+class RenderTarget;
 
 class Application
 {
@@ -37,6 +38,7 @@ private:
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
 	std::unique_ptr<TextureSampler> m_TextureSampler = nullptr;
+	std::unique_ptr<RenderTarget> m_RenderTarget = nullptr;
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
