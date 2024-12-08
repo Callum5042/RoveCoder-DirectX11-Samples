@@ -13,6 +13,7 @@ class Shader;
 class Camera;
 
 class Model;
+class Plane;
 class RasterState;
 class TextureSampler;
 class RenderTarget;
@@ -35,7 +36,9 @@ private:
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
 	std::unique_ptr<Model> m_Model = nullptr;
+	std::unique_ptr<Plane> m_Plane = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
+	std::unique_ptr<Camera> m_CameraPlane = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
 	std::unique_ptr<TextureSampler> m_TextureSampler = nullptr;
 	std::unique_ptr<RenderTarget> m_RenderTarget = nullptr;
@@ -59,4 +62,7 @@ private:
 
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
+
+	// Compute plane view projection of the camera
+	void ComputePlaneViewProjectionMatrix();
 };

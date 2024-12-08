@@ -1,4 +1,4 @@
-#include "Model.h"
+#include "Plane.h"
 #include "Renderer.h"
 #include "Vertex.h"
 #include "../External/WICTextureLoader.h"
@@ -6,18 +6,18 @@
 #include <string>
 #include <filesystem>
 
-Model::Model(Renderer* renderer) : m_Renderer(renderer)
+Plane::Plane(Renderer* renderer) : m_Renderer(renderer)
 {
 }
 
-void Model::Create()
+void Plane::Create()
 {
 	CreateVertexBuffer();
 	CreateIndexBuffer();
 	LoadTexture();
 }
 
-void Model::CreateVertexBuffer()
+void Plane::CreateVertexBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -28,35 +28,10 @@ void Model::CreateVertexBuffer()
 	// Vertex data
 	std::vector<Vertex> vertices =
 	{
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
-
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 1.0f) },
-
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 0.0f) },
-
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
-
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(1.0f, 1.0f) }
+		{ VertexPosition(-width, -height, 0.0f), VertexTextureUV(0.0f, 1.0f) },
+		{ VertexPosition(-width, +height, 0.0f), VertexTextureUV(0.0f, 0.0f) },
+		{ VertexPosition(+width, +height, 0.0f), VertexTextureUV(1.0f, 0.0f) },
+		{ VertexPosition(+width, -height, 0.0f), VertexTextureUV(1.0f, 1.0f) },
 	};
 
 	// Create vertex buffer
@@ -71,7 +46,7 @@ void Model::CreateVertexBuffer()
 	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Model::CreateIndexBuffer()
+void Plane::CreateIndexBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -80,16 +55,6 @@ void Model::CreateIndexBuffer()
 	{
 		0, 1, 2,
 		0, 2, 3,
-		4, 5, 6,
-		4, 6, 7,
-		8, 9, 10,
-		8, 10, 11,
-		12, 13, 14,
-		12, 14, 15,
-		16, 17, 18,
-		16, 18, 19,
-		20, 21, 22,
-		20, 22, 23,
 	};
 
 	m_IndexCount = static_cast<UINT>(indices.size());
@@ -106,7 +71,7 @@ void Model::CreateIndexBuffer()
 	DX::Check(device->CreateBuffer(&index_buffer_desc, &index_subdata, m_IndexBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Model::LoadTexture()
+void Plane::LoadTexture()
 {
 	std::wstring path = L"Wood_Crate_001_basecolor.png";
 
@@ -124,9 +89,9 @@ void Model::LoadTexture()
 
 	ComPtr<ID3D11Resource> resource = nullptr;
 	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
-} 
+}
 
-void Model::Render()
+void Plane::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
@@ -148,4 +113,9 @@ void Model::Render()
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);
+}
+
+void Plane::SetTexture(ID3D11ShaderResourceView* texture)
+{
+	m_DiffuseTexture = texture;
 }

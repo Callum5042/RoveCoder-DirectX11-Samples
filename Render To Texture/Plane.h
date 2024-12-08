@@ -8,19 +8,22 @@ using Microsoft::WRL::ComPtr;
 
 class Renderer;
 
-class Model
+class Plane
 {
 	Renderer* m_Renderer = nullptr;
 
 public:
-	Model(Renderer* renderer);
-	virtual ~Model() = default;
+	Plane(Renderer* renderer);
+	virtual ~Plane() = default;
 
 	// Create the model
 	void Create();
 
 	// Render the model
 	void Render();
+
+	// Set the texture
+	void SetTexture(ID3D11ShaderResourceView* texture);
 
 private:
 	// Number of indices to draw

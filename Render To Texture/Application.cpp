@@ -4,6 +4,7 @@
 #include "Renderer.h"
 #include "Shader.h"
 #include "Model.h"
+#include "Plane.h"
 #include "Camera.h"
 #include "RasterState.h"
 #include "TextureSampler.h"
@@ -33,6 +34,7 @@ Application::Application()
 
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);
+	m_CameraPlane = std::make_unique<Camera>(window_width, window_height);
 
 	// Create render target
 	m_RenderTarget = std::make_unique<RenderTarget>(m_Renderer.get());
@@ -47,6 +49,10 @@ int Application::Execute()
 	// Model
 	m_Model = std::make_unique<Model>(m_Renderer.get());
 	m_Model->Create();
+
+	// Model
+	m_Plane = std::make_unique<Plane>(m_Renderer.get());
+	m_Plane->Create();
 
 	// Raster state
 	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
@@ -87,7 +93,6 @@ int Application::Execute()
 			m_RasterState->Use();
 
 			// Render the model
-			m_Model->SetDefaultTexture();
 			m_Model->Render();
 
 			/* Render to the screen */
@@ -98,18 +103,22 @@ int Application::Execute()
 			// Bind the shader to the pipeline
 			m_Shader->Use();
 
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();
 
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
-			// Render the model
-			m_Model->SetTexture(m_RenderTarget->GetTexture());
+			// Update the model view projection constant buffer
+			this->ComputeModelViewProjectionMatrix();
 			m_Model->Render();
+
+			// Update the model view projection constant buffer
+			this->ComputePlaneViewProjectionMatrix();
+
+			// Render the model
+			m_Plane->SetTexture(m_RenderTarget->GetTexture());
+			m_Plane->Render();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -221,6 +230,17 @@ void Application::ComputeModelViewProjectionMatrix()
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
+
+	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+}
+
+void Application::ComputePlaneViewProjectionMatrix()
+{
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= DirectX::XMMatrixTranslation(-2.0f, 2.0f, 0.0f);
+
+	matrix *= m_CameraPlane->GetView();
+	matrix *= m_CameraPlane->GetProjection();
 
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 }

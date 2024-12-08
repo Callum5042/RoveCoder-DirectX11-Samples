@@ -4,7 +4,7 @@
 
 Camera::Camera(int width, int height)
 {
-	constexpr float pitch_radians = DirectX::XMConvertToRadians(30.0f);
+	constexpr float pitch_radians = DirectX::XMConvertToRadians(0.0f);
 	this->Rotate(pitch_radians, 0.0f);
 	this->UpdateAspectRatio(width, height);
 }
