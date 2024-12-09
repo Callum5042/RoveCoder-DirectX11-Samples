@@ -14,7 +14,7 @@ void RenderTarget::Create(int width, int height)
 	CreateShaderResource();
 }
 
-void RenderTarget::Bind()
+void RenderTarget::Use()
 {
 	// Clear the render target view to the chosen colour
 	m_DeviceContext->ClearRenderTargetView(m_TextureRenderTargetView.Get(), reinterpret_cast<const float*>(&DirectX::Colors::DarkGreen));

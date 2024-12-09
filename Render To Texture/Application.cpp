@@ -79,27 +79,6 @@ int Application::Execute()
 		}
 		else
 		{
-			/* Render to the texture */
-			// Clear the buffers
-			m_RenderTarget->Bind();
-
-			// Bind the shader to the pipeline
-			m_Shader->Use();
-
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-
-			// Bind the raster state (solid/wireframe) to the pipeline
-			m_RasterState->Use();
-
-			// Render the model
-			m_Model->Render();
-
-			/* Render to the screen */
-
-			// Clear the buffers
-			m_Renderer->Clear();
-
 			// Bind the shader to the pipeline
 			m_Shader->Use();
 
@@ -109,16 +88,9 @@ int Application::Execute()
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-			m_Model->Render();
-
-			// Update the model view projection constant buffer
-			this->ComputePlaneViewProjectionMatrix();
-
-			// Render the model
-			m_Plane->SetTexture(m_RenderTarget->GetTexture());
-			m_Plane->Render();
+			// Render the scene to the texture and backbuffer
+			RenderToTexture();
+			RenderToBackBuffer();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -243,4 +215,33 @@ void Application::ComputePlaneViewProjectionMatrix()
 	matrix *= m_CameraPlane->GetProjection();
 
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+}
+
+void Application::RenderToTexture()
+{
+	// Binds the render-to-texture render target to the pipeline
+	m_RenderTarget->Use();
+
+	// Update the model view projection constant buffer
+	this->ComputeModelViewProjectionMatrix();
+
+	// Render the model
+	m_Model->Render();
+}
+
+void Application::RenderToBackBuffer()
+{
+	// Clear the buffers and bind's the backbuffer as the render target
+	m_Renderer->Clear();
+
+	// Update the model view projection constant buffer and renders the model
+	this->ComputeModelViewProjectionMatrix();
+	m_Model->Render();
+
+	// Sets the plane's texture to be the render-to-texture texture
+	m_Plane->SetTexture(m_RenderTarget->GetTexture());
+
+	// Update the plane view projection constant buffer and renders the plane
+	this->ComputePlaneViewProjectionMatrix();
+	m_Plane->Render();
 }

@@ -65,4 +65,7 @@ private:
 
 	// Compute plane view projection of the camera
 	void ComputePlaneViewProjectionMatrix();
+
+	void RenderToTexture();
+	void RenderToBackBuffer();
 };

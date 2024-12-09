@@ -13,7 +13,7 @@ public:
 	virtual ~RenderTarget() = default;
 
 	void Create(int width, int height);
-	void Bind();
+	void Use();
 
 	ID3D11ShaderResourceView* GetTexture() const { return m_TextureShaderResource.Get(); }
 
