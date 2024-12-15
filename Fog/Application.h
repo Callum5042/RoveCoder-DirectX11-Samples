@@ -56,5 +56,5 @@ private:
 	int m_FrameCount = 0;
 
 	// Compute model view projection of the camera
-	void ComputeModelViewProjectionMatrix();
+	void ComputeModelViewProjectionMatrix(float x, float y, float z);
 };

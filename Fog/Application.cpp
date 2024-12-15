@@ -71,20 +71,35 @@ int Application::Execute()
 			// Clear the buffers
 			m_Renderer->Clear();
 
-			// Bind the shader to the pipeline
-			m_Shader->Use();
-
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();
 
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
-			// Render the model
-			m_Model->Render();
+			// Bind the shader to the pipeline
+			m_Shader->Use();
+
+			// Render a box of boxes
+			for (int i = -5; i < 5; ++i)
+			{
+				for (int j = -5; j < 5; ++j)
+				{
+					for (int k = -5; k < 5; ++k)
+					{
+						const float offset = 10.0f;
+						float x = (i * offset);
+						float y = (j * offset);
+						float z = (k * offset);
+
+						// Update the model view projection constant buffer
+						this->ComputeModelViewProjectionMatrix(x, y, z);
+
+						// Render the model
+						m_Model->Render();
+					}
+				}
+			}
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -188,9 +203,11 @@ void Application::CalculateFrameStats(float delta_time)
 	}
 }
 
-void Application::ComputeModelViewProjectionMatrix()
+void Application::ComputeModelViewProjectionMatrix(float x, float y, float z)
 {
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= DirectX::XMMatrixTranslation(x, y, z);
+
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
