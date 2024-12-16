@@ -80,6 +80,9 @@ int Application::Execute()
 			// Bind the shader to the pipeline
 			m_Shader->Use();
 
+			// Update fog constant buffer
+			m_Shader->UpdateFogBuffer(m_Camera->GetPosition(), 30.0f, 150.0f);
+
 			// Render a box of boxes
 			for (int i = -5; i < 5; ++i)
 			{
@@ -205,11 +208,12 @@ void Application::CalculateFrameStats(float delta_time)
 
 void Application::ComputeModelViewProjectionMatrix(float x, float y, float z)
 {
-	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
-	matrix *= DirectX::XMMatrixTranslation(x, y, z);
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(x, y, z);
 
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= world;
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, world);
 }

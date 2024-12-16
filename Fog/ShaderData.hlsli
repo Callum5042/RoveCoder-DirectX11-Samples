@@ -9,6 +9,7 @@ struct VertexInput
 struct PixelInput
 {
     float4 position : SV_POSITION;
+    float3 positionWorld : POSITION;
     float2 tex : TEXTURE;
 };
 
@@ -16,6 +17,14 @@ struct PixelInput
 cbuffer WorldBuffer : register(b0)
 {
     matrix cModelViewProjection;
+    matrix cModelWorld;
+}
+
+cbuffer FogBuffer : register(b1)
+{
+    float3 cCameraEyePosition;
+    float cFogStart;
+    float cFogRange;
 }
 
 // Texture sampler

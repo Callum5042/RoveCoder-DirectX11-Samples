@@ -24,7 +24,10 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix);
+	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& world);
+
+	// Update the fog buffer
+	void UpdateFogBuffer(const DirectX::XMFLOAT3& camera_eye, float fog_start, float fog_range);
 
 private:
 	// Create vertex shader
@@ -39,4 +42,8 @@ private:
 	// ModelViewProjection constant buffer
 	ComPtr<ID3D11Buffer> m_ModelViewProjectionConstantBuffer = nullptr;
 	void CreateWorldViewProjectionConstantBuffer();
+
+	// Fog constant buffer
+	ComPtr<ID3D11Buffer> m_FogConstantBuffer = nullptr;
+	void CreateFogConstantBuffer();
 };

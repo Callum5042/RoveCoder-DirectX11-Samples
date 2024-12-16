@@ -12,6 +12,15 @@ namespace
 	struct ModelViewProjectionBuffer
 	{
 		DirectX::XMMATRIX modelViewProjection;
+		DirectX::XMMATRIX model;
+	};
+
+	__declspec(align(16))
+	struct FogBuffer
+	{
+		DirectX::XMFLOAT3 camera_eye;
+		float fog_start;
+		float fog_range;
 	};
 }
 
@@ -24,6 +33,7 @@ void Shader::Load()
 	this->LoadVertexShader();
 	this->LoadPixelShader();
 	this->CreateWorldViewProjectionConstantBuffer();
+	this->CreateFogConstantBuffer();
 }
 
 void Shader::Use()
@@ -42,6 +52,10 @@ void Shader::Use()
 	// Bind the world constant buffer to the vertex shader
 	const int constant_buffer_slot = 0;
 	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+
+	// Bind the fog constant buffer to the pixel shader
+	const int fog_constant_buffer_slot = 1;
+	context->PSSetConstantBuffers(fog_constant_buffer_slot, 1, m_FogConstantBuffer.GetAddressOf());
 }
 
 void Shader::LoadVertexShader()
@@ -81,11 +95,36 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix)
+void Shader::CreateFogConstantBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create world constant buffer
+	D3D11_BUFFER_DESC bd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(FogBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_FogConstantBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& world)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
+	buffer.model = DirectX::XMMatrixTranspose(world);
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+}
+
+void Shader::UpdateFogBuffer(const DirectX::XMFLOAT3& camera_eye, float fog_start, float fog_range)
+{
+	FogBuffer buffer = {};
+	buffer.camera_eye = camera_eye;
+	buffer.fog_start = fog_start;
+	buffer.fog_range = fog_range;
+
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+	context->UpdateSubresource(m_FogConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
