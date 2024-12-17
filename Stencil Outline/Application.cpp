@@ -76,39 +76,20 @@ int Application::Execute()
 			// Clear the buffers
 			m_Renderer->Clear();
 
-			// Bind the shader to the pipeline
-			m_Shader->Use();
-
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();
 
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
-			// Write to stencil mask
-			m_Renderer->SetStencilRenderTarget();
-			m_Renderer->SetStencilWriteMask();
-			m_Model->Render();
-
-			// Render the model with the stencil mask applied
-			m_Renderer->SetDefaultRenderTarget();
-			m_Renderer->SetStencilReadMask();
-
-			this->ComputeModelViewProjectionMatrix2();
-
-			m_ColourShader->Use();
-			m_Model->Render();
-
-			// Turn off the stencil mask by resetting it to the default state
-			m_Renderer->ResetStencilMask();
-
-			// Restore back to normal shading
+			// Bind the shader to the pipeline
 			m_Shader->Use();
-			this->ComputeModelViewProjectionMatrix();
-			m_Model->Render();
+
+			// Write to the stencil buffer in the first pass
+			this->WriteToSteniclBuffer();
+
+			// Write to the back buffer
+			this->WriteToBackBuffer();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -212,9 +193,10 @@ void Application::CalculateFrameStats(float delta_time)
 	}
 }
 
-void Application::ComputeModelViewProjectionMatrix()
+void Application::ComputeModelViewProjectionMatrix(float scale)
 {
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= DirectX::XMMatrixScaling(scale, scale, scale);
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
@@ -222,13 +204,43 @@ void Application::ComputeModelViewProjectionMatrix()
 	m_ColourShader->UpdateModelViewProjectionBuffer(matrix);
 }
 
-void Application::ComputeModelViewProjectionMatrix2()
+void Application::WriteToSteniclBuffer()
 {
-	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
-	matrix *= DirectX::XMMatrixScaling(1.02f, 1.02f, 1.02f);
-	matrix *= m_Camera->GetView();
-	matrix *= m_Camera->GetProjection();
+	// Set the raster to only write to the depth/stencil buffer (ignoring the back buffer)
+	m_Renderer->SetStencilRenderTarget();
 
-	m_Shader->UpdateModelViewProjectionBuffer(matrix);
-	m_ColourShader->UpdateModelViewProjectionBuffer(matrix);
+	// Set to stencil state to write to the stencil buffer
+	m_Renderer->SetStencilWriteMask();
+
+	// Update the model view projection constant buffer
+	this->ComputeModelViewProjectionMatrix(1.0f);
+
+	// Render the model which will only write to the stencil buffer
+	m_Model->Render();
+}
+
+void Application::WriteToBackBuffer()
+{
+	// Allow rendering into the back buffer
+	m_Renderer->SetDefaultRenderTarget();
+
+	// Set the stencil state so future rendering will now reject pixels that are masked out
+	m_Renderer->SetStencilReadMask();
+
+	// Set a solid colour shader for the outlining
+	m_ColourShader->Use();
+
+	// Render the model 2% bigger so the outline will not be rejected by the stencil buffer
+	this->ComputeModelViewProjectionMatrix(1.02f);
+	m_Model->Render();
+
+	// Turn off the stencil mask by resetting it to the default state
+	m_Renderer->ResetStencilMask();
+
+	// Restore back to normal shading
+	m_Shader->Use();
+
+	// Render the original object size (stencil state will be different so will no longer reject the pixels)
+	this->ComputeModelViewProjectionMatrix(1.0f);
+	m_Model->Render();
 }

@@ -58,6 +58,11 @@ private:
 	int m_FrameCount = 0;
 
 	// Compute model view projection of the camera
-	void ComputeModelViewProjectionMatrix();
-	void ComputeModelViewProjectionMatrix2();
+	void ComputeModelViewProjectionMatrix(float scale);
+
+	// Write to stencil buffer
+	void WriteToSteniclBuffer();
+
+	// Write to back buffer
+	void WriteToBackBuffer();
 };
