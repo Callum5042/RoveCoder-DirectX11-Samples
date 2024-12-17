@@ -16,7 +16,7 @@ void Camera::Rotate(float pitch_radians, float yaw_radians)
 	m_PitchRadians = std::clamp<float>(m_PitchRadians, -(DirectX::XM_PIDIV2 - 0.1f), DirectX::XM_PIDIV2 - 0.1f);
 
 	// Convert Spherical to Cartesian coordinates.
-	const float radius = -20.0f;
+	const float radius = -8.0f;
 	DirectX::XMMATRIX rotation_matrix = DirectX::XMMatrixRotationRollPitchYaw(m_PitchRadians, m_YawRadians, 0);
 	DirectX::XMVECTOR position = DirectX::XMVectorSet(0.0f, 0.0f, radius, 0.0f);
 	position = XMVector3TransformCoord(position, rotation_matrix);

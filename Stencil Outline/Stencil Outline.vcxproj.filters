@@ -22,6 +22,9 @@
     <Filter Include="Shaders Files\Default">
       <UniqueIdentifier>{1299934c-785c-40ef-aa4f-0e6ba568dd68}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders Files\Colour">
+      <UniqueIdentifier>{065dcac1-4a9b-4395-a1f2-914ebfded37c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -55,6 +58,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextureSampler.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColourShader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -92,6 +98,9 @@
     <ClInclude Include="TextureSampler.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ColourShader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
@@ -99,6 +108,12 @@
     </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
       <Filter>Shaders Files\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="ColourPixelShader.hlsl">
+      <Filter>Shaders Files\Colour</Filter>
+    </FxCompile>
+    <FxCompile Include="ColourVertexShader.hlsl">
+      <Filter>Shaders Files\Colour</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
@@ -109,6 +124,9 @@
   <ItemGroup>
     <None Include="ShaderData.hlsli">
       <Filter>Shaders Files\Default</Filter>
+    </None>
+    <None Include="ColourShaderData.hlsli">
+      <Filter>Shaders Files\Colour</Filter>
     </None>
   </ItemGroup>
 </Project>

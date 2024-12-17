@@ -10,6 +10,7 @@
 class Window;
 class Renderer;
 class Shader;
+class ColourShader;
 class Camera;
 
 class Model;
@@ -33,6 +34,7 @@ private:
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
+	std::unique_ptr<ColourShader> m_ColourShader = nullptr;
 	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
@@ -58,6 +60,4 @@ private:
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
 	void ComputeModelViewProjectionMatrix2();
-
-	void ComputeModelViewProjectionMatrix(float x, float y, float z);
 };

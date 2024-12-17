@@ -3,6 +3,7 @@
 #include "Timer.h"
 #include "Renderer.h"
 #include "Shader.h"
+#include "ColourShader.h"
 #include "Model.h"
 #include "Camera.h"
 #include "RasterState.h"
@@ -29,6 +30,10 @@ Application::Application()
 	// Create shader
 	m_Shader = std::make_unique<Shader>(m_Renderer.get());
 	m_Shader->Load();
+
+	// Create colour shader
+	m_ColourShader = std::make_unique<ColourShader>(m_Renderer.get());
+	m_ColourShader->Load();
 
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);
@@ -93,38 +98,17 @@ int Application::Execute()
 			m_Renderer->SetStencilReadMask();
 
 			this->ComputeModelViewProjectionMatrix2();
+
+			m_ColourShader->Use();
 			m_Model->Render();
 
 			// Turn off the stencil mask by resetting it to the default state
 			m_Renderer->ResetStencilMask();
 
-
-			// Render a box of boxes
-			//for (int i = -5; i < 5; ++i)
-			//{
-			//	for (int j = -5; j < 5; ++j)
-			//	{
-			//		for (int k = -5; k < 5; ++k)
-			//		{
-			//			const float offset = 10.0f;
-			//			float x = (i * offset);
-			//			float y = (j * offset);
-			//			float z = (k * offset);
-
-			//			if (i == 0 && j == 0 && k == 0)
-			//			{
-			//				// Skippy
-			//				continue;
-			//			}
-
-			//			// Update the model view projection constant buffer
-			//			this->ComputeModelViewProjectionMatrix(x, y, z);
-
-			//			// Render the model
-			//			m_Model->Render();
-			//		}
-			//	}
-			//}
+			// Restore back to normal shading
+			m_Shader->Use();
+			this->ComputeModelViewProjectionMatrix();
+			m_Model->Render();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -235,26 +219,16 @@ void Application::ComputeModelViewProjectionMatrix()
 	matrix *= m_Camera->GetProjection();
 
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	m_ColourShader->UpdateModelViewProjectionBuffer(matrix);
 }
 
 void Application::ComputeModelViewProjectionMatrix2()
 {
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
-	matrix *= DirectX::XMMatrixScaling(1.05f, 1.05f, 1.05f);
+	matrix *= DirectX::XMMatrixScaling(1.02f, 1.02f, 1.02f);
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	m_ColourShader->UpdateModelViewProjectionBuffer(matrix);
 }
-
-void Application::ComputeModelViewProjectionMatrix(float x, float y, float z)
-{
-	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(x, y, z);
-
-	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
-	matrix *= world;
-	matrix *= m_Camera->GetView();
-	matrix *= m_Camera->GetProjection();
-
-	m_Shader->UpdateModelViewProjectionBuffer(matrix);
-} 
