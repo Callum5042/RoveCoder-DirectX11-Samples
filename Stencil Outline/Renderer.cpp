@@ -142,9 +142,6 @@ void Renderer::CreateRenderTargetAndDepthStencilView(int width, int height)
 	ComPtr<ID3D11Texture2D> depth_stencil = nullptr;
 	DX::Check(m_Device->CreateTexture2D(&depth_desc, nullptr, &depth_stencil));
 	DX::Check(m_Device->CreateDepthStencilView(depth_stencil.Get(), nullptr, m_DepthStencilView.GetAddressOf()));
-
-	// Binds both the render target and depth stencil to the pipeline's output merger stage
-	m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
 }
 
 void Renderer::SetViewport(int width, int height)
@@ -167,15 +164,17 @@ void Renderer::Clear()
 	// Clear the render target view to the chosen colour
 	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), reinterpret_cast<const float*>(&DirectX::Colors::SteelBlue));
 	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+}
 
-	// Bind the render target view to the pipeline's output merger stage
+void Renderer::SetDefaultRenderTarget()
+{
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
 }
 
-void Renderer::ClearRenderTarget()
+void Renderer::SetStencilRenderTarget()
 {
-	m_DeviceContext->ClearRenderTargetView(m_RenderTargetView.Get(), reinterpret_cast<const float*>(&DirectX::Colors::SteelBlue));
-	m_DeviceContext->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH, 1.0f, 0);
+	ID3D11RenderTargetView* render_target_views[1] = { nullptr };
+	m_DeviceContext->OMSetRenderTargets(1, render_target_views, m_DepthStencilView.Get());
 }
 
 void Renderer::Present()

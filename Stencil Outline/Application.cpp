@@ -84,12 +84,12 @@ int Application::Execute()
 			m_TextureSampler->Use();
 
 			// Write to stencil mask
+			m_Renderer->SetStencilRenderTarget();
 			m_Renderer->SetStencilWriteMask();
 			m_Model->Render();
 
-			m_Renderer->ClearRenderTarget();
-
 			// Render the model with the stencil mask applied
+			m_Renderer->SetDefaultRenderTarget();
 			m_Renderer->SetStencilReadMask();
 
 			this->ComputeModelViewProjectionMatrix2();
@@ -100,31 +100,31 @@ int Application::Execute()
 
 
 			// Render a box of boxes
-			for (int i = -5; i < 5; ++i)
-			{
-				for (int j = -5; j < 5; ++j)
-				{
-					for (int k = -5; k < 5; ++k)
-					{
-						const float offset = 10.0f;
-						float x = (i * offset);
-						float y = (j * offset);
-						float z = (k * offset);
+			//for (int i = -5; i < 5; ++i)
+			//{
+			//	for (int j = -5; j < 5; ++j)
+			//	{
+			//		for (int k = -5; k < 5; ++k)
+			//		{
+			//			const float offset = 10.0f;
+			//			float x = (i * offset);
+			//			float y = (j * offset);
+			//			float z = (k * offset);
 
-						if (i == 0 && j == 0 && k == 0)
-						{
-							// Skippy
-							continue;
-						}
+			//			if (i == 0 && j == 0 && k == 0)
+			//			{
+			//				// Skippy
+			//				continue;
+			//			}
 
-						// Update the model view projection constant buffer
-						this->ComputeModelViewProjectionMatrix(x, y, z);
+			//			// Update the model view projection constant buffer
+			//			this->ComputeModelViewProjectionMatrix(x, y, z);
 
-						// Render the model
-						m_Model->Render();
-					}
-				}
-			}
+			//			// Render the model
+			//			m_Model->Render();
+			//		}
+			//	}
+			//}
 
 			// Display the rendered scene
 			m_Renderer->Present();

@@ -36,7 +36,6 @@ public:
 
 	// Clear the buffers
 	void Clear();
-	void ClearRenderTarget();
 
 	// Display the rendered scene
 	void Present();
@@ -54,6 +53,10 @@ public:
 	void SetStencilWriteMask();
 	void SetStencilReadMask();
 	void ResetStencilMask();
+
+	// Render targets
+	void SetDefaultRenderTarget();
+	void SetStencilRenderTarget();
 
 private:
 	// Device and device context
