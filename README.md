@@ -2,17 +2,9 @@
 
 DirectX11 samples for [RoveCoder](rovecoder.net).
 
-Starting off with it is recommended to follow all the topics under foundation in order, then most of the topics are independant and can be tackled in any other. The topic will have recommended Prerequisites if appropriate.
+Starting off with it is recommended to follow all the topics under foundation in order, then most of the topics are independant and can be tackled in any other. The topic will have recommended prerequisites if appropriate.
 
-## Content
-
-### Foundations
-
-1. Initializing
-2. Drawing - Triangle
-3. Drawing - Rectangle
-4. Texturing
-5. Camera
+![Build](https://github.com/Callum5042/RoveCoder-DirectX11-Samples/actions/workflows/msbuild.yml/badge.svg)
 
 ## Getting started
 
