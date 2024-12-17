@@ -19,6 +19,9 @@
     <Filter Include="External">
       <UniqueIdentifier>{f5c7a55e-c1f1-40ca-af9c-abf40cdaffbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Shaders Files\Default">
+      <UniqueIdentifier>{1299934c-785c-40ef-aa4f-0e6ba568dd68}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -92,20 +95,20 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
-      <Filter>Shaders Files</Filter>
+      <Filter>Shaders Files\Default</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
-      <Filter>Shaders Files</Filter>
+      <Filter>Shaders Files\Default</Filter>
     </FxCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ShaderData.hlsli">
-      <Filter>Shaders Files</Filter>
-    </None>
   </ItemGroup>
   <ItemGroup>
     <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ShaderData.hlsli">
+      <Filter>Shaders Files\Default</Filter>
+    </None>
   </ItemGroup>
 </Project>

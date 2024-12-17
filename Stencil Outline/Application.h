@@ -57,4 +57,7 @@ private:
 
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
+	void ComputeModelViewProjectionMatrix2();
+
+	void ComputeModelViewProjectionMatrix(float x, float y, float z);
 };

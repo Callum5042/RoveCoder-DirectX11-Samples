@@ -36,6 +36,7 @@ public:
 
 	// Clear the buffers
 	void Clear();
+	void ClearRenderTarget();
 
 	// Display the rendered scene
 	void Present();
@@ -48,6 +49,11 @@ public:
 
 	// Get render context
 	inline ID3D11DeviceContext* GetDeviceContext() const { return m_DeviceContext.Get(); }
+
+	// Set the stencil masks
+	void SetStencilWriteMask();
+	void SetStencilReadMask();
+	void ResetStencilMask();
 
 private:
 	// Device and device context
@@ -67,4 +73,11 @@ private:
 
 	// Viewport
 	void SetViewport(int width, int height);
+
+	// Stencil states
+	void CreateStencilWriteMask();
+	ComPtr<ID3D11DepthStencilState> m_DepthStencilWriteMask = nullptr;
+
+	void CreateStencilReadMask();
+	ComPtr<ID3D11DepthStencilState> m_DepthStencilReadMask = nullptr;
 };

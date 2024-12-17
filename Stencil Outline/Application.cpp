@@ -83,8 +83,48 @@ int Application::Execute()
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
-			// Render the model
+			// Write to stencil mask
+			m_Renderer->SetStencilWriteMask();
 			m_Model->Render();
+
+			m_Renderer->ClearRenderTarget();
+
+			// Render the model with the stencil mask applied
+			m_Renderer->SetStencilReadMask();
+
+			this->ComputeModelViewProjectionMatrix2();
+			m_Model->Render();
+
+			// Turn off the stencil mask by resetting it to the default state
+			m_Renderer->ResetStencilMask();
+
+
+			// Render a box of boxes
+			for (int i = -5; i < 5; ++i)
+			{
+				for (int j = -5; j < 5; ++j)
+				{
+					for (int k = -5; k < 5; ++k)
+					{
+						const float offset = 10.0f;
+						float x = (i * offset);
+						float y = (j * offset);
+						float z = (k * offset);
+
+						if (i == 0 && j == 0 && k == 0)
+						{
+							// Skippy
+							continue;
+						}
+
+						// Update the model view projection constant buffer
+						this->ComputeModelViewProjectionMatrix(x, y, z);
+
+						// Render the model
+						m_Model->Render();
+					}
+				}
+			}
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -196,3 +236,25 @@ void Application::ComputeModelViewProjectionMatrix()
 
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 }
+
+void Application::ComputeModelViewProjectionMatrix2()
+{
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= DirectX::XMMatrixScaling(1.05f, 1.05f, 1.05f);
+	matrix *= m_Camera->GetView();
+	matrix *= m_Camera->GetProjection();
+
+	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+}
+
+void Application::ComputeModelViewProjectionMatrix(float x, float y, float z)
+{
+	DirectX::XMMATRIX world = DirectX::XMMatrixTranslation(x, y, z);
+
+	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= world;
+	matrix *= m_Camera->GetView();
+	matrix *= m_Camera->GetProjection();
+
+	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+} 
