@@ -1,6 +1,6 @@
 # DirectX11-Samples
 
-DirectX11 samples for [RoveCoder](rovecoder.net).
+DirectX11 samples for [RoveCoder](https://www.rovecoder.net/).
 
 Starting off with it is recommended to follow all the topics under foundation in order, then most of the topics are independant and can be tackled in any other. The topic will have recommended prerequisites if appropriate.
 
