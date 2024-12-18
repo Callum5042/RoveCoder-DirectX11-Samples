@@ -10,8 +10,8 @@ float4 main(PixelInput input) : SV_TARGET
     
     // Fog
     float4 fog_colour = float4(0.9f, 0.9f, 0.9f, 1.0f);
-    float fog_lerl = saturate((pixel_distance - cFogStart) / cFogRange);
-    diffuse_texture = lerp(diffuse_texture, fog_colour, fog_lerl);
+    float fog_factor = saturate((pixel_distance - cFogStart) / cFogRange);
+    diffuse_texture = lerp(diffuse_texture, fog_colour, fog_factor);
     
     return diffuse_texture;
 }
