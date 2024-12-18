@@ -218,26 +218,36 @@ void Renderer::Resize(int width, int height)
 
 void Renderer::CreateStencilWriteMask()
 {
-	D3D11_DEPTH_STENCIL_DESC desc = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
+	D3D11_DEPTH_STENCILOP_DESC stencil_op = {};
+	stencil_op.StencilFailOp = D3D11_STENCIL_OP_REPLACE;
+	stencil_op.StencilDepthFailOp = D3D11_STENCIL_OP_REPLACE;
+	stencil_op.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	stencil_op.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	D3D11_DEPTH_STENCIL_DESC desc = {};
 	desc.DepthEnable = false;
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	desc.StencilEnable = true;
-	desc.StencilWriteMask = 0xFF;
-	desc.FrontFace.StencilFunc = D3D11_COMPARISON_ALWAYS;
-	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+	desc.FrontFace = stencil_op;
+	desc.BackFace = stencil_op;
 
 	DX::Check(m_Device->CreateDepthStencilState(&desc, m_DepthStencilWriteMask.GetAddressOf()));
 }
 
 void Renderer::CreateStencilReadMask()
 {
-	D3D11_DEPTH_STENCIL_DESC desc = CD3D11_DEPTH_STENCIL_DESC{ CD3D11_DEFAULT{} };
+	D3D11_DEPTH_STENCILOP_DESC stencil_op = {};
+	stencil_op.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencil_op.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	stencil_op.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencil_op.StencilFunc = D3D11_COMPARISON_NOT_EQUAL;
+
+	D3D11_DEPTH_STENCIL_DESC desc = {};
 	desc.DepthEnable = false;
-	desc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ZERO;
 	desc.StencilEnable = true;
-	desc.StencilReadMask = 0xFF;
-	desc.FrontFace.StencilFunc = D3D11_COMPARISON_NOT_EQUAL;
-	desc.FrontFace.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	desc.FrontFace = stencil_op;
+	desc.BackFace = stencil_op;
 
 	DX::Check(m_Device->CreateDepthStencilState(&desc, m_DepthStencilReadMask.GetAddressOf()));
 }

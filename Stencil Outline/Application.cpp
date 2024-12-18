@@ -86,7 +86,7 @@ int Application::Execute()
 			m_Shader->Use();
 
 			// Write to the stencil buffer in the first pass
-			this->WriteToSteniclBuffer();
+			this->WriteToStencilBuffer();
 
 			// Write to the back buffer
 			this->WriteToBackBuffer();
@@ -204,7 +204,7 @@ void Application::ComputeModelViewProjectionMatrix(float scale)
 	m_ColourShader->UpdateModelViewProjectionBuffer(matrix);
 }
 
-void Application::WriteToSteniclBuffer()
+void Application::WriteToStencilBuffer()
 {
 	// Set the raster to only write to the depth/stencil buffer (ignoring the back buffer)
 	m_Renderer->SetStencilRenderTarget();

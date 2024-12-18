@@ -61,7 +61,7 @@ private:
 	void ComputeModelViewProjectionMatrix(float scale);
 
 	// Write to stencil buffer
-	void WriteToSteniclBuffer();
+	void WriteToStencilBuffer();
 
 	// Write to back buffer
 	void WriteToBackBuffer();
