@@ -22,7 +22,7 @@ void Model::CreateVertexBuffer()
 	ID3D11Device* device = m_Renderer->GetDevice();
 
 	const float width = 1.0f;
-	const float height = 1.0f;
+	const float height = 0.1f;
 	const float depth = 1.0f;
 
 	// Vertex data
