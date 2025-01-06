@@ -2,6 +2,10 @@
 #include "Renderer.h"
 
 #include <vector>
+#include <string>
+#include <filesystem>
+
+#include "../External/WICTextureLoader.h"
 
 Billboard::Billboard(Renderer* renderer) : m_Renderer(renderer)
 {
@@ -10,6 +14,7 @@ Billboard::Billboard(Renderer* renderer) : m_Renderer(renderer)
 void Billboard::Create()
 {
 	CreateVertexBuffer();
+	LoadTexture();
 }
 
 void Billboard::CreateVertexBuffer()
@@ -35,6 +40,26 @@ void Billboard::CreateVertexBuffer()
 	DX::Check(device->CreateBuffer(&vertex_buffer_desc, &vertex_subdata, m_VertexBuffer.ReleaseAndGetAddressOf()));
 }
 
+void Billboard::LoadTexture()
+{
+	std::wstring path = L"oaktree_billboard.png";
+
+	// Check if file exists
+	if (!std::filesystem::exists(path))
+	{
+		std::wstring error = L"Could not load file: " + path;
+		MessageBox(NULL, error.c_str(), L"Error", MB_OK);
+		return;
+	}
+
+	// Load texture into a resource shader view
+	ID3D11Device* device = m_Renderer->GetDevice();
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
+	ComPtr<ID3D11Resource> resource = nullptr;
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
+}
+
 void Billboard::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
@@ -48,6 +73,9 @@ void Billboard::Render()
 
 	// Bind the geometry topology to the Input Assembler
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_POINTLIST);
+
+	// Bind texture to the pixel shader
+	context->PSSetShaderResources(0, 1, m_DiffuseTexture.GetAddressOf());
 
 	// Render geometry
 	context->Draw(static_cast<UINT>(m_Vertices.size()), 0);

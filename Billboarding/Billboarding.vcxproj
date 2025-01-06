@@ -291,6 +291,9 @@
   <ItemGroup>
     <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\oaktree_billboard.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

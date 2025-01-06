@@ -210,6 +210,8 @@ void Application::CalculateFrameStats(float delta_time)
 void Application::ComputeModelViewProjectionMatrix()
 {
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
+
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 

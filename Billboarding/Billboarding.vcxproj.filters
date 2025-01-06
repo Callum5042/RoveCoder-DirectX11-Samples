@@ -129,6 +129,9 @@
     <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\oaktree_billboard.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderData.hlsli">

@@ -23,6 +23,13 @@ void main(point GeometryInput input[1], inout TriangleStream<PixelInput> output)
     vertices[2] = position - width * right_vector - height * up_vector;
     vertices[3] = position - width * right_vector + height * up_vector;
 
+    // UV
+    float2 uv[4];
+    uv[0] = float2(0.0f, 1.0f);
+    uv[1] = float2(0.0f, 0.0f);
+    uv[2] = float2(1.0f, 1.0f);
+    uv[3] = float2(1.0f, 0.0f);
+    
 	// Append output stream with our 4 new rectangle vertices
 	[unroll]
     for (uint i = 0; i < 4; i++)
@@ -33,6 +40,8 @@ void main(point GeometryInput input[1], inout TriangleStream<PixelInput> output)
         element.position = mul(element.position, cView);
         element.position = mul(element.position, cProjection);
 
+        element.texture_coord = uv[i];
+        
         output.Append(element);
     }
 }

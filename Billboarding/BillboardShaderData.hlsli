@@ -16,6 +16,7 @@ struct GeometryInput
 struct PixelInput
 {
     float4 position : SV_POSITION;
+    float2 texture_coord : TEXTURE;
 };
 
 // World constant buffer
@@ -27,3 +28,9 @@ cbuffer WorldBuffer : register(b0)
     float3 cCameraPosition;
     float padding;
 }
+
+// Texture sampler
+SamplerState gSampler : register(s0);
+
+// Diffuse texture
+Texture2D gTextureSprite : register(t0);

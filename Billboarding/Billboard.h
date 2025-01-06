@@ -43,4 +43,8 @@ private:
 
 	// Vertices
 	std::vector<BillboardVertex> m_Vertices;
+
+	// Texture buffer
+	void LoadTexture();
+	ComPtr<ID3D11ShaderResourceView> m_DiffuseTexture = nullptr;
 };
