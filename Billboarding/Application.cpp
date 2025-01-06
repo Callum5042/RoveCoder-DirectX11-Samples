@@ -2,11 +2,13 @@
 #include "Window.h"
 #include "Timer.h"
 #include "Renderer.h"
-#include "Shader.h"
 #include "Model.h"
 #include "Camera.h"
 #include "RasterState.h"
 #include "TextureSampler.h"
+
+#include "Shader.h"
+#include "BillboardShader.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -29,6 +31,10 @@ Application::Application()
 	// Create shader
 	m_Shader = std::make_unique<Shader>(m_Renderer.get());
 	m_Shader->Load();
+
+	// Create shader
+	m_BillboardShader = std::make_unique<BillboardShader>(m_Renderer.get());
+	m_BillboardShader->Load();
 
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);
