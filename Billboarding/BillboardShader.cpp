@@ -6,14 +6,6 @@
 #include "CompiledBillboardVertexShader.hlsl.h"
 #include "CompiledBillboardGeometryShader.hlsl.h"
 
-namespace
-{
-	struct ModelViewProjectionBuffer
-	{
-		DirectX::XMMATRIX modelViewProjection;
-	};
-}
-
 BillboardShader::BillboardShader(Renderer* renderer) : m_Renderer(renderer)
 {
 }
@@ -23,7 +15,7 @@ void BillboardShader::Load()
 	this->LoadVertexShader();
 	this->LoadPixelShader();
 	this->LoadGeometryShader();
-	this->CreateWorldViewProjectionConstantBuffer();
+	this->CreateWorldConstantBuffer();
 }
 
 void BillboardShader::Use()
@@ -44,10 +36,10 @@ void BillboardShader::Use()
 
 	// Bind the world constant buffer to the vertex shader
 	const int constant_buffer_slot = 0;
-	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_WorldConstantBuffer.GetAddressOf());
 
 	// Bind the world constant buffer to the geometry shader
-	context->GSSetConstantBuffers(0, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+	context->GSSetConstantBuffers(0, 1, m_WorldConstantBuffer.GetAddressOf());
 }
 
 void BillboardShader::LoadVertexShader()
@@ -80,24 +72,21 @@ void BillboardShader::LoadGeometryShader()
 	DX::Check(device->CreateGeometryShader(g_BillboardGeometryShader, sizeof(g_BillboardGeometryShader), nullptr, m_GeometryShader.ReleaseAndGetAddressOf()));
 }
 
-void BillboardShader::CreateWorldViewProjectionConstantBuffer()
+void BillboardShader::CreateWorldConstantBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
 	// Create world constant buffer
 	D3D11_BUFFER_DESC bd = {};
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ModelViewProjectionBuffer);
+	bd.ByteWidth = sizeof(WorldBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
-	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_WorldConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void BillboardShader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix)
+void BillboardShader::UpdateWorldConstantBuffer(const WorldBuffer& worldBuffer)
 {
-	ModelViewProjectionBuffer buffer = {};
-	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
-
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
-	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+	context->UpdateSubresource(m_WorldConstantBuffer.Get(), 0, nullptr, &worldBuffer, 0, 0);
 }

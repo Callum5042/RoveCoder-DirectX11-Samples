@@ -36,6 +36,8 @@ void Shader::Use()
 	// Bind the vertex shader to the pipeline's Vertex Shader stage
 	context->VSSetShader(m_VertexShader.Get(), nullptr, 0);
 
+	context->GSSetShader(nullptr, nullptr, 0);
+
 	// Bind the pixel shader to the pipeline's Pixel Shader stage
 	context->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 

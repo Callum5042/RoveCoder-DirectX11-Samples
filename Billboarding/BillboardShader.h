@@ -9,6 +9,14 @@ using Microsoft::WRL::ComPtr;
 
 class Renderer;
 
+struct WorldBuffer
+{
+	DirectX::XMMATRIX world;
+	DirectX::XMMATRIX view;
+	DirectX::XMMATRIX projection;
+	DirectX::XMFLOAT4 cameraPosition;
+};
+
 class BillboardShader
 {
 	Renderer* m_Renderer = nullptr;
@@ -24,7 +32,7 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix);
+	void UpdateWorldConstantBuffer(const WorldBuffer& worldBuffer);
 
 private:
 	// Create vertex shader
@@ -41,6 +49,6 @@ private:
 	ComPtr<ID3D11GeometryShader> m_GeometryShader = nullptr;
 
 	// ModelViewProjection constant buffer
-	ComPtr<ID3D11Buffer> m_ModelViewProjectionConstantBuffer = nullptr;
-	void CreateWorldViewProjectionConstantBuffer();
+	void CreateWorldConstantBuffer();
+	ComPtr<ID3D11Buffer> m_WorldConstantBuffer = nullptr;
 };

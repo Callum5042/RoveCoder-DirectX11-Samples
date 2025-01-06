@@ -153,6 +153,7 @@
   <ItemGroup>
     <ClCompile Include="..\External\WICTextureLoader.cpp" />
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="Billboard.cpp" />
     <ClCompile Include="BillboardShader.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -167,6 +168,7 @@
   <ItemGroup>
     <ClInclude Include="..\External\WICTextureLoader.h" />
     <ClInclude Include="Application.h" />
+    <ClInclude Include="Billboard.h" />
     <ClInclude Include="BillboardShader.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Model.h" />

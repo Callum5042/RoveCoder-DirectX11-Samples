@@ -2,10 +2,12 @@
 #include "Window.h"
 #include "Timer.h"
 #include "Renderer.h"
-#include "Model.h"
 #include "Camera.h"
 #include "RasterState.h"
 #include "TextureSampler.h"
+
+#include "Model.h"
+#include "Billboard.h"
 
 #include "Shader.h"
 #include "BillboardShader.h"
@@ -49,6 +51,10 @@ int Application::Execute()
 	m_Model = std::make_unique<Model>(m_Renderer.get());
 	m_Model->Create();
 
+	// Billboard
+	m_Billboard = std::make_unique<Billboard>(m_Renderer.get());
+	m_Billboard->Create();
+
 	// Raster state
 	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
 
@@ -77,20 +83,27 @@ int Application::Execute()
 			// Clear the buffers
 			m_Renderer->Clear();
 
-			// Bind the shader to the pipeline
-			m_Shader->Use();
-
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();
 
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
+			// Bind the shader to the pipeline
+			m_Shader->Use();
+
+			// Update the model view projection constant buffer
+			this->ComputeModelViewProjectionMatrix();
+
 			// Render the model
 			m_Model->Render();
+
+			// Bind the billboard shader
+			m_BillboardShader->Use();
+			this->UpdateBillboardWorldConstantBuffer();
+
+			// Render the billboard
+			m_Billboard->Render();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -201,4 +214,17 @@ void Application::ComputeModelViewProjectionMatrix()
 	matrix *= m_Camera->GetProjection();
 
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+}
+
+void Application::UpdateBillboardWorldConstantBuffer()
+{
+	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
+
+	WorldBuffer world_buffer = {};
+	world_buffer.world = DirectX::XMMatrixTranspose(world);
+	world_buffer.view = DirectX::XMMatrixTranspose(m_Camera->GetView());
+	world_buffer.projection = DirectX::XMMatrixTranspose(m_Camera->GetProjection());
+	world_buffer.cameraPosition = m_Camera->GetPosition();
+
+	m_BillboardShader->UpdateWorldConstantBuffer(world_buffer);
 }

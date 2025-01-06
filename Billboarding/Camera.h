@@ -17,6 +17,9 @@ public:
 
 	// Set field of view
 	void UpdateFov(float fov);
+	
+	// Get the position in world space
+	inline DirectX::XMFLOAT4 GetPosition() const { return m_Position; }
 
 	// Get projection matrix
 	inline DirectX::XMMATRIX GetProjection() const { return m_Projection; }
@@ -25,6 +28,9 @@ public:
 	inline DirectX::XMMATRIX GetView() const { return m_View; }
 
 private:
+	// Camera position
+	DirectX::XMFLOAT4 m_Position;
+
 	// Projection matrix
 	DirectX::XMMATRIX m_Projection;
 

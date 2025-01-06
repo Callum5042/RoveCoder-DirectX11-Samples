@@ -15,6 +15,8 @@ class Shader;
 class BillboardShader;
 
 class Model;
+class Billboard;
+
 class RasterState;
 class TextureSampler;
 
@@ -38,6 +40,8 @@ private:
 	std::unique_ptr<BillboardShader> m_BillboardShader = nullptr;
 
 	std::unique_ptr<Model> m_Model = nullptr;
+	std::unique_ptr<Billboard> m_Billboard = nullptr;
+
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
 	std::unique_ptr<TextureSampler> m_TextureSampler = nullptr;
@@ -61,4 +65,5 @@ private:
 
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
+	void UpdateBillboardWorldConstantBuffer();
 };
