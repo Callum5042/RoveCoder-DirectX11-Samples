@@ -289,10 +289,10 @@
     <None Include="ShaderData.hlsli" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png" />
+    <CopyFileToFolders Include="..\Resources\Textures\oaktree_billboard.png" />
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\Resources\Textures\oaktree_billboard.png" />
+    <CopyFileToFolders Include="..\Resources\Textures\Moss001_1K-PNG_Color.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

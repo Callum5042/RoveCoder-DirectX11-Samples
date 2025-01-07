@@ -108,7 +108,7 @@ void Model::CreateIndexBuffer()
 
 void Model::LoadTexture()
 {
-	std::wstring path = L"Wood_Crate_001_basecolor.png";
+	std::wstring path = L"Moss001_1K-PNG_Color.png";
 
 	// Check if file exists
 	if (!std::filesystem::exists(path))
