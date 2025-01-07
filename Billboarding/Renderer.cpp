@@ -18,6 +18,9 @@ void Renderer::Create()
 	CreateSwapChain(window_width, window_height);
 	CreateRenderTargetAndDepthStencilView(window_width, window_height);
 	SetViewport(window_width, window_height);
+
+	CreateBlendState();
+	BindBlendState();
 }
 
 void Renderer::CreateDeviceAndContext()
@@ -158,6 +161,22 @@ void Renderer::SetViewport(int width, int height)
 	m_DeviceContext->RSSetViewports(1, &viewport);
 }
 
+void Renderer::CreateBlendState()
+{
+	D3D11_BLEND_DESC blend_desc = {};
+	blend_desc.AlphaToCoverageEnable = true;
+	blend_desc.IndependentBlendEnable = false;
+
+	blend_desc.RenderTarget[0].BlendEnable = false;
+	blend_desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	blend_desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_INV_SRC_ALPHA;
+	blend_desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+
+	blend_desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	DX::Check(m_Device->CreateBlendState(&blend_desc, &m_BlendState));
+}
+
 void Renderer::Clear()
 {
 	// Clear the render target view to the chosen colour
@@ -205,4 +224,11 @@ void Renderer::Resize(int width, int height)
 
 	// Sets a new viewport with the new window size
 	SetViewport(width, height);
+}
+
+void Renderer::BindBlendState()
+{
+	float blend_factor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	UINT sample_mask = 0xffffffff;
+	m_DeviceContext->OMSetBlendState(m_BlendState.Get(), blend_factor, sample_mask);
 }
