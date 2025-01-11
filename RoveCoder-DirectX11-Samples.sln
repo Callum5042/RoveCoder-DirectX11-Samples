@@ -35,6 +35,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Fog", "Fog\Fog.vcxproj", "{
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Stencil Outline", "Stencil Outline\Stencil Outline.vcxproj", "{E1CAB8BF-5159-42FD-93DB-C501D92BCD44}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Billboarding", "Billboarding\Billboarding.vcxproj", "{79D5313D-A248-4D42-BF84-86EB7796934B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -155,6 +157,14 @@ Global
 		{E1CAB8BF-5159-42FD-93DB-C501D92BCD44}.Release|x64.Build.0 = Release|x64
 		{E1CAB8BF-5159-42FD-93DB-C501D92BCD44}.Release|x86.ActiveCfg = Release|Win32
 		{E1CAB8BF-5159-42FD-93DB-C501D92BCD44}.Release|x86.Build.0 = Release|Win32
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Debug|x64.ActiveCfg = Debug|x64
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Debug|x64.Build.0 = Debug|x64
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Debug|x86.ActiveCfg = Debug|Win32
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Debug|x86.Build.0 = Debug|Win32
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Release|x64.ActiveCfg = Release|x64
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Release|x64.Build.0 = Release|x64
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Release|x86.ActiveCfg = Release|Win32
+		{79D5313D-A248-4D42-BF84-86EB7796934B}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -174,6 +184,7 @@ Global
 		{6B165DDF-C242-4720-ADD0-22A881838DA5} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 		{DF569463-9863-4FB3-9D9D-CE5D49FD23B4} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 		{E1CAB8BF-5159-42FD-93DB-C501D92BCD44} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
+		{79D5313D-A248-4D42-BF84-86EB7796934B} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46924DD2-99CC-4730-902A-FB2C4CFCBE33}
