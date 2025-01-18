@@ -126,10 +126,10 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <CopyFileToFolders Include="..\Resources\Textures\oaktree_billboard.png">
+    <CopyFileToFolders Include="..\Resources\Textures\Moss001_1K-PNG_Color.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
-    <CopyFileToFolders Include="..\Resources\Textures\Moss001_1K-PNG_Color.png">
+    <CopyFileToFolders Include="..\Resources\Textures\trees\oaktree_billboard.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>
