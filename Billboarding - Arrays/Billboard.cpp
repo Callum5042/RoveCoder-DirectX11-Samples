@@ -61,22 +61,22 @@ void Billboard::LoadTextureArray()
     ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
     // Load the first texture to determine dimensions and format
-    ComPtr<ID3D11Resource> tempResource = nullptr;
-    ComPtr<ID3D11Texture2D> tempTexture = nullptr;
-    DirectX::CreateWICTextureFromFile(device, context, paths[0].c_str(), tempResource.ReleaseAndGetAddressOf(), nullptr);
-    DX::Check(tempResource.As(&tempTexture));
+    ComPtr<ID3D11Resource> resource = nullptr;
+    ComPtr<ID3D11Texture2D> texture = nullptr;
+    DirectX::CreateWICTextureFromFile(device, context, paths[0].c_str(), resource.ReleaseAndGetAddressOf(), nullptr);
+    DX::Check(resource.As(&texture));
 
-    D3D11_TEXTURE2D_DESC textureDesc;
-    tempTexture->GetDesc(&textureDesc);
+    D3D11_TEXTURE2D_DESC texture_desc;
+    texture->GetDesc(&texture_desc);
 
     // Update the description for a Texture2DArray
-    textureDesc.ArraySize = static_cast<UINT>(paths.size());
-    textureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-    textureDesc.MiscFlags = 0;
+    texture_desc.ArraySize = static_cast<UINT>(paths.size());
+    texture_desc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+    texture_desc.MiscFlags = 0;
 
     // Create the Texture2DArray
-    ComPtr<ID3D11Texture2D> textureArray;
-    DX::Check(device->CreateTexture2D(&textureDesc, nullptr, textureArray.ReleaseAndGetAddressOf()));
+    ComPtr<ID3D11Texture2D> texture_array;
+    DX::Check(device->CreateTexture2D(&texture_desc, nullptr, texture_array.ReleaseAndGetAddressOf()));
 
     // Load each texture into the array
     for (UINT i = 0; i < paths.size(); ++i)
@@ -90,8 +90,8 @@ void Billboard::LoadTextureArray()
 
         // Copy the data into the corresponding slice of the Texture2DArray
         context->CopySubresourceRegion(
-            textureArray.Get(),
-            D3D11CalcSubresource(0, i, textureDesc.MipLevels), // Destination subresource (mip 0, slice i)
+            texture_array.Get(),
+            D3D11CalcSubresource(0, i, texture_desc.MipLevels), // Destination subresource (mip 0, slice i)
             0, 0, 0, // Destination coordinates
             srcTexture.Get(),
             0, // Source subresource (mip 0)
@@ -100,17 +100,16 @@ void Billboard::LoadTextureArray()
     }
 
     // Create the Shader Resource View for the Texture2DArray
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
-    srvDesc.Format = textureDesc.Format;
-    srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
-    srvDesc.Texture2DArray.MostDetailedMip = 0;
-    srvDesc.Texture2DArray.MipLevels = textureDesc.MipLevels;
-    srvDesc.Texture2DArray.FirstArraySlice = 0;
-    srvDesc.Texture2DArray.ArraySize = static_cast<UINT>(paths.size());
+    D3D11_SHADER_RESOURCE_VIEW_DESC shader_desc = {};
+    shader_desc.Format = texture_desc.Format;
+    shader_desc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2DARRAY;
+    shader_desc.Texture2DArray.MostDetailedMip = 0;
+    shader_desc.Texture2DArray.MipLevels = texture_desc.MipLevels;
+    shader_desc.Texture2DArray.FirstArraySlice = 0;
+    shader_desc.Texture2DArray.ArraySize = static_cast<UINT>(paths.size());
 
-    DX::Check(device->CreateShaderResourceView(textureArray.Get(), &srvDesc, m_DiffuseTexture.ReleaseAndGetAddressOf()));
+    DX::Check(device->CreateShaderResourceView(texture_array.Get(), &shader_desc, m_DiffuseTexture.ReleaseAndGetAddressOf()));
 }
-
 
 void Billboard::Render()
 {
