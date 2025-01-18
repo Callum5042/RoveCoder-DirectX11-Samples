@@ -21,7 +21,7 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{79D5313D-A248-4D42-BF84-86EB7796934B}</ProjectGuid>
+    <ProjectGuid>{697F7968-E5E0-431A-A6EE-79D102EE7FFB}</ProjectGuid>
     <RootNamespace>Initializing</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
@@ -292,7 +292,10 @@
     <CopyFileToFolders Include="..\Resources\Textures\Moss001_1K-PNG_Color.png" />
   </ItemGroup>
   <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\trees\ginko_billboard.png" />
+    <CopyFileToFolders Include="..\Resources\Textures\trees\maple_billboard.png" />
     <CopyFileToFolders Include="..\Resources\Textures\trees\oaktree_billboard.png" />
+    <CopyFileToFolders Include="..\Resources\Textures\trees\willow_billboard.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -25,6 +25,9 @@
     <Filter Include="Shaders Files\Billboard">
       <UniqueIdentifier>{1227f56b-29d3-43a0-92a6-1b3a3a074ed4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Trees">
+      <UniqueIdentifier>{2c1fe2ad-6490-4c65-a5d0-ee16e5e34fef}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -129,7 +132,16 @@
     <CopyFileToFolders Include="..\Resources\Textures\Moss001_1K-PNG_Color.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\trees\ginko_billboard.png">
+      <Filter>Resource Files\Trees</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\trees\maple_billboard.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
     <CopyFileToFolders Include="..\Resources\Textures\trees\oaktree_billboard.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\trees\willow_billboard.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
   </ItemGroup>
