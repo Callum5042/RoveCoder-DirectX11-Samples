@@ -24,6 +24,7 @@
     <ProjectGuid>{2E86F0C6-C5C9-41A0-B4B5-803E26E16F6B}</ProjectGuid>
     <RootNamespace>Initializing</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>Sprite</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">

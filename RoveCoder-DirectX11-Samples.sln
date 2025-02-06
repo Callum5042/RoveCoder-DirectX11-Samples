@@ -39,7 +39,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Billboarding", "Billboardin
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Billboarding - Arrays", "Billboarding - Arrays\Billboarding - Arrays.vcxproj", "{697F7968-E5E0-431A-A6EE-79D102EE7FFB}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sprites", "Sprites\Sprites.vcxproj", "{2E86F0C6-C5C9-41A0-B4B5-803E26E16F6B}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sprite", "Sprite\Sprite.vcxproj", "{2E86F0C6-C5C9-41A0-B4B5-803E26E16F6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
