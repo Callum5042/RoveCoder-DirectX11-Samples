@@ -1,10 +1,10 @@
-#include "BillboardShader.h"
+#include "SpriteShader.h"
 #include "Renderer.h"
 
 #include <Windows.h>
-#include "CompiledBillboardPixelShader.hlsl.h"
-#include "CompiledBillboardVertexShader.hlsl.h"
-#include "CompiledBillboardGeometryShader.hlsl.h"
+#include "CompiledSpritePixelShader.hlsl.h"
+#include "CompiledSpriteVertexShader.hlsl.h"
+#include "CompiledSpriteGeometryShader.hlsl.h"
 
 SpriteShader::SpriteShader(Renderer* renderer) : m_Renderer(renderer)
 {
@@ -47,7 +47,7 @@ void SpriteShader::LoadVertexShader()
 	ID3D11Device* device = m_Renderer->GetDevice();
 
 	// Create the vertex shader
-	DX::Check(device->CreateVertexShader(g_BillboardVertexShader, sizeof(g_BillboardVertexShader), nullptr, m_VertexShader.ReleaseAndGetAddressOf()));
+	DX::Check(device->CreateVertexShader(g_SpriteVertexShader, sizeof(g_SpriteVertexShader), nullptr, m_VertexShader.ReleaseAndGetAddressOf()));
 
 	// Describe the memory layout
 	D3D11_INPUT_ELEMENT_DESC layout[] =
@@ -57,19 +57,19 @@ void SpriteShader::LoadVertexShader()
 	};
 
 	UINT number_elements = ARRAYSIZE(layout);
-	DX::Check(device->CreateInputLayout(layout, number_elements, g_BillboardVertexShader, sizeof(g_BillboardVertexShader), m_VertexLayout.ReleaseAndGetAddressOf()));
+	DX::Check(device->CreateInputLayout(layout, number_elements, g_SpriteVertexShader, sizeof(g_SpriteVertexShader), m_VertexLayout.ReleaseAndGetAddressOf()));
 }
 
 void SpriteShader::LoadPixelShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
-	device->CreatePixelShader(g_BillboardPixelShader, sizeof(g_BillboardPixelShader), nullptr, m_PixelShader.ReleaseAndGetAddressOf());
+	device->CreatePixelShader(g_SpritePixelShader, sizeof(g_SpritePixelShader), nullptr, m_PixelShader.ReleaseAndGetAddressOf());
 }
 
 void SpriteShader::LoadGeometryShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
-	DX::Check(device->CreateGeometryShader(g_BillboardGeometryShader, sizeof(g_BillboardGeometryShader), nullptr, m_GeometryShader.ReleaseAndGetAddressOf()));
+	DX::Check(device->CreateGeometryShader(g_SpriteGeometryShader, sizeof(g_SpriteGeometryShader), nullptr, m_GeometryShader.ReleaseAndGetAddressOf()));
 }
 
 void SpriteShader::CreateWorldConstantBuffer()

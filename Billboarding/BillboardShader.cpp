@@ -6,11 +6,11 @@
 #include "CompiledBillboardVertexShader.hlsl.h"
 #include "CompiledBillboardGeometryShader.hlsl.h"
 
-BillboardShader::BillboardShader(Renderer* renderer) : m_Renderer(renderer)
+SpriteShader::SpriteShader(Renderer* renderer) : m_Renderer(renderer)
 {
 }
 
-void BillboardShader::Load()
+void SpriteShader::Load()
 {
 	this->LoadVertexShader();
 	this->LoadPixelShader();
@@ -18,7 +18,7 @@ void BillboardShader::Load()
 	this->CreateWorldConstantBuffer();
 }
 
-void BillboardShader::Use()
+void SpriteShader::Use()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
@@ -42,7 +42,7 @@ void BillboardShader::Use()
 	context->GSSetConstantBuffers(0, 1, m_WorldConstantBuffer.GetAddressOf());
 }
 
-void BillboardShader::LoadVertexShader()
+void SpriteShader::LoadVertexShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -60,19 +60,19 @@ void BillboardShader::LoadVertexShader()
 	DX::Check(device->CreateInputLayout(layout, number_elements, g_BillboardVertexShader, sizeof(g_BillboardVertexShader), m_VertexLayout.ReleaseAndGetAddressOf()));
 }
 
-void BillboardShader::LoadPixelShader()
+void SpriteShader::LoadPixelShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 	device->CreatePixelShader(g_BillboardPixelShader, sizeof(g_BillboardPixelShader), nullptr, m_PixelShader.ReleaseAndGetAddressOf());
 }
 
-void BillboardShader::LoadGeometryShader()
+void SpriteShader::LoadGeometryShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 	DX::Check(device->CreateGeometryShader(g_BillboardGeometryShader, sizeof(g_BillboardGeometryShader), nullptr, m_GeometryShader.ReleaseAndGetAddressOf()));
 }
 
-void BillboardShader::CreateWorldConstantBuffer()
+void SpriteShader::CreateWorldConstantBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -85,7 +85,7 @@ void BillboardShader::CreateWorldConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_WorldConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void BillboardShader::UpdateWorldConstantBuffer(const WorldBuffer& worldBuffer)
+void SpriteShader::UpdateWorldConstantBuffer(const WorldBuffer& worldBuffer)
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_WorldConstantBuffer.Get(), 0, nullptr, &worldBuffer, 0, 0);

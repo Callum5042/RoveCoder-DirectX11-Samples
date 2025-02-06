@@ -7,10 +7,10 @@
 #include "TextureSampler.h"
 
 #include "Model.h"
-#include "Billboard.h"
+#include "Sprite.h"
 
 #include "Shader.h"
-#include "BillboardShader.h"
+#include "SpriteShader.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -52,7 +52,7 @@ int Application::Execute()
 	m_Model->Create();
 
 	// Billboard
-	m_Sprite = std::make_unique<Billboard>(m_Renderer.get());
+	m_Sprite = std::make_unique<Sprite>(m_Renderer.get());
 	m_Sprite->Create();
 
 	// Raster state

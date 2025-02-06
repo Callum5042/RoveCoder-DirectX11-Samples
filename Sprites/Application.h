@@ -15,7 +15,7 @@ class Shader;
 class SpriteShader;
 
 class Model;
-class Billboard;
+class Sprite;
 
 class RasterState;
 class TextureSampler;
@@ -40,7 +40,7 @@ private:
 	std::unique_ptr<SpriteShader> m_SpriteShader = nullptr;
 
 	std::unique_ptr<Model> m_Model = nullptr;
-	std::unique_ptr<Billboard> m_Sprite = nullptr;
+	std::unique_ptr<Sprite> m_Sprite = nullptr;
 
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
@@ -48,7 +48,7 @@ private:
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
-	std::string m_ApplicationTitle = "Billboarding";
+	std::string m_ApplicationTitle = "Sprites";
 
 	// On resized event
 	void OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
