@@ -65,5 +65,5 @@ private:
 
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
-	void UpdateBillboardWorldConstantBuffer();
+	void UpdateSpriteWorldConstantBuffer();
 };

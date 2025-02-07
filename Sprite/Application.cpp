@@ -100,7 +100,8 @@ int Application::Execute()
 
 			// Bind the billboard shader
 			m_SpriteShader->Use();
-			this->UpdateBillboardWorldConstantBuffer();
+			this->UpdateSpriteWorldConstantBuffer();
+			this->UpdateSpriteAnimationConstantBuffer(timer.DeltaTime());
 
 			// Render the billboard
 			m_Sprite->Render();
@@ -218,7 +219,7 @@ void Application::ComputeModelViewProjectionMatrix()
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 }
 
-void Application::UpdateBillboardWorldConstantBuffer()
+void Application::UpdateSpriteWorldConstantBuffer()
 {
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
@@ -229,4 +230,19 @@ void Application::UpdateBillboardWorldConstantBuffer()
 	world_buffer.cameraPosition = m_Camera->GetPosition();
 
 	m_SpriteShader->UpdateWorldConstantBuffer(world_buffer);
+}
+
+void Application::UpdateSpriteAnimationConstantBuffer(float dt)
+{
+	m_AnimationTimer += dt;
+
+	if (m_AnimationTimer >= m_FrameTime)
+	{
+		m_AnimationTimer -= m_FrameTime;
+		m_CurrentFrame = (m_CurrentFrame + 1) % m_TotalFrames;
+	}
+
+	AnimationBuffer buffer = {};
+	buffer.frame = m_CurrentFrame;
+	m_SpriteShader->UpdateAnimationConstantBuffer(buffer);
 }

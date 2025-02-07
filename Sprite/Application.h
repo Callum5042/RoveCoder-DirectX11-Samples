@@ -65,5 +65,11 @@ private:
 
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
-	void UpdateBillboardWorldConstantBuffer();
+	void UpdateSpriteWorldConstantBuffer();
+	void UpdateSpriteAnimationConstantBuffer(float dt);
+
+	float m_AnimationTimer = 0.0f;
+	int m_CurrentFrame = 0;
+	int m_TotalFrames = 8;
+	float m_FrameTime = 0.1f;
 };

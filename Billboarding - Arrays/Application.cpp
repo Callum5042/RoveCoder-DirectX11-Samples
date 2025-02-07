@@ -100,7 +100,7 @@ int Application::Execute()
 
 			// Bind the billboard shader
 			m_SpriteShader->Use();
-			this->UpdateBillboardWorldConstantBuffer();
+			this->UpdateSpriteWorldConstantBuffer();
 
 			// Render the billboard
 			m_Sprite->Render();
@@ -218,7 +218,7 @@ void Application::ComputeModelViewProjectionMatrix()
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 }
 
-void Application::UpdateBillboardWorldConstantBuffer()
+void Application::UpdateSpriteWorldConstantBuffer()
 {
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 

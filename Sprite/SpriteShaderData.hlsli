@@ -29,8 +29,14 @@ cbuffer WorldBuffer : register(b0)
     float padding;
 }
 
+// Texture animation buffer
+cbuffer AnimationBuffer : register(b1)
+{
+    int cFrame;
+}
+
 // Texture sampler
 SamplerState gSampler : register(s0);
 
 // Diffuse texture
-Texture2D gTextureSprite : register(t0);
+Texture2DArray gTextureSprite : register(t0);
