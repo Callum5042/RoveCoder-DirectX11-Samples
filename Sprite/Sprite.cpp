@@ -24,7 +24,7 @@ void Sprite::CreateVertexBuffer()
 	// Set vertex data
 	m_Vertices =
 	{
-		{ 0.0f, 1.0f, 0.0f, 2.0f, 2.0f },
+		{ 0.0f, 1.0f, 0.0f, 1.0f, 1.0f },
 	};
 
 	// Create index buffer
@@ -41,7 +41,7 @@ void Sprite::CreateVertexBuffer()
 
 void Sprite::LoadTexture()
 {
-	std::wstring path = L"oaktree_Billboard.png";
+	std::wstring path = L"doughnut_sprite.png";
 
 	// Check if file exists
 	if (!std::filesystem::exists(path))

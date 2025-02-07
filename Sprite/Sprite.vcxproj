@@ -295,6 +295,10 @@
   <ItemGroup>
     <CopyFileToFolders Include="..\Resources\Textures\trees\oaktree_billboard.png" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\doughnut_sprite.png" />
+    <CopyFileToFolders Include="..\Resources\Textures\doughnut_sprite_sheet.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

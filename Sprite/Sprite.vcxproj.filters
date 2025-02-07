@@ -132,6 +132,12 @@
     <CopyFileToFolders Include="..\Resources\Textures\trees\oaktree_billboard.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\doughnut_sprite.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\doughnut_sprite_sheet.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderData.hlsli">
