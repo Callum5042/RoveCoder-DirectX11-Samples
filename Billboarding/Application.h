@@ -12,7 +12,7 @@ class Renderer;
 class Camera;
 
 class Shader;
-class BillboardShader;
+class SpriteShader;
 
 class Model;
 class Billboard;
@@ -37,10 +37,10 @@ private:
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
-	std::unique_ptr<BillboardShader> m_BillboardShader = nullptr;
+	std::unique_ptr<SpriteShader> m_SpriteShader = nullptr;
 
 	std::unique_ptr<Model> m_Model = nullptr;
-	std::unique_ptr<Billboard> m_Billboard = nullptr;
+	std::unique_ptr<Billboard> m_Sprite = nullptr;
 
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
@@ -65,5 +65,5 @@ private:
 
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
-	void UpdateBillboardWorldConstantBuffer();
+	void UpdateSpriteWorldConstantBuffer();
 };

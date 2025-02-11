@@ -7,10 +7,10 @@
 #include "TextureSampler.h"
 
 #include "Model.h"
-#include "Billboard.h"
+#include "Sprite.h"
 
 #include "Shader.h"
-#include "BillboardShader.h"
+#include "SpriteShader.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -52,7 +52,7 @@ int Application::Execute()
 	m_Model->Create();
 
 	// Billboard
-	m_Sprite = std::make_unique<Billboard>(m_Renderer.get());
+	m_Sprite = std::make_unique<Sprite>(m_Renderer.get());
 	m_Sprite->Create();
 
 	// Raster state
@@ -101,6 +101,7 @@ int Application::Execute()
 			// Bind the billboard shader
 			m_SpriteShader->Use();
 			this->UpdateSpriteWorldConstantBuffer();
+			this->UpdateSpriteAnimationConstantBuffer(timer.DeltaTime());
 
 			// Render the billboard
 			m_Sprite->Render();
@@ -229,4 +230,19 @@ void Application::UpdateSpriteWorldConstantBuffer()
 	world_buffer.cameraPosition = m_Camera->GetPosition();
 
 	m_SpriteShader->UpdateWorldConstantBuffer(world_buffer);
+}
+
+void Application::UpdateSpriteAnimationConstantBuffer(float dt)
+{
+	m_AnimationTimer += dt;
+
+	if (m_AnimationTimer >= m_FrameTime)
+	{
+		m_AnimationTimer -= m_FrameTime;
+		m_CurrentFrame = (m_CurrentFrame + 1) % m_TotalFrames;
+	}
+
+	AnimationBuffer buffer = {};
+	buffer.frame = m_CurrentFrame;
+	m_SpriteShader->UpdateAnimationConstantBuffer(buffer);
 }

@@ -9,21 +9,13 @@ using Microsoft::WRL::ComPtr;
 
 class Renderer;
 
-struct WorldBuffer
-{
-	DirectX::XMMATRIX world;
-	DirectX::XMMATRIX view;
-	DirectX::XMMATRIX projection;
-	DirectX::XMFLOAT4 cameraPosition;
-};
-
-class SpriteShader
+class Shader
 {
 	Renderer* m_Renderer = nullptr;
 
 public:
-	SpriteShader(Renderer* renderer);
-	virtual ~SpriteShader() = default;
+	Shader(Renderer* renderer);
+	virtual ~Shader() = default;
 
 	// Load the shader
 	void Load();
@@ -32,7 +24,7 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateWorldConstantBuffer(const WorldBuffer& worldBuffer);
+	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix);
 
 private:
 	// Create vertex shader
@@ -44,11 +36,7 @@ private:
 	void LoadPixelShader();
 	ComPtr<ID3D11PixelShader> m_PixelShader = nullptr;
 
-	// Create geometry shader
-	void LoadGeometryShader();
-	ComPtr<ID3D11GeometryShader> m_GeometryShader = nullptr;
-
 	// ModelViewProjection constant buffer
-	void CreateWorldConstantBuffer();
-	ComPtr<ID3D11Buffer> m_WorldConstantBuffer = nullptr;
+	ComPtr<ID3D11Buffer> m_ModelViewProjectionConstantBuffer = nullptr;
+	void CreateWorldViewProjectionConstantBuffer();
 };

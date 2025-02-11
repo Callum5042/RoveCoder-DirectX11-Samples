@@ -35,8 +35,8 @@ Application::Application()
 	m_Shader->Load();
 
 	// Create shader
-	m_BillboardShader = std::make_unique<BillboardShader>(m_Renderer.get());
-	m_BillboardShader->Load();
+	m_SpriteShader = std::make_unique<SpriteShader>(m_Renderer.get());
+	m_SpriteShader->Load();
 
 	// Create camera
 	m_Camera = std::make_unique<Camera>(window_width, window_height);
@@ -52,8 +52,8 @@ int Application::Execute()
 	m_Model->Create();
 
 	// Billboard
-	m_Billboard = std::make_unique<Billboard>(m_Renderer.get());
-	m_Billboard->Create();
+	m_Sprite = std::make_unique<Billboard>(m_Renderer.get());
+	m_Sprite->Create();
 
 	// Raster state
 	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
@@ -99,11 +99,11 @@ int Application::Execute()
 			m_Model->Render();
 
 			// Bind the billboard shader
-			m_BillboardShader->Use();
-			this->UpdateBillboardWorldConstantBuffer();
+			m_SpriteShader->Use();
+			this->UpdateSpriteWorldConstantBuffer();
 
 			// Render the billboard
-			m_Billboard->Render();
+			m_Sprite->Render();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -218,7 +218,7 @@ void Application::ComputeModelViewProjectionMatrix()
 	m_Shader->UpdateModelViewProjectionBuffer(matrix);
 }
 
-void Application::UpdateBillboardWorldConstantBuffer()
+void Application::UpdateSpriteWorldConstantBuffer()
 {
 	DirectX::XMMATRIX world = DirectX::XMMatrixIdentity();
 
@@ -228,5 +228,5 @@ void Application::UpdateBillboardWorldConstantBuffer()
 	world_buffer.projection = DirectX::XMMatrixTranspose(m_Camera->GetProjection());
 	world_buffer.cameraPosition = m_Camera->GetPosition();
 
-	m_BillboardShader->UpdateWorldConstantBuffer(world_buffer);
+	m_SpriteShader->UpdateWorldConstantBuffer(world_buffer);
 }

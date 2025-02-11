@@ -17,6 +17,14 @@ struct WorldBuffer
 	DirectX::XMFLOAT4 cameraPosition;
 };
 
+struct AnimationBuffer
+{
+	int frame = 0;
+	float _padding1 = 0;
+	float _padding2 = 0;
+	float _padding3 = 0;
+};
+
 class SpriteShader
 {
 	Renderer* m_Renderer = nullptr;
@@ -33,6 +41,9 @@ public:
 
 	// Update the model view projection constant buffer
 	void UpdateWorldConstantBuffer(const WorldBuffer& worldBuffer);
+
+	// Update texture buffer
+	void UpdateAnimationConstantBuffer(const AnimationBuffer& buffer);
 
 private:
 	// Create vertex shader
@@ -51,4 +62,8 @@ private:
 	// ModelViewProjection constant buffer
 	void CreateWorldConstantBuffer();
 	ComPtr<ID3D11Buffer> m_WorldConstantBuffer = nullptr;
+
+	// ModelViewProjection constant buffer
+	void CreateAnimationConstantBuffer();
+	ComPtr<ID3D11Buffer> m_AnimationConstantBuffer = nullptr;
 };

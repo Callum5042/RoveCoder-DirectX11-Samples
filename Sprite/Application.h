@@ -15,7 +15,7 @@ class Shader;
 class SpriteShader;
 
 class Model;
-class Billboard;
+class Sprite;
 
 class RasterState;
 class TextureSampler;
@@ -40,7 +40,7 @@ private:
 	std::unique_ptr<SpriteShader> m_SpriteShader = nullptr;
 
 	std::unique_ptr<Model> m_Model = nullptr;
-	std::unique_ptr<Billboard> m_Sprite = nullptr;
+	std::unique_ptr<Sprite> m_Sprite = nullptr;
 
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
@@ -48,7 +48,7 @@ private:
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
-	std::string m_ApplicationTitle = "Billboarding - Arrays";
+	std::string m_ApplicationTitle = "Sprite";
 
 	// On resized event
 	void OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
@@ -66,4 +66,10 @@ private:
 	// Compute model view projection of the camera
 	void ComputeModelViewProjectionMatrix();
 	void UpdateSpriteWorldConstantBuffer();
+	void UpdateSpriteAnimationConstantBuffer(float dt);
+
+	float m_AnimationTimer = 0.0f;
+	int m_CurrentFrame = 0;
+	int m_TotalFrames = 8;
+	float m_FrameTime = 0.1f;
 };

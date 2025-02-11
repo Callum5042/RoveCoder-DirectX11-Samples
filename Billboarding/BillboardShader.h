@@ -17,13 +17,13 @@ struct WorldBuffer
 	DirectX::XMFLOAT4 cameraPosition;
 };
 
-class BillboardShader
+class SpriteShader
 {
 	Renderer* m_Renderer = nullptr;
 
 public:
-	BillboardShader(Renderer* renderer);
-	virtual ~BillboardShader() = default;
+	SpriteShader(Renderer* renderer);
+	virtual ~SpriteShader() = default;
 
 	// Load the shader
 	void Load();
