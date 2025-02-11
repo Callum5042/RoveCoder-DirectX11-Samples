@@ -21,6 +21,10 @@ void Renderer::Create()
 
 	CreateBlendState();
 	BindBlendState();
+
+	// Stencils
+	CreateStencilWriteMask();
+	CreateStencilReadMask();
 }
 
 void Renderer::CreateDeviceAndContext()
@@ -187,6 +191,11 @@ void Renderer::Clear()
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
 }
 
+void Renderer::SetDefaultRenderTarget()
+{
+	m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
+}
+
 void Renderer::Present()
 {
 	// Use IDXGISwapChain1::Present1 for presenting instead
@@ -231,4 +240,50 @@ void Renderer::BindBlendState()
 	float blend_factor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	UINT sample_mask = 0xffffffff;
 	m_DeviceContext->OMSetBlendState(m_BlendState.Get(), blend_factor, sample_mask);
+}
+
+void Renderer::CreateStencilWriteMask()
+{
+	D3D11_DEPTH_STENCILOP_DESC stencil_op = {};
+	stencil_op.StencilFailOp = D3D11_STENCIL_OP_REPLACE;
+	stencil_op.StencilDepthFailOp = D3D11_STENCIL_OP_REPLACE;
+	stencil_op.StencilPassOp = D3D11_STENCIL_OP_REPLACE;
+	stencil_op.StencilFunc = D3D11_COMPARISON_ALWAYS;
+
+	D3D11_DEPTH_STENCIL_DESC desc = {};
+	desc.DepthEnable = false;
+	desc.StencilEnable = true;
+	desc.StencilWriteMask = D3D11_DEFAULT_STENCIL_WRITE_MASK;
+	desc.FrontFace = stencil_op;
+	desc.BackFace = stencil_op;
+
+	DX::Check(m_Device->CreateDepthStencilState(&desc, m_DepthStencilWriteMask.GetAddressOf()));
+}
+
+void Renderer::CreateStencilReadMask()
+{
+	D3D11_DEPTH_STENCILOP_DESC stencil_op = {};
+	stencil_op.StencilFailOp = D3D11_STENCIL_OP_KEEP;
+	stencil_op.StencilDepthFailOp = D3D11_STENCIL_OP_KEEP;
+	stencil_op.StencilPassOp = D3D11_STENCIL_OP_KEEP;
+	stencil_op.StencilFunc = D3D11_COMPARISON_NOT_EQUAL;
+
+	D3D11_DEPTH_STENCIL_DESC desc = {};
+	desc.DepthEnable = false;
+	desc.StencilEnable = true;
+	desc.StencilReadMask = D3D11_DEFAULT_STENCIL_READ_MASK;
+	desc.FrontFace = stencil_op;
+	desc.BackFace = stencil_op;
+
+	DX::Check(m_Device->CreateDepthStencilState(&desc, m_DepthStencilReadMask.GetAddressOf()));
+}
+
+void Renderer::SetStencilWriteMask()
+{
+	m_DeviceContext->OMSetDepthStencilState(m_DepthStencilWriteMask.Get(), 1);
+}
+
+void Renderer::SetStencilReadMask()
+{
+	m_DeviceContext->OMSetDepthStencilState(m_DepthStencilReadMask.Get(), 1);
 }

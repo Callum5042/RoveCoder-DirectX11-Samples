@@ -72,4 +72,10 @@ private:
 	int m_CurrentFrame = 0;
 	int m_TotalFrames = 8;
 	float m_FrameTime = 0.1f;
+
+	// Write to stencil buffer
+	void RenderSprite(float dt);
+
+	// Write to back buffer
+	void RenderModel(float dt);
 };

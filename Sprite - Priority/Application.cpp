@@ -89,22 +89,9 @@ int Application::Execute()
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
-			// Bind the shader to the pipeline
-			m_Shader->Use();
-
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-
-			// Render the model
-			m_Model->Render();
-
-			// Bind the billboard shader
-			m_SpriteShader->Use();
-			this->UpdateSpriteWorldConstantBuffer();
-			this->UpdateSpriteAnimationConstantBuffer(timer.DeltaTime());
-
-			// Render the billboard
-			m_Sprite->Render();
+			float dt = timer.DeltaTime();
+			this->RenderSprite(dt);
+			this->RenderModel(dt);
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -245,4 +232,31 @@ void Application::UpdateSpriteAnimationConstantBuffer(float dt)
 	AnimationBuffer buffer = {};
 	buffer.frame = m_CurrentFrame;
 	m_SpriteShader->UpdateAnimationConstantBuffer(buffer);
+}
+
+void Application::RenderSprite(float dt)
+{
+	// Set to stencil state to write to the stencil buffer
+	m_Renderer->SetStencilWriteMask();
+
+	// Bind the billboard shader
+	m_SpriteShader->Use();
+	this->UpdateSpriteWorldConstantBuffer();
+	this->UpdateSpriteAnimationConstantBuffer(dt);
+
+	// Render the model which will only write to the stencil buffer
+	m_Sprite->Render();
+}
+
+void Application::RenderModel(float dt)
+{
+	// Set the stencil state so future rendering will now reject pixels that are masked out
+	m_Renderer->SetStencilReadMask();
+
+	// Bind the shader to the pipeline
+	m_Shader->Use();
+	this->ComputeModelViewProjectionMatrix();
+
+	// Render the model
+	m_Model->Render();
 }

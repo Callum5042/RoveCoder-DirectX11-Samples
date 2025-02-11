@@ -52,6 +52,13 @@ public:
 	// Blend state
 	void BindBlendState();
 
+	// Set the stencil masks
+	void SetStencilWriteMask();
+	void SetStencilReadMask();
+
+	// Render targets
+	void SetDefaultRenderTarget();
+
 private:
 	// Device and device context
 	ComPtr<ID3D11Device> m_Device = nullptr;
@@ -74,4 +81,11 @@ private:
 	// Blending
 	ComPtr<ID3D11BlendState> m_BlendState = nullptr;
 	void CreateBlendState();
+
+	// Stencil states
+	void CreateStencilWriteMask();
+	ComPtr<ID3D11DepthStencilState> m_DepthStencilWriteMask = nullptr;
+
+	void CreateStencilReadMask();
+	ComPtr<ID3D11DepthStencilState> m_DepthStencilReadMask = nullptr;
 };
