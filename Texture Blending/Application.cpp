@@ -40,8 +40,13 @@ int Application::Execute()
 	timer.Start();
 
 	// Model
-	m_Model = std::make_unique<Model>(m_Renderer.get());
-	m_Model->Create();
+	m_ModelFloor = std::make_unique<Model>(m_Renderer.get());
+	m_ModelFloor->Create();
+	m_ModelFloor->LoadTextures(L"PavingStones142_1K-PNG_Color.png", L"Moss001_1K-PNG_Color.png", L"alpha_map.png");
+
+	m_ModelCube = std::make_unique<Model>(m_Renderer.get());
+	m_ModelCube->Create();
+	m_ModelCube->LoadTextures(L"water_basecolour.png", L"water_highlights2.png", L"water_highlights.png");
 
 	// Raster state
 	m_RasterState = std::make_unique<RasterState>(m_Renderer.get());
@@ -74,17 +79,29 @@ int Application::Execute()
 			// Bind the shader to the pipeline
 			m_Shader->Use();
 
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
-
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();
 
 			// Bind texture sampler to the pipeline
 			m_TextureSampler->Use();
 
+			// Render the floor
+			{
+				DirectX::XMMATRIX floor_world = DirectX::XMMatrixIdentity();
+				floor_world *= DirectX::XMMatrixScaling(5.0f, 0.01f, 5.0f);
+				floor_world *= DirectX::XMMatrixTranslation(0.0f, -2.0f, 0.0f);
+				this->ComputeModelViewProjectionMatrix(floor_world, TextureBlendMode::Interpolate);
+				m_ModelFloor->Render();
+			}
+
 			// Render the model
-			m_Model->Render();
+			{
+				DirectX::XMMATRIX model_world = DirectX::XMMatrixIdentity();
+				model_world *= DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);
+				model_world *= DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);
+				this->ComputeModelViewProjectionMatrix(model_world, TextureBlendMode::Screen);
+				m_ModelCube->Render();
+			}
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -188,11 +205,11 @@ void Application::CalculateFrameStats(float delta_time)
 	}
 }
 
-void Application::ComputeModelViewProjectionMatrix()
+void Application::ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& world, TextureBlendMode mode)
 {
-	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX matrix = world;
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, static_cast<int>(mode));
 }

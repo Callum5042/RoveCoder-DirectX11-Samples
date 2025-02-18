@@ -24,7 +24,7 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix);
+	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, int texture_blend_mode);
 
 private:
 	// Create vertex shader

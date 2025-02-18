@@ -16,10 +16,13 @@ struct PixelInput
 cbuffer WorldBuffer : register(b0)
 {
     matrix cModelViewProjection;
+    int4 padding;
 }
 
 // Texture sampler
 SamplerState gTextureSampler : register(s0);
 
 // Textures
-Texture2D gTextureDiffuse : register(t0);
+Texture2D gTextureDiffuse1 : register(t0);
+Texture2D gTextureDiffuse2 : register(t1);
+Texture2D gTextureDiffuse3 : register(t2);

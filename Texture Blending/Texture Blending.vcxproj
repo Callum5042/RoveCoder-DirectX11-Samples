@@ -237,6 +237,20 @@
   <ItemGroup>
     <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png" />
   </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\Moss001_1K-PNG_Color.png" />
+    <CopyFileToFolders Include="..\Resources\Textures\PavingStones142_1K-PNG_Color.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\water_basecolour.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\alpha_map.png" />
+    <CopyFileToFolders Include="..\Resources\Textures\water_highlights.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <CopyFileToFolders Include="..\Resources\Textures\water_highlights2.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

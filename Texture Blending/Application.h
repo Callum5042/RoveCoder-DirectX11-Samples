@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <DirectXMath.h>
 
 class Window;
 class Renderer;
@@ -15,6 +16,12 @@ class Camera;
 class Model;
 class RasterState;
 class TextureSampler;
+
+enum class TextureBlendMode
+{
+	Interpolate = 1,
+	Screen = 2,
+};
 
 class Application
 {
@@ -33,10 +40,12 @@ private:
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
-	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
 	std::unique_ptr<RasterState> m_RasterState = nullptr;
 	std::unique_ptr<TextureSampler> m_TextureSampler = nullptr;
+
+	std::unique_ptr<Model> m_ModelFloor = nullptr;
+	std::unique_ptr<Model> m_ModelCube = nullptr;
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
@@ -56,5 +65,5 @@ private:
 	int m_FrameCount = 0;
 
 	// Compute model view projection of the camera
-	void ComputeModelViewProjectionMatrix();
+	void ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& world, TextureBlendMode mode);
 };

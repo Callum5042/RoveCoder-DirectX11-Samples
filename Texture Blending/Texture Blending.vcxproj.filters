@@ -107,5 +107,23 @@
     <CopyFileToFolders Include="..\Resources\Textures\Wood_Crate_001_basecolor.png">
       <Filter>Resource Files</Filter>
     </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\Moss001_1K-PNG_Color.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\PavingStones142_1K-PNG_Color.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\water_basecolour.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\alpha_map.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\water_highlights.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
+    <CopyFileToFolders Include="..\Resources\Textures\water_highlights2.png">
+      <Filter>Resource Files</Filter>
+    </CopyFileToFolders>
   </ItemGroup>
 </Project>

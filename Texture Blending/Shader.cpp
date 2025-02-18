@@ -12,6 +12,7 @@ namespace
 	struct ModelViewProjectionBuffer
 	{
 		DirectX::XMMATRIX modelViewProjection;
+		DirectX::XMINT4 textureBlendMode;
 	};
 }
 
@@ -42,6 +43,7 @@ void Shader::Use()
 	// Bind the world constant buffer to the vertex shader
 	const int constant_buffer_slot = 0;
 	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
 }
 
 void Shader::LoadVertexShader()
@@ -81,10 +83,11 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, int texture_blend_mode)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
+	buffer.textureBlendMode.x = texture_blend_mode;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);

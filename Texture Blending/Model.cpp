@@ -14,7 +14,6 @@ void Model::Create()
 {
 	CreateVertexBuffer();
 	CreateIndexBuffer();
-	LoadTexture();
 }
 
 void Model::CreateVertexBuffer()
@@ -106,24 +105,16 @@ void Model::CreateIndexBuffer()
 	DX::Check(device->CreateBuffer(&index_buffer_desc, &index_subdata, m_IndexBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Model::LoadTexture()
+void Model::LoadTextures(const std::wstring& path1, const std::wstring& path2, const std::wstring& path3)
 {
-	std::wstring path = L"Wood_Crate_001_basecolor.png";
-
-	// Check if file exists
-	if (!std::filesystem::exists(path))
-	{
-		std::wstring error = L"Could not load file: " + path;
-		MessageBox(NULL, error.c_str(), L"Error", MB_OK);
-		return;
-	}
-
 	// Load texture into a resource shader view
 	ID3D11Device* device = m_Renderer->GetDevice();
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
 	ComPtr<ID3D11Resource> resource = nullptr;
-	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path1.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture1.ReleaseAndGetAddressOf()));
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path2.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture2.ReleaseAndGetAddressOf()));
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path3.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture3.ReleaseAndGetAddressOf()));
 }
 
 void Model::Render()
@@ -144,7 +135,9 @@ void Model::Render()
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Bind texture to the pixel shader
-	context->PSSetShaderResources(0, 1, m_DiffuseTexture.GetAddressOf());
+	context->PSSetShaderResources(0, 1, m_DiffuseTexture1.GetAddressOf());
+	context->PSSetShaderResources(1, 1, m_DiffuseTexture2.GetAddressOf());
+	context->PSSetShaderResources(2, 1, m_DiffuseTexture3.GetAddressOf());
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);

@@ -3,6 +3,23 @@
 // Entry point for the vertex shader - will be executed for each pixel
 float4 main(PixelInput input) : SV_TARGET
 {
-    float4 diffuse_texture = gTextureDiffuse.Sample(gTextureSampler, input.tex);
-    return diffuse_texture;
+    // Sample textures
+    float4 texture1 = gTextureDiffuse1.Sample(gTextureSampler, input.tex);
+    float4 texture2 = gTextureDiffuse2.Sample(gTextureSampler, input.tex);
+    float4 texture3 = gTextureDiffuse3.Sample(gTextureSampler, input.tex);
+
+    if (padding.x == 1)
+    {
+        // Interpolate with mask
+        float4 final_colour = lerp(texture1, texture2, texture3);
+        return final_colour;
+    }
+    else if (padding.x == 2)
+    {
+        // Screen
+        float4 final_colour = 1.0 - (1.0 - texture1) * (1.0 - texture3);
+        return final_colour;
+    }
+    
+    return float4(1.0f, 0.0f, 0.0f, 1.0f);
 }
