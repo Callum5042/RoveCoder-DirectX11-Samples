@@ -43,7 +43,7 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sprite", "Sprite\Sprite.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sprite - Priority", "Sprite - Priority\Sprite - Priority.vcxproj", "{D2EA0B09-08A7-4328-9DA5-7BB81D1E527C}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Multi-Texturing", "Multi-Texturing\Multi-Texturing.vcxproj", "{26417F90-E656-4118-945A-C4DC390B8ADA}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Texture Blending", "Texture Blending\Texture Blending.vcxproj", "{26417F90-E656-4118-945A-C4DC390B8ADA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

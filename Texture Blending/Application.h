@@ -40,7 +40,7 @@ private:
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
-	std::string m_ApplicationTitle = "Multi-Texturing";
+	std::string m_ApplicationTitle = "Texture Blending";
 	 
 	// On resized event
 	void OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
