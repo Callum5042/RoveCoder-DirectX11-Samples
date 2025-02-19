@@ -49,6 +49,10 @@ public:
 	// Get render context
 	inline ID3D11DeviceContext* GetDeviceContext() const { return m_DeviceContext.Get(); }
 
+	// Blend state
+	void SetBlendState();
+	void ResetBlendState();
+
 private:
 	// Device and device context
 	ComPtr<ID3D11Device> m_Device = nullptr;
@@ -71,5 +75,4 @@ private:
 	// Blending
 	ComPtr<ID3D11BlendState> m_BlendState = nullptr;
 	void CreateTransparentBlendState();
-	void SetBlendState();
 };

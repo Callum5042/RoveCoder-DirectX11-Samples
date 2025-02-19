@@ -8,18 +8,21 @@ float4 main(PixelInput input) : SV_TARGET
     float4 texture2 = gTextureDiffuse2.Sample(gTextureSampler, input.tex);
     float4 texture3 = gTextureDiffuse3.Sample(gTextureSampler, input.tex);
 
-    if (padding.x == 1)
+    const int interpolate = 1;
+    const int screen = 2;
+    
+    if (padding.x == interpolate)
     {
         // Interpolate with mask
         float4 final_colour = lerp(texture1, texture2, texture3);
         return float4(final_colour.rgb, 1.0f);
     }
-    else if (padding.x == 2)
+    else if (padding.x == screen)
     {
         // Screen
         float4 final_colour = 1.0 - (1.0 - texture1) * (1.0 - texture3);
         return float4(final_colour.rgb, 0.6f);
     }
     
-    return float4(1.0f, 0.0f, 0.0f, 1.f);
+    return float4(1.0f, 0.0f, 0.0f, 1.0f);
 }

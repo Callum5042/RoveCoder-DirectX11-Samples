@@ -87,6 +87,8 @@ int Application::Execute()
 
 			// Render the floor
 			{
+				m_Renderer->ResetBlendState();
+
 				DirectX::XMMATRIX floor_world = DirectX::XMMatrixIdentity();
 				floor_world *= DirectX::XMMatrixScaling(5.0f, 0.01f, 5.0f);
 				floor_world *= DirectX::XMMatrixTranslation(0.0f, -2.0f, 0.0f);
@@ -94,8 +96,10 @@ int Application::Execute()
 				m_ModelFloor->Render();
 			}
 
-			// Render the model
+			// Render the water
 			{
+				m_Renderer->SetBlendState();
+
 				DirectX::XMMATRIX model_world = DirectX::XMMatrixIdentity();
 				model_world *= DirectX::XMMatrixScaling(2.0f, 2.0f, 2.0f);
 				model_world *= DirectX::XMMatrixTranslation(0.0f, 0.0f, 0.0f);

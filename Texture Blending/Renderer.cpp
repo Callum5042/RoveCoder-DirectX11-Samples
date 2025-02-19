@@ -168,9 +168,6 @@ void Renderer::Clear()
 
 	// Bind the render target view to the pipeline's output merger stage
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
-
-	// Set blend state
-	SetBlendState();
 }
 
 void Renderer::Present()
@@ -235,4 +232,11 @@ void Renderer::SetBlendState()
 	float blend_factor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	UINT sample_mask = 0xffffffff;
 	m_DeviceContext->OMSetBlendState(m_BlendState.Get(), blend_factor, sample_mask);
+}
+
+void Renderer::ResetBlendState()
+{
+	float blend_factor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	UINT sample_mask = 0xffffffff;
+	m_DeviceContext->OMSetBlendState(nullptr, blend_factor, sample_mask);
 }
