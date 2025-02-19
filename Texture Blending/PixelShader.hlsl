@@ -12,14 +12,14 @@ float4 main(PixelInput input) : SV_TARGET
     {
         // Interpolate with mask
         float4 final_colour = lerp(texture1, texture2, texture3);
-        return final_colour;
+        return float4(final_colour.rgb, 1.0f);
     }
     else if (padding.x == 2)
     {
         // Screen
         float4 final_colour = 1.0 - (1.0 - texture1) * (1.0 - texture3);
-        return final_colour;
+        return float4(final_colour.rgb, 0.6f);
     }
     
-    return float4(1.0f, 0.0f, 0.0f, 1.0f);
+    return float4(1.0f, 0.0f, 0.0f, 1.f);
 }

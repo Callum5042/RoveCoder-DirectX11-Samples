@@ -67,4 +67,9 @@ private:
 
 	// Viewport
 	void SetViewport(int width, int height);
+
+	// Blending
+	ComPtr<ID3D11BlendState> m_BlendState = nullptr;
+	void CreateTransparentBlendState();
+	void SetBlendState();
 };

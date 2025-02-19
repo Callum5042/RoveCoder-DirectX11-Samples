@@ -18,6 +18,8 @@ void Renderer::Create()
 	CreateSwapChain(window_width, window_height);
 	CreateRenderTargetAndDepthStencilView(window_width, window_height);
 	SetViewport(window_width, window_height);
+
+	CreateTransparentBlendState();
 }
 
 void Renderer::CreateDeviceAndContext()
@@ -166,6 +168,9 @@ void Renderer::Clear()
 
 	// Bind the render target view to the pipeline's output merger stage
 	m_DeviceContext->OMSetRenderTargets(1, m_RenderTargetView.GetAddressOf(), m_DepthStencilView.Get());
+
+	// Set blend state
+	SetBlendState();
 }
 
 void Renderer::Present()
@@ -205,4 +210,29 @@ void Renderer::Resize(int width, int height)
 
 	// Sets a new viewport with the new window size
 	SetViewport(width, height);
+}
+
+void Renderer::CreateTransparentBlendState()
+{
+	D3D11_BLEND_DESC desc = { 0 };
+	desc.AlphaToCoverageEnable = false;
+	desc.IndependentBlendEnable = false;
+
+	desc.RenderTarget[0].BlendEnable = true;
+	desc.RenderTarget[0].SrcBlend = D3D11_BLEND_SRC_ALPHA;
+	desc.RenderTarget[0].DestBlend = D3D11_BLEND_INV_SRC_ALPHA;
+	desc.RenderTarget[0].BlendOp = D3D11_BLEND_OP_ADD;
+	desc.RenderTarget[0].SrcBlendAlpha = D3D11_BLEND_ONE;
+	desc.RenderTarget[0].DestBlendAlpha = D3D11_BLEND_ZERO;
+	desc.RenderTarget[0].BlendOpAlpha = D3D11_BLEND_OP_ADD;
+	desc.RenderTarget[0].RenderTargetWriteMask = D3D11_COLOR_WRITE_ENABLE_ALL;
+
+	DX::Check(m_Device->CreateBlendState(&desc, &m_BlendState));
+}
+
+void Renderer::SetBlendState()
+{
+	float blend_factor[] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	UINT sample_mask = 0xffffffff;
+	m_DeviceContext->OMSetBlendState(m_BlendState.Get(), blend_factor, sample_mask);
 }
