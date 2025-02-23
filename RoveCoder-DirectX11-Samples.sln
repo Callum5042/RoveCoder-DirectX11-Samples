@@ -43,6 +43,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sprite", "Sprite\Sprite.vcx
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sprite - Priority", "Sprite - Priority\Sprite - Priority.vcxproj", "{D2EA0B09-08A7-4328-9DA5-7BB81D1E527C}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Texture Blending", "Texture Blending\Texture Blending.vcxproj", "{26417F90-E656-4118-945A-C4DC390B8ADA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -195,6 +197,14 @@ Global
 		{D2EA0B09-08A7-4328-9DA5-7BB81D1E527C}.Release|x64.Build.0 = Release|x64
 		{D2EA0B09-08A7-4328-9DA5-7BB81D1E527C}.Release|x86.ActiveCfg = Release|Win32
 		{D2EA0B09-08A7-4328-9DA5-7BB81D1E527C}.Release|x86.Build.0 = Release|Win32
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Debug|x64.ActiveCfg = Debug|x64
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Debug|x64.Build.0 = Debug|x64
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Debug|x86.ActiveCfg = Debug|Win32
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Debug|x86.Build.0 = Debug|Win32
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Release|x64.ActiveCfg = Release|x64
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Release|x64.Build.0 = Release|x64
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Release|x86.ActiveCfg = Release|Win32
+		{26417F90-E656-4118-945A-C4DC390B8ADA}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -218,6 +228,7 @@ Global
 		{697F7968-E5E0-431A-A6EE-79D102EE7FFB} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 		{2E86F0C6-C5C9-41A0-B4B5-803E26E16F6B} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 		{D2EA0B09-08A7-4328-9DA5-7BB81D1E527C} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
+		{26417F90-E656-4118-945A-C4DC390B8ADA} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46924DD2-99CC-4730-902A-FB2C4CFCBE33}
