@@ -12,12 +12,42 @@ Model::Model(Renderer* renderer) : m_Renderer(renderer)
 
 void Model::Create()
 {
-	CreateVertexBuffer();
+	CreateVertexPositionBuffer();
+	CreateVertexUVBuffer();
 	CreateIndexBuffer();
 	LoadTexture();
 }
 
-void Model::CreateVertexBuffer()
+void Model::CreateVertexPositionBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	const float width = 5.0f;
+	const float height = -1.0f;
+	const float depth = 5.0f;
+
+	// Vertex data
+	std::vector<VertexPosition> vertices =
+	{
+		{ VertexPosition(-width, +height, -depth) },
+		{ VertexPosition(-width, +height, +depth) },
+		{ VertexPosition(+width, +height, +depth) },
+		{ VertexPosition(+width, +height, -depth) },
+	};
+
+	// Create vertex buffer
+	D3D11_BUFFER_DESC vertexbuffer_desc = {};
+	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexPosition) * vertices.size());
+	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA vertex_subdata = {};
+	vertex_subdata.pSysMem = vertices.data();
+
+	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexPositionBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Model::CreateVertexUVBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -26,49 +56,24 @@ void Model::CreateVertexBuffer()
 	const float depth = 1.0f;
 
 	// Vertex data
-	std::vector<Vertex> vertices =
+	std::vector<VertexTextureUV> vertices =
 	{
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
-
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(1.0f, 1.0f) },
-
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(1.0f, 0.0f) },
-
-		{ VertexPosition(-width, -height, +depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(-width, -height, -depth), VertexTextureUV(1.0f, 1.0f) },
-
-		{ VertexPosition(+width, -height, -depth), VertexTextureUV(0.0f, 1.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexTextureUV(0.0f, 0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexTextureUV(1.0f, 0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexTextureUV(1.0f, 1.0f) }
+		{ VertexTextureUV(0.0f, 1.0f) },
+		{ VertexTextureUV(0.0f, 0.0f) },
+		{ VertexTextureUV(1.0f, 0.0f) },
+		{ VertexTextureUV(1.0f, 1.0f) },
 	};
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC vertexbuffer_desc = {};
 	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(Vertex) * vertices.size());
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexTextureUV) * vertices.size());
 	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA vertex_subdata = {};
 	vertex_subdata.pSysMem = vertices.data();
 
-	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexBuffer.ReleaseAndGetAddressOf()));
+	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexUVBuffer.ReleaseAndGetAddressOf()));
 }
 
 void Model::CreateIndexBuffer()
@@ -108,7 +113,7 @@ void Model::CreateIndexBuffer()
 
 void Model::LoadTexture()
 {
-	std::wstring path = L"Wood_Crate_001_basecolor.png";
+	std::wstring path = L"D:/3D models/Textures/water_base.png";
 
 	// Check if file exists
 	if (!std::filesystem::exists(path))
@@ -130,12 +135,12 @@ void Model::Render()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
-	// We need to define the stride and offset
-	UINT stride = sizeof(Vertex);
-	UINT offset = 0;
-
 	// Bind the vertex buffer to the pipeline's Input Assembler stage
-	context->IASetVertexBuffers(0, 1, m_VertexBuffer.GetAddressOf(), &stride, &offset);
+	ID3D11Buffer* buffers[] = { m_VertexPositionBuffer.Get(), m_VertexUVBuffer.Get() };
+	UINT strides[] = { sizeof(VertexPosition), sizeof(VertexTextureUV) };
+	UINT offsets[] = { 0, 0 };
+
+	context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
 
 	// Bind the index buffer to the pipeline's Input Assembler stage
 	context->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
