@@ -1,13 +1,22 @@
 #pragma once
 
 #include <d3d11.h>
+#include <d3dcompiler.h>
 #include <DirectXMath.h>
 
 // This include is requires for using DirectX smart pointers (ComPtr)
 #include <wrl\client.h>
 using Microsoft::WRL::ComPtr;
 
+#include <string>
+
 class Renderer;
+
+enum class ShaderType
+{
+	Vertex,
+	Pixel,
+};
 
 class Shader
 {
@@ -39,4 +48,7 @@ private:
 	// ModelViewProjection constant buffer
 	ComPtr<ID3D11Buffer> m_ModelViewProjectionConstantBuffer = nullptr;
 	void CreateWorldViewProjectionConstantBuffer();
+
+	// Compile shader from source file
+	ComPtr<ID3DBlob> CompileShader(const std::wstring& path, ShaderType shader_type);
 };

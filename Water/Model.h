@@ -27,8 +27,10 @@ private:
 	UINT m_IndexCount = 0;
 
 	// Vertex buffer
-	void CreateVertexBuffer();
-	ComPtr<ID3D11Buffer> m_VertexBuffer = nullptr;
+	void CreateVertexPositionBuffer();
+	void CreateVertexUVBuffer();
+	ComPtr<ID3D11Buffer> m_VertexPositionBuffer = nullptr;
+	ComPtr<ID3D11Buffer> m_VertexUVBuffer = nullptr;
 
 	// Index buffer
 	void CreateIndexBuffer();
