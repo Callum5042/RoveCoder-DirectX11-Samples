@@ -49,6 +49,10 @@ int Application::Execute()
 	// Texture sampler
 	m_TextureSampler = std::make_unique<TextureSampler>(m_Renderer.get());
 
+	// Water texture
+	DirectX::XMMATRIX water1 = DirectX::XMMatrixIdentity();
+	DirectX::XMMATRIX water2 = DirectX::XMMatrixIdentity();
+
 	// Main application loop
 	while (m_Running)
 	{
@@ -76,6 +80,23 @@ int Application::Execute()
 
 			// Update the model view projection constant buffer
 			this->ComputeModelViewProjectionMatrix();
+
+			// Update water texture
+			{
+				XMMATRIX toCenter = DirectX::XMMatrixTranslation(-0.5f, -0.5f, 0.0f);
+				XMMATRIX fromCenter = DirectX::XMMatrixTranslation(0.5f, 0.5f, 0.0f);
+
+				water1 *= toCenter;
+				water2 *= toCenter;
+
+				water1 *= DirectX::XMMatrixRotationZ(0.1f * timer.DeltaTime());
+				water2 *= DirectX::XMMatrixRotationZ(0.2f * timer.DeltaTime());
+
+				water1 *= fromCenter;
+				water2 *= fromCenter;
+
+				m_Shader->UpdateTextureBuffer(water1, water2);
+			}
 
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();

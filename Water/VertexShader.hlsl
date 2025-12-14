@@ -9,7 +9,8 @@ PixelInput main(VertexInput input)
     pixel_input.position = mul(float4(input.position, 1.0f), cModelViewProjection);
 
 	// Set the vertex colour
-    pixel_input.tex = input.tex;
+    pixel_input.tex1 = mul(float4(input.tex, 0.0f, 1.0f), cTextureMatrix1).xy;
+    pixel_input.tex2 = mul(float4(input.tex, 0.0f, 1.0f), cTextureMatrix2).xy;
 
     return pixel_input;
 }

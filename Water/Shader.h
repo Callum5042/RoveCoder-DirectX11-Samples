@@ -18,6 +18,12 @@ enum class ShaderType
 	Pixel,
 };
 
+struct TextureBuffer
+{
+	DirectX::XMMATRIX matrix1;
+	DirectX::XMMATRIX matrix2;
+};
+
 class Shader
 {
 	Renderer* m_Renderer = nullptr;
@@ -35,6 +41,8 @@ public:
 	// Update the model view projection constant buffer
 	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix);
 
+	void UpdateTextureBuffer(const DirectX::XMMATRIX& matrix1, const DirectX::XMMATRIX& matrix2);
+
 private:
 	// Create vertex shader
 	void LoadVertexShader();
@@ -48,6 +56,10 @@ private:
 	// ModelViewProjection constant buffer
 	ComPtr<ID3D11Buffer> m_ModelViewProjectionConstantBuffer = nullptr;
 	void CreateWorldViewProjectionConstantBuffer();
+
+	// Texture buffer
+	ComPtr<ID3D11Buffer> m_TextureConstantBuffer = nullptr;
+	void CreateTextureConstantBuffer();
 
 	// Compile shader from source file
 	ComPtr<ID3DBlob> CompileShader(const std::wstring& path, ShaderType shader_type);
