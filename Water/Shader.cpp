@@ -24,6 +24,7 @@ void Shader::Load()
 	this->LoadVertexShader();
 	this->LoadPixelShader();
 	this->CreateWorldViewProjectionConstantBuffer();
+	this->CreateTextureConstantBuffer();
 }
 
 void Shader::Use()
@@ -42,6 +43,9 @@ void Shader::Use()
 	// Bind the world constant buffer to the vertex shader
 	const int constant_buffer_slot = 0;
 	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+
+	const int constant_buffer_slot1 = 1;
+	context->VSSetConstantBuffers(constant_buffer_slot1, 1, m_TextureConstantBuffer.GetAddressOf());
 }
 
 void Shader::LoadVertexShader()
@@ -90,6 +94,19 @@ void Shader::CreateWorldViewProjectionConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
+void Shader::CreateTextureConstantBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create world constant buffer
+	D3D11_BUFFER_DESC bd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(TextureBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_TextureConstantBuffer.ReleaseAndGetAddressOf()));
+}
+
 ComPtr<ID3DBlob> Shader::CompileShader(const std::wstring& path, ShaderType shader_type)
 {
 	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -129,4 +146,14 @@ void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix)
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+}
+
+void Shader::UpdateTextureBuffer(const DirectX::XMMATRIX& matrix1, const DirectX::XMMATRIX& matrix2)
+{
+	TextureBuffer buffer = {};
+	buffer.matrix1 = DirectX::XMMatrixTranspose(matrix1);
+	buffer.matrix2 = DirectX::XMMatrixTranspose(matrix2);
+
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+	context->UpdateSubresource(m_TextureConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }

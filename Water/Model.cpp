@@ -128,7 +128,10 @@ void Model::LoadTexture()
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
 	ComPtr<ID3D11Resource> resource = nullptr;
-	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture.ReleaseAndGetAddressOf()));
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture1.ReleaseAndGetAddressOf()));
+
+	path = L"D:/3D models/Textures/water_sheen.png";
+	DX::Check(DirectX::CreateWICTextureFromFile(device, context, path.c_str(), resource.ReleaseAndGetAddressOf(), m_DiffuseTexture2.ReleaseAndGetAddressOf()));
 }
 
 void Model::Render()
@@ -149,7 +152,8 @@ void Model::Render()
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Bind texture to the pixel shader
-	context->PSSetShaderResources(0, 1, m_DiffuseTexture.GetAddressOf());
+	context->PSSetShaderResources(0, 1, m_DiffuseTexture1.GetAddressOf());
+	context->PSSetShaderResources(1, 1, m_DiffuseTexture2.GetAddressOf());
 
 	// Render geometry
 	context->DrawIndexed(m_IndexCount, 0, 0);
