@@ -13,12 +13,12 @@ Model::Model(Renderer* renderer) : m_Renderer(renderer)
 void Model::Create()
 {
 	// Generate the geometry
-	const float width = 5.0f;  // Grid width
+	const float width = 50.0f;  // Grid width
 	const float height = -1.0f;  // Grid height (fixed value for a flat plane)
-	const float depth = 5.0f;  // Grid depth
+	const float depth = 50.0f;  // Grid depth
 
-	const int m = 50;  // Number of rows in the grid
-	const int n = 50;  // Number of columns in the grid
+	const int m = 500;  // Number of rows in the grid
+	const int n = 500;  // Number of columns in the grid
 
 	UINT vertexCount = m * n;
 	UINT faceCount = (m - 1) * (n - 1) * 2;

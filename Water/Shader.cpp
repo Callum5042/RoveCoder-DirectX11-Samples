@@ -12,6 +12,7 @@ namespace
 	struct ModelViewProjectionBuffer
 	{
 		DirectX::XMMATRIX modelViewProjection;
+		float time;
 	};
 }
 
@@ -141,10 +142,11 @@ ComPtr<ID3DBlob> Shader::CompileShader(const std::wstring& path, ShaderType shad
 	return shader_blob;
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, float delta_time)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
+	buffer.time = delta_time;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);

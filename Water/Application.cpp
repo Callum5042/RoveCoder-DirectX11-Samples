@@ -52,6 +52,12 @@ int Application::Execute()
 	// Water texture
 	DirectX::XMMATRIX water1 = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX water2 = DirectX::XMMatrixIdentity();
+
+
+
+	water1 *= XMMatrixScaling(50.0f, 50.0f, 50.0f);
+	water2 *= XMMatrixScaling(50.0f, 50.0f, 50.0f);
+
 	m_Shader->UpdateTextureBuffer(water1, water2);
 
 	// Main application loop
@@ -80,23 +86,26 @@ int Application::Execute()
 			m_Shader->Use();
 
 			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
+			this->ComputeModelViewProjectionMatrix(timer.TotalTime());
 
 			// Update water texture
 			{
 				XMMATRIX toCenter = DirectX::XMMatrixTranslation(-0.5f, -0.5f, 0.0f);
 				XMMATRIX fromCenter = DirectX::XMMatrixTranslation(0.5f, 0.5f, 0.0f);
 
-				water1 *= toCenter;
-				water2 *= toCenter;
+				//water1 *= toCenter;
+				//water2 *= toCenter;
 
-				water1 *= DirectX::XMMatrixRotationZ(0.1f * timer.DeltaTime());
-				water2 *= DirectX::XMMatrixRotationZ(0.2f * timer.DeltaTime());
+				//water1 *= DirectX::XMMatrixRotationZ(0.1f * timer.DeltaTime());
+				//water2 *= DirectX::XMMatrixRotationZ(0.2f * timer.DeltaTime());
 
-				water1 *= fromCenter;
-				water2 *= fromCenter;
+				//water1 *= fromCenter;
+				//water2 *= fromCenter;
 
-				m_Shader->UpdateTextureBuffer(water1, water2);
+				//water1 *= DirectX::XMMatrixTranslation(0.11f * timer.DeltaTime(), 0.0f, 0.0f);
+				//water2 *= DirectX::XMMatrixTranslation(0.2f * timer.DeltaTime(), 0.0f, 0.0f);
+
+				//m_Shader->UpdateTextureBuffer(water1, water2);
 			}
 
 			// Bind the raster state (solid/wireframe) to the pipeline
@@ -210,11 +219,11 @@ void Application::CalculateFrameStats(float delta_time)
 	}
 }
 
-void Application::ComputeModelViewProjectionMatrix()
+void Application::ComputeModelViewProjectionMatrix(float delta_time)
 {
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	m_Shader->UpdateModelViewProjectionBuffer(matrix);
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, delta_time);
 }

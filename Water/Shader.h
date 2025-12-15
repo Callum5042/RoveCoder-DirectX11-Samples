@@ -39,7 +39,7 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix);
+	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, float delta_time);
 
 	void UpdateTextureBuffer(const DirectX::XMMATRIX& matrix1, const DirectX::XMMATRIX& matrix2);
 

@@ -22,6 +22,7 @@ struct PixelInput
 cbuffer WorldBuffer : register(b0)
 {
     matrix cModelViewProjection;
+    float time; // Time value to animate the waves
 }
 
 // Texture
