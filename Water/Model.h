@@ -1,10 +1,17 @@
 #pragma once
 
+#include "Vertex.h"
+
 #include <d3d11.h>
+
+#include <DirectXMath.h>
+using namespace DirectX;
 
 // This include is requires for using DirectX smart pointers (ComPtr)
 #include <wrl\client.h>
 using Microsoft::WRL::ComPtr;
+
+#include <vector>
 
 class Renderer;
 
@@ -23,8 +30,13 @@ public:
 	void Render();
 
 private:
-	// Number of indices to draw
-	UINT m_IndexCount = 0;
+
+	// Geometry
+	std::vector<VertexPosition> m_VertexPosition;
+	std::vector<XMFLOAT3> m_VertexNormal;
+	std::vector<VertexTextureUV> m_VertexUV;
+
+	std::vector<UINT> m_Indices;
 
 	// Vertex buffer
 	void CreateVertexPositionBuffer();

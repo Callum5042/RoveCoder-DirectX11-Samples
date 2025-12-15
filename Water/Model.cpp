@@ -12,6 +12,78 @@ Model::Model(Renderer* renderer) : m_Renderer(renderer)
 
 void Model::Create()
 {
+	// Generate the geometry
+	const float width = 5.0f;  // Grid width
+	const float height = -1.0f;  // Grid height (fixed value for a flat plane)
+	const float depth = 5.0f;  // Grid depth
+
+	const int m = 50;  // Number of rows in the grid
+	const int n = 50;  // Number of columns in the grid
+
+	UINT vertexCount = m * n;
+	UINT faceCount = (m - 1) * (n - 1) * 2;
+
+	//
+	// Create the vertices.
+	//
+
+	float halfWidth = 0.5f * width;
+	float halfDepth = 0.5f * depth;
+
+	float dx = width / (n - 1);
+	float dz = depth / (m - 1);
+
+	float du = 1.0f / (n - 1);
+	float dv = 1.0f / (m - 1);
+
+	// meshData.Vertices.resize(vertexCount);
+	m_VertexPosition.resize(vertexCount);
+	m_VertexUV.resize(vertexCount);
+
+	for (UINT i = 0; i < m; ++i)
+	{
+		float z = halfDepth - i * dz;
+		for (UINT j = 0; j < n; ++j)
+		{
+			float x = -halfWidth + j * dx;
+
+			m_VertexPosition[i * n + j] = VertexPosition(x, 0.0f, z);
+			//meshData.Vertices[i * n + j].Normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
+			//meshData.Vertices[i * n + j].TangentU = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+
+			//// Stretch texture over grid.
+			m_VertexUV[i * n + j].u = j * du;
+			m_VertexUV[i * n + j].v = i * dv;
+		}
+	}
+
+	//
+	// Create the indices.
+	//
+
+	m_Indices.resize(faceCount * 3); // 3 indices per face
+
+	// Iterate over each quad and compute indices.
+	UINT k = 0;
+	for (UINT i = 0; i < m - 1; ++i)
+	{
+		for (UINT j = 0; j < n - 1; ++j)
+		{
+			m_Indices[k] = i * n + j;
+			m_Indices[k + 1] = i * n + j + 1;
+			m_Indices[k + 2] = (i + 1) * n + j;
+
+			m_Indices[k + 3] = (i + 1) * n + j;
+			m_Indices[k + 4] = i * n + j + 1;
+			m_Indices[k + 5] = (i + 1) * n + j + 1;
+
+			k += 6; // next quad
+		}
+	}
+
+
+
+	// Build D3D buffers
 	CreateVertexPositionBuffer();
 	CreateVertexUVBuffer();
 	CreateIndexBuffer();
@@ -27,22 +99,22 @@ void Model::CreateVertexPositionBuffer()
 	const float depth = 5.0f;
 
 	// Vertex data
-	std::vector<VertexPosition> vertices =
-	{
-		{ VertexPosition(-width, +height, -depth) },
-		{ VertexPosition(-width, +height, +depth) },
-		{ VertexPosition(+width, +height, +depth) },
-		{ VertexPosition(+width, +height, -depth) },
-	};
+	//std::vector<VertexPosition> vertices =
+	//{
+	//	{ VertexPosition(-width, +height, -depth) },
+	//	{ VertexPosition(-width, +height, +depth) },
+	//	{ VertexPosition(+width, +height, +depth) },
+	//	{ VertexPosition(+width, +height, -depth) },
+	//};
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC vertexbuffer_desc = {};
 	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexPosition) * vertices.size());
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexPosition) * m_VertexPosition.size());
 	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA vertex_subdata = {};
-	vertex_subdata.pSysMem = vertices.data();
+	vertex_subdata.pSysMem = m_VertexPosition.data();
 
 	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexPositionBuffer.ReleaseAndGetAddressOf()));
 }
@@ -56,22 +128,22 @@ void Model::CreateVertexUVBuffer()
 	const float depth = 1.0f;
 
 	// Vertex data
-	std::vector<VertexTextureUV> vertices =
-	{
-		{ VertexTextureUV(0.0f, 1.0f) },
-		{ VertexTextureUV(0.0f, 0.0f) },
-		{ VertexTextureUV(1.0f, 0.0f) },
-		{ VertexTextureUV(1.0f, 1.0f) },
-	};
+	//std::vector<VertexTextureUV> vertices =
+	//{
+	//	{ VertexTextureUV(0.0f, 1.0f) },
+	//	{ VertexTextureUV(0.0f, 0.0f) },
+	//	{ VertexTextureUV(1.0f, 0.0f) },
+	//	{ VertexTextureUV(1.0f, 1.0f) },
+	//};
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC vertexbuffer_desc = {};
 	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexTextureUV) * vertices.size());
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexTextureUV) * m_VertexUV.size());
 	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA vertex_subdata = {};
-	vertex_subdata.pSysMem = vertices.data();
+	vertex_subdata.pSysMem = m_VertexUV.data();
 
 	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexUVBuffer.ReleaseAndGetAddressOf()));
 }
@@ -81,32 +153,30 @@ void Model::CreateIndexBuffer()
 	ID3D11Device* device = m_Renderer->GetDevice();
 
 	// Set Indices
-	std::vector<UINT> indices =
-	{
-		0, 1, 2,
-		0, 2, 3,
-		4, 5, 6,
-		4, 6, 7,
-		8, 9, 10,
-		8, 10, 11,
-		12, 13, 14,
-		12, 14, 15,
-		16, 17, 18,
-		16, 18, 19,
-		20, 21, 22,
-		20, 22, 23,
-	};
-
-	m_IndexCount = static_cast<UINT>(indices.size());
+	//std::vector<UINT> indices =
+	//{
+	//	0, 1, 2,
+	//	0, 2, 3,
+	//	4, 5, 6,
+	//	4, 6, 7,
+	//	8, 9, 10,
+	//	8, 10, 11,
+	//	12, 13, 14,
+	//	12, 14, 15,
+	//	16, 17, 18,
+	//	16, 18, 19,
+	//	20, 21, 22,
+	//	20, 22, 23,
+	//};
 
 	// Create index buffer
 	D3D11_BUFFER_DESC index_buffer_desc = {};
 	index_buffer_desc.Usage = D3D11_USAGE_DEFAULT;
-	index_buffer_desc.ByteWidth = static_cast<UINT>(sizeof(UINT) * indices.size());
+	index_buffer_desc.ByteWidth = static_cast<UINT>(sizeof(UINT) * m_Indices.size());
 	index_buffer_desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
 
 	D3D11_SUBRESOURCE_DATA index_subdata = {};
-	index_subdata.pSysMem = indices.data();
+	index_subdata.pSysMem = m_Indices.data();
 
 	DX::Check(device->CreateBuffer(&index_buffer_desc, &index_subdata, m_IndexBuffer.ReleaseAndGetAddressOf()));
 }
@@ -156,5 +226,5 @@ void Model::Render()
 	context->PSSetShaderResources(1, 1, m_DiffuseTexture2.GetAddressOf());
 
 	// Render geometry
-	context->DrawIndexed(m_IndexCount, 0, 0);
+	context->DrawIndexed(m_Indices.size(), 0, 0);
 }
