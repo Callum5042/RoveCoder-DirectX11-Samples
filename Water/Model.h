@@ -33,16 +33,21 @@ private:
 
 	// Geometry
 	std::vector<VertexPosition> m_VertexPosition;
-	std::vector<XMFLOAT3> m_VertexNormal;
 	std::vector<VertexTextureUV> m_VertexUV;
+	std::vector<VertexNormal> m_VertexNormal;
+	std::vector<VertexTangent> m_VertexTangent;
 
 	std::vector<UINT> m_Indices;
 
 	// Vertex buffer
 	void CreateVertexPositionBuffer();
 	void CreateVertexUVBuffer();
+	void CreateVertexNormalBuffer();
+	void CreateVertexTangentBuffer();
 	ComPtr<ID3D11Buffer> m_VertexPositionBuffer = nullptr;
 	ComPtr<ID3D11Buffer> m_VertexUVBuffer = nullptr;
+	ComPtr<ID3D11Buffer> m_VertexNormalBuffer = nullptr;
+	ComPtr<ID3D11Buffer> m_VertexTangentBuffer = nullptr;
 
 	// Index buffer
 	void CreateIndexBuffer();

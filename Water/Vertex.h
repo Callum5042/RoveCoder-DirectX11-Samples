@@ -19,6 +19,26 @@ struct VertexTextureUV
 	float v = 0;
 };
 
+struct VertexNormal
+{
+	VertexNormal() {}
+	VertexNormal(float x, float y, float z) : x(x), y(y), z(z) {}
+
+	float x = 0;
+	float y = 0;
+	float z = 0;
+};
+
+struct VertexTangent
+{
+	VertexTangent() {}
+	VertexTangent(float x, float y, float z) : x(x), y(y), z(z) {}
+
+	float x = 0;
+	float y = 0;
+	float z = 0;
+};
+
 struct Vertex
 {
 	VertexPosition position;
