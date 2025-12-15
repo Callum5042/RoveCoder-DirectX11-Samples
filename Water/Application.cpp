@@ -52,6 +52,7 @@ int Application::Execute()
 	// Water texture
 	DirectX::XMMATRIX water1 = DirectX::XMMatrixIdentity();
 	DirectX::XMMATRIX water2 = DirectX::XMMatrixIdentity();
+	m_Shader->UpdateTextureBuffer(water1, water2);
 
 	// Main application loop
 	while (m_Running)

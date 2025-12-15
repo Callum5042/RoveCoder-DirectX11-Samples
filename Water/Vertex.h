@@ -2,6 +2,7 @@
 
 struct VertexPosition
 {
+	VertexPosition() {}
 	VertexPosition(float x, float y, float z) : x(x), y(y), z(z) {}
 
 	float x = 0;
@@ -11,6 +12,7 @@ struct VertexPosition
 
 struct VertexTextureUV
 {
+	VertexTextureUV() {}
 	VertexTextureUV(float u, float v) : u(u), v(v) {}
 
 	float u = 0;
