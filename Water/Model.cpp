@@ -36,9 +36,10 @@ void Model::Create()
 	float du = 1.0f / (n - 1);
 	float dv = 1.0f / (m - 1);
 
-	// meshData.Vertices.resize(vertexCount);
 	m_VertexPosition.resize(vertexCount);
 	m_VertexUV.resize(vertexCount);
+	m_VertexNormal.resize(vertexCount);
+	m_VertexTangent.resize(vertexCount);
 
 	for (UINT i = 0; i < m; ++i)
 	{
@@ -48,8 +49,8 @@ void Model::Create()
 			float x = -halfWidth + j * dx;
 
 			m_VertexPosition[i * n + j] = VertexPosition(x, 0.0f, z);
-			//meshData.Vertices[i * n + j].Normal = DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f);
-			//meshData.Vertices[i * n + j].TangentU = DirectX::XMFLOAT3(1.0f, 0.0f, 0.0f);
+			m_VertexNormal[i * n + j] = VertexNormal(0.0f, 1.0f, 0.0f);
+			m_VertexTangent[i * n + j] = VertexTangent(1.0f, 0.0f, 0.0f);
 
 			//// Stretch texture over grid.
 			m_VertexUV[i * n + j].u = j * du;
@@ -81,11 +82,12 @@ void Model::Create()
 		}
 	}
 
-
-
 	// Build D3D buffers
 	CreateVertexPositionBuffer();
 	CreateVertexUVBuffer();
+	CreateVertexNormalBuffer();
+	CreateVertexTangentBuffer();
+
 	CreateIndexBuffer();
 	LoadTexture();
 }
@@ -93,19 +95,6 @@ void Model::Create()
 void Model::CreateVertexPositionBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
-
-	const float width = 5.0f;
-	const float height = -1.0f;
-	const float depth = 5.0f;
-
-	// Vertex data
-	//std::vector<VertexPosition> vertices =
-	//{
-	//	{ VertexPosition(-width, +height, -depth) },
-	//	{ VertexPosition(-width, +height, +depth) },
-	//	{ VertexPosition(+width, +height, +depth) },
-	//	{ VertexPosition(+width, +height, -depth) },
-	//};
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC vertexbuffer_desc = {};
@@ -123,19 +112,6 @@ void Model::CreateVertexUVBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
-	const float width = 1.0f;
-	const float height = 1.0f;
-	const float depth = 1.0f;
-
-	// Vertex data
-	//std::vector<VertexTextureUV> vertices =
-	//{
-	//	{ VertexTextureUV(0.0f, 1.0f) },
-	//	{ VertexTextureUV(0.0f, 0.0f) },
-	//	{ VertexTextureUV(1.0f, 0.0f) },
-	//	{ VertexTextureUV(1.0f, 1.0f) },
-	//};
-
 	// Create vertex buffer
 	D3D11_BUFFER_DESC vertexbuffer_desc = {};
 	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
@@ -148,26 +124,41 @@ void Model::CreateVertexUVBuffer()
 	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexUVBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Model::CreateIndexBuffer()
+void Model::CreateVertexNormalBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
-	// Set Indices
-	//std::vector<UINT> indices =
-	//{
-	//	0, 1, 2,
-	//	0, 2, 3,
-	//	4, 5, 6,
-	//	4, 6, 7,
-	//	8, 9, 10,
-	//	8, 10, 11,
-	//	12, 13, 14,
-	//	12, 14, 15,
-	//	16, 17, 18,
-	//	16, 18, 19,
-	//	20, 21, 22,
-	//	20, 22, 23,
-	//};
+	// Create vertex buffer
+	D3D11_BUFFER_DESC vertexbuffer_desc = {};
+	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexNormal) * m_VertexNormal.size());
+	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA vertex_subdata = {};
+	vertex_subdata.pSysMem = m_VertexNormal.data();
+
+	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexNormalBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Model::CreateVertexTangentBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create vertex buffer
+	D3D11_BUFFER_DESC vertexbuffer_desc = {};
+	vertexbuffer_desc.Usage = D3D11_USAGE_DEFAULT;
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(VertexTangent) * m_VertexTangent.size());
+	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+
+	D3D11_SUBRESOURCE_DATA vertex_subdata = {};
+	vertex_subdata.pSysMem = m_VertexTangent.data();
+
+	DX::Check(device->CreateBuffer(&vertexbuffer_desc, &vertex_subdata, m_VertexTangentBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Model::CreateIndexBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
 
 	// Create index buffer
 	D3D11_BUFFER_DESC index_buffer_desc = {};
@@ -209,11 +200,11 @@ void Model::Render()
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
 	// Bind the vertex buffer to the pipeline's Input Assembler stage
-	ID3D11Buffer* buffers[] = { m_VertexPositionBuffer.Get(), m_VertexUVBuffer.Get() };
-	UINT strides[] = { sizeof(VertexPosition), sizeof(VertexTextureUV) };
-	UINT offsets[] = { 0, 0 };
+	ID3D11Buffer* buffers[] = { m_VertexPositionBuffer.Get(), m_VertexUVBuffer.Get(), m_VertexNormalBuffer.Get(), m_VertexTangentBuffer.Get() };
+	UINT strides[] = { sizeof(VertexPosition), sizeof(VertexTextureUV), sizeof(VertexNormal), sizeof(VertexTangent) };
+	UINT offsets[] = { 0, 0, 0, 0 };
 
-	context->IASetVertexBuffers(0, 2, buffers, strides, offsets);
+	context->IASetVertexBuffers(0, 4, buffers, strides, offsets);
 
 	// Bind the index buffer to the pipeline's Input Assembler stage
 	context->IASetIndexBuffer(m_IndexBuffer.Get(), DXGI_FORMAT_R32_UINT, 0);
@@ -222,8 +213,8 @@ void Model::Render()
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Bind texture to the pixel shader
-	context->PSSetShaderResources(0, 1, m_DiffuseTexture1.GetAddressOf());
-	context->PSSetShaderResources(1, 1, m_DiffuseTexture2.GetAddressOf());
+	ID3D11ShaderResourceView* srvs[] = { m_DiffuseTexture1.Get(), m_DiffuseTexture2.Get() };
+	context->PSSetShaderResources(0, 2, srvs);
 
 	// Render geometry
 	context->DrawIndexed(m_Indices.size(), 0, 0);
