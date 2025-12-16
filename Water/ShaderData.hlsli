@@ -35,7 +35,9 @@ struct GerstnerWave
 cbuffer WorldBuffer : register(b0)
 {
     matrix cModelViewProjection;
-    float time5; // Time value to animate the waves
+    matrix cModelInverse;
+    float4 cCameraPosition;
+    float4 cLightDirection;
 }
 
 // Texture
