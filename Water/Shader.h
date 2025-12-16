@@ -24,6 +24,28 @@ struct TextureBuffer
 	DirectX::XMMATRIX matrix2;
 };
 
+__declspec(align(16))
+struct GerstnerWave
+{
+	float Amplitude; // A (Height of the wave)
+	float Wavelength; // Lambda (Used to calculate k)
+	float Speed; // S (Used to calculate omega)
+	float unused1;
+
+	DirectX::XMFLOAT2 Direction; // D (Normalized 2D vector [Dx, Dz])
+	float Steepness; // Q (Controls the sharpness of the crests)
+	float unused2;
+};
+
+__declspec(align(16))
+struct GerstnerWaveBuffer
+{
+	GerstnerWave waves[4];
+	float time;
+
+	float padding[3];
+};
+
 class Shader
 {
 	Renderer* m_Renderer = nullptr;
@@ -43,6 +65,8 @@ public:
 
 	void UpdateTextureBuffer(const DirectX::XMMATRIX& matrix1, const DirectX::XMMATRIX& matrix2);
 
+	void UpdateWaveBuffer(GerstnerWaveBuffer buffer);
+
 private:
 	// Create vertex shader
 	void LoadVertexShader();
@@ -60,6 +84,10 @@ private:
 	// Texture buffer
 	ComPtr<ID3D11Buffer> m_TextureConstantBuffer = nullptr;
 	void CreateTextureConstantBuffer();
+
+	// Wave buffer
+	ComPtr<ID3D11Buffer> m_WaveConstantBuffer = nullptr;
+	void CreateWaveConstantBuffer();
 
 	// Compile shader from source file
 	ComPtr<ID3DBlob> CompileShader(const std::wstring& path, ShaderType shader_type);
