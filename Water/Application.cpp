@@ -108,6 +108,74 @@ int Application::Execute()
 				//m_Shader->UpdateTextureBuffer(water1, water2);
 			}
 
+			// Update Mr Wave
+			{
+				GerstnerWaveBuffer buffer = {};
+				buffer.time = timer.TotalTime();
+
+				// Helper function to normalize the direction vector (Crucial!)
+				auto NormalizeDirection = [](float x, float z) -> DirectX::XMFLOAT2
+				{
+					DirectX::XMFLOAT2 dir = { x, z };
+					float length = sqrtf(x * x + z * z);
+					if (length > 0.0f)
+						return { x / length, z / length };
+					return { 1.0f, 0.0f }; // Default if length is zero
+				};
+
+				// --- Wave 0: Primary Swell ---
+				buffer.waves[0].Wavelength = 10.0f;
+				buffer.waves[0].Speed = 0.8f;
+				buffer.waves[0].Steepness = 0.5f;
+				buffer.waves[0].Direction = NormalizeDirection(1.0f, 0.2f);
+
+				// --- Wave 1: Secondary Swell ---
+				buffer.waves[1].Wavelength = 10.0f;
+				buffer.waves[1].Speed = 1.2f;
+				buffer.waves[1].Steepness = 0.4f;
+				buffer.waves[1].Direction = NormalizeDirection(-0.4f, 0.8f);
+
+				// --- Wave 2: Medium Chop ---
+				buffer.waves[2].Wavelength = 5.0f;
+				buffer.waves[2].Speed = 1.8f;
+				buffer.waves[2].Steepness = 0.3f;
+				buffer.waves[2].Direction = NormalizeDirection(0.9f, -0.6f);
+
+				// --- Wave 3: Small Ripples ---
+				buffer.waves[3].Wavelength = 1.5f;
+				buffer.waves[3].Speed = 1.0f;
+				buffer.waves[3].Steepness = 0.2f;
+				buffer.waves[3].Direction = NormalizeDirection(0.2f, 1.0f);
+
+				{
+					// --- Wave 0: Primary Slow Swell ---
+					//buffer.waves[0].Wavelength = 25.0f; // Longer Wavelength
+					//buffer.waves[0].Speed = 0.4f;  // SLOWER
+					//buffer.waves[0].Steepness = 0.25f; // VERY LOW STEEPNESS
+					//buffer.waves[0].Direction = NormalizeDirection(1.0f, 0.2f); // Direction retained
+
+					//// --- Wave 1: Secondary Slow Swell ---
+					//buffer.waves[1].Wavelength = 15.0f;
+					//buffer.waves[1].Speed = 0.6f;  // SLOWER
+					//buffer.waves[1].Steepness = 0.15f; // VERY LOW STEEPNESS
+					//buffer.waves[1].Direction = NormalizeDirection(-0.4f, 0.8f);
+
+					//// --- Wave 2: Gentle Chop ---
+					//buffer.waves[2].Wavelength = 5.0f;
+					//buffer.waves[2].Speed = 0.9f;  // SLOWER
+					//buffer.waves[2].Steepness = 0.1f;  // VERY LOW STEEPNESS
+					//buffer.waves[2].Direction = NormalizeDirection(0.9f, -0.6f);
+
+					//// --- Wave 3: Fine Ripples ---
+					//buffer.waves[3].Wavelength = 1.0f; // Shorter Wavelength
+					//buffer.waves[3].Speed = 1.5f;  // Slower relative speed
+					//buffer.waves[3].Steepness = 0.05f; // VERY LOW STEEPNESS
+					//buffer.waves[3].Direction = NormalizeDirection(0.2f, 1.0f);
+				}
+
+				m_Shader->UpdateWaveBuffer(buffer);
+			}
+
 			// Bind the raster state (solid/wireframe) to the pipeline
 			m_RasterState->Use();
 

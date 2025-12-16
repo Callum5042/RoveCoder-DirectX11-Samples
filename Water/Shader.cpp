@@ -26,6 +26,7 @@ void Shader::Load()
 	this->LoadPixelShader();
 	this->CreateWorldViewProjectionConstantBuffer();
 	this->CreateTextureConstantBuffer();
+	this->CreateWaveConstantBuffer();
 }
 
 void Shader::Use()
@@ -47,6 +48,9 @@ void Shader::Use()
 
 	const int constant_buffer_slot1 = 1;
 	context->VSSetConstantBuffers(constant_buffer_slot1, 1, m_TextureConstantBuffer.GetAddressOf());
+
+	const int constant_buffer_slot2 = 2;
+	context->VSSetConstantBuffers(constant_buffer_slot2, 1, m_WaveConstantBuffer.GetAddressOf());
 }
 
 void Shader::LoadVertexShader()
@@ -110,6 +114,19 @@ void Shader::CreateTextureConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_TextureConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
+void Shader::CreateWaveConstantBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create world constant buffer
+	D3D11_BUFFER_DESC bd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(GerstnerWaveBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_WaveConstantBuffer.ReleaseAndGetAddressOf()));
+}
+
 ComPtr<ID3DBlob> Shader::CompileShader(const std::wstring& path, ShaderType shader_type)
 {
 	UINT flags = D3DCOMPILE_ENABLE_STRICTNESS;
@@ -160,4 +177,10 @@ void Shader::UpdateTextureBuffer(const DirectX::XMMATRIX& matrix1, const DirectX
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_TextureConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+}
+
+void Shader::UpdateWaveBuffer(GerstnerWaveBuffer buffer)
+{
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+	context->UpdateSubresource(m_WaveConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
