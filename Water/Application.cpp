@@ -86,7 +86,7 @@ int Application::Execute()
 			m_Shader->Use();
 
 			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix(timer.TotalTime());
+			this->ComputeModelViewProjectionMatrix();
 
 			// Update water texture
 			{
@@ -287,11 +287,20 @@ void Application::CalculateFrameStats(float delta_time)
 	}
 }
 
-void Application::ComputeModelViewProjectionMatrix(float delta_time)
+void Application::ComputeModelViewProjectionMatrix()
 {
+	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
+
+
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
+	matrix *= model;
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
-	m_Shader->UpdateModelViewProjectionBuffer(matrix, delta_time);
+	DirectX::XMFLOAT4 cameraPosition = m_Camera->GetPosition();
+	DirectX::XMFLOAT4 lightDirection(0.7f, -0.6f, 0.4f, 1.0f);
+
+	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, model);
+
+	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, cameraPosition, lightDirection);
 }

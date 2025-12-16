@@ -12,7 +12,9 @@ namespace
 	struct ModelViewProjectionBuffer
 	{
 		DirectX::XMMATRIX modelViewProjection;
-		float time;
+		DirectX::XMMATRIX modelInverse;
+		DirectX::XMFLOAT4 cameraPosition;
+		DirectX::XMFLOAT4 lightDirection;
 	};
 }
 
@@ -45,6 +47,7 @@ void Shader::Use()
 	// Bind the world constant buffer to the vertex shader
 	const int constant_buffer_slot = 0;
 	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
 
 	const int constant_buffer_slot1 = 1;
 	context->VSSetConstantBuffers(constant_buffer_slot1, 1, m_TextureConstantBuffer.GetAddressOf());
@@ -159,11 +162,13 @@ ComPtr<ID3DBlob> Shader::CompileShader(const std::wstring& path, ShaderType shad
 	return shader_blob;
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, float delta_time)
+void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& modelInverse, DirectX::XMFLOAT4 cameraPosition, DirectX::XMFLOAT4 lightDirection)
 {
 	ModelViewProjectionBuffer buffer = {};
 	buffer.modelViewProjection = DirectX::XMMatrixTranspose(matrix);
-	buffer.time = delta_time;
+	buffer.modelInverse = DirectX::XMMatrixTranspose(modelInverse);
+	buffer.cameraPosition = cameraPosition;
+	buffer.lightDirection = lightDirection;
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
