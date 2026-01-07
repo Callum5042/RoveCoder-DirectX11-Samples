@@ -10,17 +10,22 @@
 
 namespace
 {
-	struct ModelViewProjectionBuffer
+	struct ModelBuffer
 	{
-		DirectX::XMMATRIX model_view_projection;
-		DirectX::XMMATRIX model_inverse;
-		DirectX::XMFLOAT3 camera_position;
-		float padding;
+		XMMATRIX model;
+		XMMATRIX model_inverse;
+	};
+
+	struct CameraBuffer
+	{
+		XMMATRIX view;
+		XMMATRIX projection;
+		XMFLOAT4 position;
 	};
 
 	struct DirectionalLightBuffer
 	{
-		DirectX::XMFLOAT4 direction;
+		XMFLOAT4 direction;
 	};
 }
 
@@ -32,7 +37,9 @@ void Shader::Load()
 {
 	this->LoadVertexShader();
 	this->LoadPixelShader();
-	this->CreateWorldViewProjectionConstantBuffer();
+
+	this->CreateModelConstantBuffer();
+	this->CreateCameraConstantBuffer();
 	this->CreateDirectionalLightBuffer();
 }
 
@@ -51,11 +58,16 @@ void Shader::Use()
 
 	// Bind the world constant buffer to the vertex and pixel shader
 	const int constant_buffer_slot = 0;
-	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
-	context->PSSetConstantBuffers(constant_buffer_slot, 1, m_ModelViewProjectionConstantBuffer.GetAddressOf());
+	context->VSSetConstantBuffers(constant_buffer_slot, 1, m_ModelConstantBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(constant_buffer_slot, 1, m_ModelConstantBuffer.GetAddressOf());
+
+	// Bind the camera constant buffer to the vertex and pixel shader
+	const int camera_buffer_slot = 1;
+	context->VSSetConstantBuffers(camera_buffer_slot, 1, m_CameraConstantBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(camera_buffer_slot, 1, m_CameraConstantBuffer.GetAddressOf());
 
 	// Bind the world constant buffer to the vertex shader
-	const int light_buffer_slot = 1;
+	const int light_buffer_slot = 2;
 	context->PSSetConstantBuffers(light_buffer_slot, 1, m_DirectionalLightBuffer.GetAddressOf());
 }
 
@@ -83,28 +95,51 @@ void Shader::LoadPixelShader()
 	device->CreatePixelShader(g_PixelShader, sizeof(g_PixelShader), nullptr, m_PixelShader.ReleaseAndGetAddressOf());
 }
 
-void Shader::CreateWorldViewProjectionConstantBuffer()
+void Shader::CreateModelConstantBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
 	// Create world constant buffer
 	D3D11_BUFFER_DESC bd = {};
 	bd.Usage = D3D11_USAGE_DEFAULT;
-	bd.ByteWidth = sizeof(ModelViewProjectionBuffer);
+	bd.ByteWidth = sizeof(ModelBuffer);
 	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 
-	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelViewProjectionConstantBuffer.ReleaseAndGetAddressOf()));
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& inverse_model, const DirectX::XMFLOAT3& cameraPosition)
+void Shader::CreateCameraConstantBuffer()
 {
-	ModelViewProjectionBuffer buffer = {};
-	buffer.model_view_projection = DirectX::XMMatrixTranspose(matrix);
-	buffer.model_inverse = DirectX::XMMatrixTranspose(inverse_model);
-	buffer.camera_position = cameraPosition;
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create world constant buffer
+	D3D11_BUFFER_DESC bd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(CameraBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_CameraConstantBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Shader::UpdateModelBuffer(const XMMATRIX& transform)
+{
+	ModelBuffer buffer = {};
+	buffer.model = XMMatrixTranspose(transform);
+	buffer.model_inverse = XMMatrixTranspose(XMMatrixInverse(nullptr, transform));
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
-	context->UpdateSubresource(m_ModelViewProjectionConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+	context->UpdateSubresource(m_ModelConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+}
+
+void Shader::UpdateCameraBuffer(const XMMATRIX& view, const XMMATRIX& projection, const XMFLOAT3& position)
+{
+	CameraBuffer buffer = {};
+	buffer.projection = XMMatrixTranspose(projection);
+	buffer.view = XMMatrixTranspose(view);
+	buffer.position = XMFLOAT4(position.x, position.y, position.z, 1.0f);
+
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+	context->UpdateSubresource(m_CameraConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
 
 void Shader::CreateDirectionalLightBuffer()

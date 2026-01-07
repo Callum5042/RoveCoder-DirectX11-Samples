@@ -2,6 +2,7 @@
 
 #include <d3d11.h>
 #include <DirectXMath.h>
+using namespace DirectX;
 
 // This include is requires for using DirectX smart pointers (ComPtr)
 #include <wrl\client.h>
@@ -24,10 +25,13 @@ public:
 	void Use();
 
 	// Update the model view projection constant buffer
-	void UpdateModelViewProjectionBuffer(const DirectX::XMMATRIX& matrix, const DirectX::XMMATRIX& inverse_model, const DirectX::XMFLOAT3& cameraPosition);
+	void UpdateModelBuffer(const XMMATRIX& transform);
+
+	// Update camera buffer
+	void UpdateCameraBuffer(const XMMATRIX& view, const XMMATRIX& projection, const XMFLOAT3& position);
 
 	// Update the light buffer
-	void UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction);
+	void UpdateDirectionalLightBuffer(const XMFLOAT4& direction);
 
 private:
 	// Create vertex shader
@@ -40,8 +44,12 @@ private:
 	ComPtr<ID3D11PixelShader> m_PixelShader = nullptr;
 
 	// ModelViewProjection constant buffer
-	ComPtr<ID3D11Buffer> m_ModelViewProjectionConstantBuffer = nullptr;
-	void CreateWorldViewProjectionConstantBuffer();
+	ComPtr<ID3D11Buffer> m_ModelConstantBuffer = nullptr;
+	void CreateModelConstantBuffer();
+
+	// Camera constant buffer
+	ComPtr<ID3D11Buffer> m_CameraConstantBuffer = nullptr;
+	void CreateCameraConstantBuffer();
 
 	// Create the DirectionalLightBuffer
 	ComPtr<ID3D11Buffer> m_DirectionalLightBuffer = nullptr;

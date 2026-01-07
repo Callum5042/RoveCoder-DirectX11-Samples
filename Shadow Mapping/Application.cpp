@@ -80,15 +80,18 @@ int Application::Execute()
 			// Bind the shader to the pipeline
 			m_Shader->Use();
 
+			// Set camera constant buffer
+			this->UpdateCameraConstantBuffer();
+
 			// Render the floor
 			DirectX::XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
 			floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
-			this->ComputeModelViewProjectionMatrix(floor_transform);
+			this->UpdateModelConstantBuffer(floor_transform);
 			m_Floor->Render();
 
 			// Render the model
 			DirectX::XMMATRIX model_transform = DirectX::XMMatrixIdentity();
-			this->ComputeModelViewProjectionMatrix(model_transform);
+			this->UpdateModelConstantBuffer(model_transform);
 			m_Model->Render();
 
 			// Display the rendered scene
@@ -205,28 +208,27 @@ void Application::CalculateFrameStats(float delta_time)
 	}
 }
 
-void Application::ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& world)
+void Application::UpdateModelConstantBuffer(const DirectX::XMMATRIX& world)
 {
-	// View Projection
-	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
-	matrix *= world;
+	m_Shader->UpdateModelBuffer(world);
+}
 
+void Application::UpdateCameraConstantBuffer()
+{
 	if (m_CameraToggle == CameraToggle::Free)
 	{
-		matrix *= m_FreeCamera->GetView();
-		matrix *= m_FreeCamera->GetProjection();
+		XMMATRIX view = m_FreeCamera->GetView();
+		XMMATRIX projection = m_FreeCamera->GetProjection();
+		XMFLOAT3 position = m_FreeCamera->GetPosition();
 
-		DirectX::XMFLOAT3 position = m_FreeCamera->GetPosition();
-		DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, world);
-		m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
+		m_Shader->UpdateCameraBuffer(view, projection, position);
 	}
 	else if (m_CameraToggle == CameraToggle::Orbital)
 	{
-		matrix *= m_OrbitalCamera->GetView();
-		matrix *= m_OrbitalCamera->GetProjection();
+		XMMATRIX view = m_OrbitalCamera->GetView();
+		XMMATRIX projection = m_OrbitalCamera->GetProjection();
+		XMFLOAT3 position = m_OrbitalCamera->GetPosition();
 
-		DirectX::XMFLOAT3 position = m_OrbitalCamera->GetPosition();
-		DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, world);
-		m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
+		m_Shader->UpdateCameraBuffer(view, projection, position);
 	}
 }

@@ -6,13 +6,15 @@ PixelInput main(VertexInput input)
     PixelInput pixel_input;
 
 	// Transform to homogeneous clip space
-    pixel_input.positionClipSpace = mul(float4(input.position, 1.0f), cModelViewProjection);
+    pixel_input.positionClipSpace = mul(float4(input.position, 1.0f), cModelTransform);
+    pixel_input.positionClipSpace = mul(pixel_input.positionClipSpace, cCameraView);
+    pixel_input.positionClipSpace = mul(pixel_input.positionClipSpace, cCameraProjection);
 
     // Transform to world space.
     pixel_input.position = input.position;
 
     // Transform the normals by the inverse world space
-    pixel_input.normal = mul(input.normal, (float3x3) cModelInverse).xyz;
+    pixel_input.normal = mul(input.normal, (float3x3) cModelTransformInverse).xyz;
 
     return pixel_input;
 }

@@ -14,15 +14,21 @@ struct PixelInput
 };
 
 // World constant buffer
-cbuffer WorldBuffer : register(b0)
+cbuffer ModelBuffer : register(b0)
 {
-    matrix cModelViewProjection;
-    matrix cModelInverse;
+    matrix cModelTransform;
+    matrix cModelTransformInverse;
+}
+
+cbuffer CameraBuffer : register(b1)
+{
+    matrix cCameraView;
+    matrix cCameraProjection;
     float4 cCameraPosition;
 }
 
 // Directional light constant buffer
-cbuffer DirectionalLightBuffer : register(b1)
+cbuffer DirectionalLightBuffer : register(b2)
 {
     float4 cLightDirection;
 }

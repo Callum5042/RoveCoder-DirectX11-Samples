@@ -70,5 +70,8 @@ private:
 	int m_FrameCount = 0;
 
 	// Compute model view projection of the camera
-	void ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& world);
+	void UpdateModelConstantBuffer(const DirectX::XMMATRIX& world);
+
+	// Update camera constant buffer shader
+	void UpdateCameraConstantBuffer();
 };
