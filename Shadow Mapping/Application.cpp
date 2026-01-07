@@ -40,8 +40,7 @@ Application::Application()
 
 int Application::Execute()
 {
-	Timer timer;
-	timer.Start();
+	m_Timer.Start();
 
 	// Model
 	m_Floor = std::make_unique<Floor>(m_Renderer.get());
@@ -53,8 +52,8 @@ int Application::Execute()
 	// Main application loop
 	while (m_Running)
 	{
-		timer.Tick();
-		this->CalculateFrameStats(timer.DeltaTime());
+		m_Timer.Tick();
+		this->CalculateFrameStats();
 
 		MSG msg = {};
 		if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
@@ -72,7 +71,7 @@ int Application::Execute()
 			// Update camera
 			if (m_CameraToggle == CameraToggle::Free)
 			{
-				m_FreeCamera->Move(timer.DeltaTime());
+				m_FreeCamera->Move(m_Timer.DeltaTime());
 			}
 
 			// Clear the buffers
@@ -188,8 +187,9 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		float relative_mouse_y = static_cast<float>(mouse_y - previous_mouse_y);
 
 		// Rotate camera
-		float yaw = relative_mouse_x * 0.01f;
-		float pitch = relative_mouse_y * 0.01f;
+		const float rotate_speed = 20.0f;
+		float yaw = relative_mouse_x * rotate_speed * m_Timer.DeltaTime();
+		float pitch = relative_mouse_y * rotate_speed * m_Timer.DeltaTime();
 
 		if (m_CameraToggle == CameraToggle::Free)
 		{
@@ -205,12 +205,12 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	previous_mouse_y = mouse_y;
 }
 
-void Application::CalculateFrameStats(float delta_time)
+void Application::CalculateFrameStats()
 {
 	static float time = 0.0f;
 
 	m_FrameCount++;
-	time += delta_time;
+	time += m_Timer.DeltaTime();
 
 	// Update window title every second with FPS
 	if (time > 1.0f)

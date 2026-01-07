@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Timer.h"
+
 #define NOMINMAX
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -41,6 +43,7 @@ public:
 	inline Window* GetWindow() const { return m_Window.get(); }
 
 private:
+	Timer m_Timer;
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
@@ -66,7 +69,7 @@ private:
 	void OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 	// Calculate frame stats
-	void CalculateFrameStats(float delta_time);
+	void CalculateFrameStats();
 	int m_FrameCount = 0;
 
 	// Compute model view projection of the camera
