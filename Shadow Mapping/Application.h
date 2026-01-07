@@ -20,6 +20,13 @@ class FreeCamera;
 class Model;
 class Floor;
 
+enum class CameraToggle
+{
+	Free,
+	Orbital,
+	Shadow
+};
+
 class Application
 {
 public:
@@ -38,12 +45,16 @@ private:
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
 
-	std::unique_ptr<OrbitalCamera> m_OrbitalCamera = nullptr;
-	std::unique_ptr<FreeCamera> m_FreeCamera = nullptr;
-
+	// Models
 	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Floor> m_Floor = nullptr;
 
+	// Cameras
+	CameraToggle m_CameraToggle = CameraToggle::Orbital;
+	std::unique_ptr<OrbitalCamera> m_OrbitalCamera = nullptr;
+	std::unique_ptr<FreeCamera> m_FreeCamera = nullptr;
+
+	// Internals
 	bool m_Running = true;
 	bool m_WindowCreated = false;
 	std::string m_ApplicationTitle = "Shadow Mapping";

@@ -33,7 +33,7 @@ Application::Application()
 	m_Shader->UpdateDirectionalLightBuffer(DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f));
 
 	// Create camera
-	// m_Camera = std::make_unique<OrbitalCamera>(window_width, window_height);
+	m_OrbitalCamera = std::make_unique<OrbitalCamera>(window_width, window_height);
 	m_FreeCamera = std::make_unique<FreeCamera>(window_width, window_height);
 }
 
@@ -69,7 +69,10 @@ int Application::Execute()
 		else
 		{
 			// Update camera
-			m_FreeCamera->Move(timer.DeltaTime());
+			if (m_CameraToggle == CameraToggle::Free)
+			{
+				m_FreeCamera->Move(timer.DeltaTime());
+			}
 
 			// Clear the buffers
 			m_Renderer->Clear();
@@ -111,6 +114,25 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 		case WM_MOUSEMOVE:
 			this->OnMouseMove(hwnd, msg, wParam, lParam);
 			return 0;
+
+		case WM_KEYDOWN:
+		{
+			// Toggle between cameras
+			switch (wParam)
+			{
+				case '1':
+					m_CameraToggle = CameraToggle::Orbital;
+					break;
+				case '2':
+					m_CameraToggle = CameraToggle::Free;
+					break;
+				case '3':
+					m_CameraToggle = CameraToggle::Shadow;
+					break;
+			}
+
+			return 0;
+		}
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
@@ -130,6 +152,7 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	m_Renderer->Resize(window_width, window_height);
 
 	// Update camera
+	m_OrbitalCamera->UpdateAspectRatio(window_width, window_height);
 	m_FreeCamera->UpdateAspectRatio(window_width, window_height);
 }
 
@@ -150,7 +173,14 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		float yaw = relative_mouse_x * 0.01f;
 		float pitch = relative_mouse_y * 0.01f;
 
-		m_FreeCamera->Rotate(pitch, yaw);
+		if (m_CameraToggle == CameraToggle::Free)
+		{
+			m_FreeCamera->Rotate(pitch, yaw); 
+		}
+		else if (m_CameraToggle == CameraToggle::Orbital)
+		{
+			m_OrbitalCamera->Rotate(pitch, yaw);
+		}
 	}
 
 	previous_mouse_x = mouse_x;
@@ -180,10 +210,23 @@ void Application::ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& worl
 	// View Projection
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
 	matrix *= world;
-	matrix *= m_FreeCamera->GetView();
-	matrix *= m_FreeCamera->GetProjection();
 
-	DirectX::XMFLOAT3 position = m_FreeCamera->GetPosition();
-	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, world);
-	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
+	if (m_CameraToggle == CameraToggle::Free)
+	{
+		matrix *= m_FreeCamera->GetView();
+		matrix *= m_FreeCamera->GetProjection();
+
+		DirectX::XMFLOAT3 position = m_FreeCamera->GetPosition();
+		DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, world);
+		m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
+	}
+	else if (m_CameraToggle == CameraToggle::Orbital)
+	{
+		matrix *= m_OrbitalCamera->GetView();
+		matrix *= m_OrbitalCamera->GetProjection();
+
+		DirectX::XMFLOAT3 position = m_OrbitalCamera->GetPosition();
+		DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, world);
+		m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
+	}
 }
