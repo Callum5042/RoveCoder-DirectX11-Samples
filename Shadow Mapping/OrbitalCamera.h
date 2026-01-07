@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+using namespace DirectX;
 
 // Perspective orbital camera
 class OrbitalCamera
@@ -19,13 +20,19 @@ public:
 	void UpdateFov(float fov);
 
 	// Get projection matrix
-	inline DirectX::XMMATRIX GetProjection() const { return m_Projection; }
+	inline const XMMATRIX& GetProjection() const { return m_Projection; }
 
 	// Get view matrix
-	inline DirectX::XMMATRIX GetView() const { return m_View; }
+	inline const XMMATRIX& GetView() const { return m_View; }
 
 	// Get camera position in world space
-	inline DirectX::XMFLOAT3 GetPosition() { return m_Position; }
+	inline const XMFLOAT3& GetPosition() const { return m_Position; }
+
+	// Get pitch
+	inline float GetPitch() const { return m_PitchRadians; }
+
+	// Get pitch
+	inline float GetYaw() const { return m_YawRadians; }
 
 private:
 	// Projection matrix

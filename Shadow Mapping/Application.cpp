@@ -12,6 +12,7 @@
 using namespace DirectX;
 
 #include <windowsx.h>
+#include <iostream>
 
 Application::Application()
 {
@@ -124,13 +125,27 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 			switch (wParam)
 			{
 				case '1':
-					m_CameraToggle = CameraToggle::Orbital;
+					if (m_CameraToggle != CameraToggle::Orbital)
+					{
+						m_CameraToggle = CameraToggle::Orbital;
+						std::cout << "Orbital camera\n";
+					}
 					break;
 				case '2':
-					m_CameraToggle = CameraToggle::Free;
+					if (m_CameraToggle != CameraToggle::Free)
+					{
+						m_CameraToggle = CameraToggle::Free;
+						m_FreeCamera->SetPosition(m_OrbitalCamera->GetPosition());
+						m_FreeCamera->SetPitchAndYaw(m_OrbitalCamera->GetPitch(), m_OrbitalCamera->GetYaw());
+						std::cout << "Free camera\n";
+					}
 					break;
 				case '3':
-					m_CameraToggle = CameraToggle::Shadow;
+					if (m_CameraToggle != CameraToggle::Shadow)
+					{
+						m_CameraToggle = CameraToggle::Shadow;
+						std::cout << "Shadow camera\n";
+					}
 					break;
 			}
 
@@ -178,7 +193,7 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 
 		if (m_CameraToggle == CameraToggle::Free)
 		{
-			m_FreeCamera->Rotate(pitch, yaw); 
+			m_FreeCamera->Rotate(pitch, yaw);
 		}
 		else if (m_CameraToggle == CameraToggle::Orbital)
 		{

@@ -99,6 +99,17 @@ void FreeCamera::UpdateFov(float fov)
 	CalculateProjection();
 }
 
+void FreeCamera::SetPosition(const XMFLOAT3& position)
+{
+	m_Position = position;
+}
+
+void FreeCamera::SetPitchAndYaw(float pitch_radians, float yaw_radians)
+{
+	m_PitchRadians = pitch_radians;
+	m_YawRadians = yaw_radians;
+}
+
 void FreeCamera::CalculateProjection()
 {
 	// Convert degrees to radians

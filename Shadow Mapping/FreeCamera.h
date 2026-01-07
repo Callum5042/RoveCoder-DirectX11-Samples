@@ -1,6 +1,7 @@
 #pragma once
 
 #include <DirectXMath.h>
+using namespace DirectX;
 
 // Perspective free camera
 class FreeCamera
@@ -21,14 +22,20 @@ public:
 	// Set field of view
 	void UpdateFov(float fov);
 
+	// Set camera position
+	void SetPosition(const XMFLOAT3& position);
+
+	// Set camera pitch and yaw
+	void SetPitchAndYaw(float pitch_radians, float yaw_radians);
+
 	// Get projection matrix
-	inline DirectX::XMMATRIX GetProjection() const { return m_Projection; }
+	inline const XMMATRIX& GetProjection() const { return m_Projection; }
 
 	// Get view matrix
-	inline DirectX::XMMATRIX GetView() const { return m_View; }
+	inline const XMMATRIX& GetView() const { return m_View; }
 
 	// Get camera position in world space
-	inline DirectX::XMFLOAT3 GetPosition() { return m_Position; }
+	inline const XMFLOAT3& GetPosition() const { return m_Position; }
 
 private:
 	// Projection matrix
