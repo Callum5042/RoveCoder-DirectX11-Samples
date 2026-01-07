@@ -116,5 +116,5 @@ void FreeCamera::CalculateProjection()
 	float field_of_view_radians = XMConvertToRadians(m_FieldOfViewDegrees);
 
 	// Calculate FreeCamera's perspective
-	m_Projection = XMMatrixPerspectiveFovLH(field_of_view_radians, m_AspectRatio, 0.01f, 100.0f);
+	m_Projection = XMMatrixPerspectiveFovLH(field_of_view_radians, m_AspectRatio, 0.1f, 1000.0f);
 }

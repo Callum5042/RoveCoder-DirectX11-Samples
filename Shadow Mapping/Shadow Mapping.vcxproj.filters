@@ -25,6 +25,18 @@
     <Filter Include="Source Files\Camera">
       <UniqueIdentifier>{f9b7c706-699d-4c65-b47e-681cb9d335b6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Shaders">
+      <UniqueIdentifier>{e925fbe9-4315-4642-9cde-f1f08f12257c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Shaders">
+      <UniqueIdentifier>{2a30908d-d510-485c-87f8-23156f1c028f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders Files\Default">
+      <UniqueIdentifier>{4f15b49c-2b83-46ee-aa7f-7397b17498ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Shaders Files\Line">
+      <UniqueIdentifier>{82b5bcd5-a203-447c-982d-a9eee86db047}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -45,9 +57,6 @@
     <ClCompile Include="Model.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shader.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\External\WICTextureLoader.cpp">
       <Filter>External</Filter>
     </ClCompile>
@@ -59,6 +68,12 @@
     </ClCompile>
     <ClCompile Include="FreeCamera.cpp">
       <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="DefaultShader.cpp">
+      <Filter>Source Files\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="LineShader.cpp">
+      <Filter>Source Files\Shaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -72,9 +87,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Shader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Model.h">
@@ -95,18 +107,33 @@
     <ClInclude Include="FreeCamera.h">
       <Filter>Header Files\Cameras</Filter>
     </ClInclude>
+    <ClInclude Include="DefaultShader.h">
+      <Filter>Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="LineShader.h">
+      <Filter>Header Files\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="PixelShader.hlsl">
-      <Filter>Shaders Files</Filter>
+      <Filter>Shaders Files\Default</Filter>
     </FxCompile>
     <FxCompile Include="VertexShader.hlsl">
-      <Filter>Shaders Files</Filter>
+      <Filter>Shaders Files\Default</Filter>
+    </FxCompile>
+    <FxCompile Include="LinePixelShader.hlsl">
+      <Filter>Shaders Files\Line</Filter>
+    </FxCompile>
+    <FxCompile Include="LineVertexShader.hlsl">
+      <Filter>Shaders Files\Line</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderData.hlsli">
-      <Filter>Shaders Files</Filter>
+      <Filter>Shaders Files\Default</Filter>
+    </None>
+    <None Include="LineShaderData.hlsli">
+      <Filter>Shaders Files\Line</Filter>
     </None>
   </ItemGroup>
 </Project>

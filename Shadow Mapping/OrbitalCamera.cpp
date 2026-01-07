@@ -51,5 +51,5 @@ void OrbitalCamera::CalculateProjection()
 	float field_of_view_radians = DirectX::XMConvertToRadians(m_FieldOfViewDegrees);
 
 	// Calculate OrbitalCamera's perspective
-	m_Projection = DirectX::XMMatrixPerspectiveFovLH(field_of_view_radians, m_AspectRatio, 0.01f, 100.0f);
+	m_Projection = DirectX::XMMatrixPerspectiveFovLH(field_of_view_radians, m_AspectRatio, 1.0f, 100.0f);
 }

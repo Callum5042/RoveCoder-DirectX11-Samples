@@ -2,17 +2,21 @@
 #include "Window.h"
 #include "Timer.h"
 #include "Renderer.h"
-#include "Shader.h"
+#include "DefaultShader.h"
+#include "LineShader.h"
 #include "OrbitalCamera.h"
 #include "FreeCamera.h"
 #include "Model.h"
 #include "Floor.h"
+#include "Vertex.h"
 
 #include <DirectXMath.h>
+#include <DirectXCollision.h>
 using namespace DirectX;
 
 #include <windowsx.h>
 #include <iostream>
+#include <array>
 
 Application::Application()
 {
@@ -27,15 +31,25 @@ Application::Application()
 	m_Renderer = std::make_unique<Renderer>(this);
 	m_Renderer->Create();
 
-	// Create shader
-	m_Shader = std::make_unique<Shader>(m_Renderer.get());
-	m_Shader->Load();
+	// Used for visualiation
+	this->CreateLineBuffer();
 
-	m_Shader->UpdateDirectionalLightBuffer(DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f));
+	// Create shader
+	m_DefaultShader = std::make_unique<DefaultShader>(m_Renderer.get());
+	m_DefaultShader->Load();
+
+	m_DefaultShader->UpdateDirectionalLightBuffer(DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f));
+
+	// Create shader
+	m_LineShader = std::make_unique<LineShader>(m_Renderer.get());
+	m_LineShader->Load();
 
 	// Create camera
 	m_OrbitalCamera = std::make_unique<OrbitalCamera>(window_width, window_height);
 	m_FreeCamera = std::make_unique<FreeCamera>(window_width, window_height);
+
+	// Print some info
+	std::cout << "1) Orbital camera\n2) Free (visualisation) camera\n3) Shadow camera" << '\n';
 }
 
 int Application::Execute()
@@ -78,7 +92,7 @@ int Application::Execute()
 			m_Renderer->Clear();
 
 			// Bind the shader to the pipeline
-			m_Shader->Use();
+			m_DefaultShader->Use();
 
 			// Set camera constant buffer
 			this->UpdateCameraConstantBuffer();
@@ -93,6 +107,13 @@ int Application::Execute()
 			DirectX::XMMATRIX model_transform = DirectX::XMMatrixIdentity();
 			this->UpdateModelConstantBuffer(model_transform);
 			m_Model->Render();
+
+			// Visualize orbitial camera frustum
+			if (m_CameraToggle == CameraToggle::Free)
+			{
+				m_LineShader->Use();
+				this->VisualizeCameraFrustum();
+			}
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -126,24 +147,25 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 				case '1':
 					if (m_CameraToggle != CameraToggle::Orbital)
 					{
-						m_CameraToggle = CameraToggle::Orbital;
 						std::cout << "Orbital camera\n";
+						m_CameraToggle = CameraToggle::Orbital;
 					}
 					break;
 				case '2':
 					if (m_CameraToggle != CameraToggle::Free)
 					{
+						std::cout << "Free camera\n";
 						m_CameraToggle = CameraToggle::Free;
+
 						m_FreeCamera->SetPosition(m_OrbitalCamera->GetPosition());
 						m_FreeCamera->SetPitchAndYaw(m_OrbitalCamera->GetPitch(), m_OrbitalCamera->GetYaw());
-						std::cout << "Free camera\n";
 					}
 					break;
 				case '3':
 					if (m_CameraToggle != CameraToggle::Shadow)
 					{
-						m_CameraToggle = CameraToggle::Shadow;
 						std::cout << "Shadow camera\n";
+						m_CameraToggle = CameraToggle::Shadow;
 					}
 					break;
 			}
@@ -225,7 +247,8 @@ void Application::CalculateFrameStats()
 
 void Application::UpdateModelConstantBuffer(const DirectX::XMMATRIX& world)
 {
-	m_Shader->UpdateModelBuffer(world);
+	m_DefaultShader->UpdateModelBuffer(world);
+	m_LineShader->UpdateModelBuffer(world);
 }
 
 void Application::UpdateCameraConstantBuffer()
@@ -236,7 +259,8 @@ void Application::UpdateCameraConstantBuffer()
 		XMMATRIX projection = m_FreeCamera->GetProjection();
 		XMFLOAT3 position = m_FreeCamera->GetPosition();
 
-		m_Shader->UpdateCameraBuffer(view, projection, position);
+		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
+		m_LineShader->UpdateCameraBuffer(view, projection, position);
 	}
 	else if (m_CameraToggle == CameraToggle::Orbital)
 	{
@@ -244,6 +268,85 @@ void Application::UpdateCameraConstantBuffer()
 		XMMATRIX projection = m_OrbitalCamera->GetProjection();
 		XMFLOAT3 position = m_OrbitalCamera->GetPosition();
 
-		m_Shader->UpdateCameraBuffer(view, projection, position);
+		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
+		m_LineShader->UpdateCameraBuffer(view, projection, position);
 	}
+}
+
+void Application::VisualizeCameraFrustum()
+{
+	// Get bounding frustum from camera
+	BoundingFrustum bounding_frustum;
+	BoundingFrustum::CreateFromMatrix(bounding_frustum, m_OrbitalCamera->GetProjection());
+
+	XMMATRIX view_inverse = XMMatrixInverse(nullptr, m_OrbitalCamera->GetView());
+	bounding_frustum.Transform(bounding_frustum, view_inverse);
+
+	// Calculate the edges to render the lines
+	std::array<XMFLOAT3, 8> corners;
+	bounding_frustum.GetCorners(corners.data());
+
+	// Build line list (24 vertices)
+	std::array<LineVertex, 24> line_vertices;
+
+	static const uint32_t FrustumEdges[12][2] =
+	{
+		{0,1}, {1,2}, {2,3}, {3,0}, // Near
+		{4,5}, {5,6}, {6,7}, {7,4}, // Far
+		{0,4}, {1,5}, {2,6}, {3,7}  // Connections
+	};
+
+	int v = 0;
+	for (auto& edge : FrustumEdges)
+	{
+		line_vertices[v].position.x = corners[edge[0]].x;
+		line_vertices[v].position.y = corners[edge[0]].y;
+		line_vertices[v].position.z = corners[edge[0]].z;
+		line_vertices[v].colour = VertexColour(1.0f, 0.0f, 0.0f);
+		v++;
+
+		line_vertices[v].position.x = corners[edge[1]].x;
+		line_vertices[v].position.y = corners[edge[1]].y;
+		line_vertices[v].position.z = corners[edge[1]].z;
+		line_vertices[v].colour = VertexColour(1.0f, 0.0f, 0.0f);
+		v++;
+	}
+
+	// Map lines to the buffer
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
+	D3D11_MAPPED_SUBRESOURCE resource = {};
+	DX::Check(context->Map(m_LineBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource));
+	std::memcpy(resource.pData, line_vertices.data(), line_vertices.size() * sizeof(Vertex));
+	context->Unmap(m_LineBuffer.Get(), 0);
+
+	// Render
+	this->RenderDebugLines();
+}
+
+void Application::CreateLineBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create vertex buffer
+	D3D11_BUFFER_DESC vertexbuffer_desc = {};
+	vertexbuffer_desc.Usage = D3D11_USAGE_DYNAMIC;
+	vertexbuffer_desc.ByteWidth = static_cast<UINT>(sizeof(LineVertex) * 24);
+	vertexbuffer_desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	vertexbuffer_desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+
+	DX::Check(device->CreateBuffer(&vertexbuffer_desc, nullptr, m_LineBuffer.ReleaseAndGetAddressOf()));
+}
+
+void Application::RenderDebugLines()
+{
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
+	UINT stride = sizeof(LineVertex);
+	UINT offset = 0;
+
+	context->IASetVertexBuffers(0, 1, m_LineBuffer.GetAddressOf(), &stride, &offset);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	context->Draw(24, 0);
 }

@@ -1,4 +1,4 @@
-#include "Shader.h"
+#include "DefaultShader.h"
 #include "Renderer.h"
 
 #include <Windows.h>
@@ -29,11 +29,11 @@ namespace
 	};
 }
 
-Shader::Shader(Renderer* renderer) : m_Renderer(renderer)
+DefaultShader::DefaultShader(Renderer* renderer) : m_Renderer(renderer)
 {
 }
 
-void Shader::Load()
+void DefaultShader::Load()
 {
 	this->LoadVertexShader();
 	this->LoadPixelShader();
@@ -43,7 +43,7 @@ void Shader::Load()
 	this->CreateDirectionalLightBuffer();
 }
 
-void Shader::Use()
+void DefaultShader::Use()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
@@ -71,7 +71,7 @@ void Shader::Use()
 	context->PSSetConstantBuffers(light_buffer_slot, 1, m_DirectionalLightBuffer.GetAddressOf());
 }
 
-void Shader::LoadVertexShader()
+void DefaultShader::LoadVertexShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -89,13 +89,13 @@ void Shader::LoadVertexShader()
 	DX::Check(device->CreateInputLayout(layout, number_elements, g_VertexShader, sizeof(g_VertexShader), m_VertexLayout.ReleaseAndGetAddressOf()));
 }
 
-void Shader::LoadPixelShader()
+void DefaultShader::LoadPixelShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 	device->CreatePixelShader(g_PixelShader, sizeof(g_PixelShader), nullptr, m_PixelShader.ReleaseAndGetAddressOf());
 }
 
-void Shader::CreateModelConstantBuffer()
+void DefaultShader::CreateModelConstantBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -108,7 +108,7 @@ void Shader::CreateModelConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_ModelConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::CreateCameraConstantBuffer()
+void DefaultShader::CreateCameraConstantBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -121,7 +121,7 @@ void Shader::CreateCameraConstantBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_CameraConstantBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateModelBuffer(const XMMATRIX& transform)
+void DefaultShader::UpdateModelBuffer(const XMMATRIX& transform)
 {
 	ModelBuffer buffer = {};
 	buffer.model = XMMatrixTranspose(transform);
@@ -131,7 +131,7 @@ void Shader::UpdateModelBuffer(const XMMATRIX& transform)
 	context->UpdateSubresource(m_ModelConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
 
-void Shader::UpdateCameraBuffer(const XMMATRIX& view, const XMMATRIX& projection, const XMFLOAT3& position)
+void DefaultShader::UpdateCameraBuffer(const XMMATRIX& view, const XMMATRIX& projection, const XMFLOAT3& position)
 {
 	CameraBuffer buffer = {};
 	buffer.projection = XMMatrixTranspose(projection);
@@ -142,7 +142,7 @@ void Shader::UpdateCameraBuffer(const XMMATRIX& view, const XMMATRIX& projection
 	context->UpdateSubresource(m_CameraConstantBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
 
-void Shader::CreateDirectionalLightBuffer()
+void DefaultShader::CreateDirectionalLightBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
@@ -155,7 +155,7 @@ void Shader::CreateDirectionalLightBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_DirectionalLightBuffer.ReleaseAndGetAddressOf()));
 }
 
-void Shader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction)
+void DefaultShader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction)
 {
 	DirectionalLightBuffer buffer = {};
 	buffer.direction = direction;

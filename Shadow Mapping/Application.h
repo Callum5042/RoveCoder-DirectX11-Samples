@@ -12,9 +12,17 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+#include <d3d11_1.h>
+
+// This include is requires for using DirectX smart pointers (ComPtr)
+#include <wrl\client.h>
+using Microsoft::WRL::ComPtr;
+
 class Window;
 class Renderer;
-class Shader;
+
+class DefaultShader;
+class LineShader;
 
 class OrbitalCamera;
 class FreeCamera;
@@ -46,11 +54,14 @@ private:
 	Timer m_Timer;
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
-	std::unique_ptr<Shader> m_Shader = nullptr;
 
 	// Models
 	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Floor> m_Floor = nullptr;
+
+	// Shaders
+	std::unique_ptr<DefaultShader> m_DefaultShader = nullptr;
+	std::unique_ptr<LineShader> m_LineShader = nullptr;
 
 	// Cameras
 	CameraToggle m_CameraToggle = CameraToggle::Orbital;
@@ -77,4 +88,12 @@ private:
 
 	// Update camera constant buffer shader
 	void UpdateCameraConstantBuffer();
+
+	// Visualize bounding frustum
+	void VisualizeCameraFrustum();
+
+	// Render debug lines
+	ComPtr<ID3D11Buffer> m_LineBuffer;
+	void CreateLineBuffer();
+	void RenderDebugLines();
 };
