@@ -7,14 +7,16 @@
 #include <memory>
 #include <string>
 
+#include <DirectXMath.h>
+using namespace DirectX;
+
 class Window;
 class Renderer;
 class Shader;
 class Camera;
 
 class Model;
-class RasterState;
-class TextureSampler;
+class Floor;
 
 class Application
 {
@@ -33,8 +35,10 @@ private:
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
-	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Camera> m_Camera = nullptr;
+
+	std::unique_ptr<Model> m_Model = nullptr;
+	std::unique_ptr<Floor> m_Floor = nullptr;
 
 	bool m_Running = true;
 	bool m_WindowCreated = false;
@@ -51,5 +55,5 @@ private:
 	int m_FrameCount = 0;
 
 	// Compute model view projection of the camera
-	void ComputeModelViewProjectionMatrix();
+	void ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& world);
 };

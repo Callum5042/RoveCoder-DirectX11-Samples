@@ -3,8 +3,9 @@
 #include "Timer.h"
 #include "Renderer.h"
 #include "Shader.h"
-#include "Model.h"
 #include "Camera.h"
+#include "Model.h"
+#include "Floor.h"
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -40,6 +41,9 @@ int Application::Execute()
 	timer.Start();
 
 	// Model
+	m_Floor = std::make_unique<Floor>(m_Renderer.get());
+	m_Floor->Create();
+
 	m_Model = std::make_unique<Model>(m_Renderer.get());
 	m_Model->Create();
 
@@ -68,10 +72,15 @@ int Application::Execute()
 			// Bind the shader to the pipeline
 			m_Shader->Use();
 
-			// Update the model view projection constant buffer
-			this->ComputeModelViewProjectionMatrix();
+			// Render the floor
+			DirectX::XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
+			floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
+			this->ComputeModelViewProjectionMatrix(floor_transform);
+			m_Floor->Render();
 
 			// Render the model
+			DirectX::XMMATRIX model_transform = DirectX::XMMatrixIdentity();
+			this->ComputeModelViewProjectionMatrix(model_transform);
 			m_Model->Render();
 
 			// Display the rendered scene
@@ -161,18 +170,15 @@ void Application::CalculateFrameStats(float delta_time)
 	}
 }
 
-void Application::ComputeModelViewProjectionMatrix()
+void Application::ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& world)
 {
-	// Model matrix
-	DirectX::XMMATRIX model = DirectX::XMMatrixIdentity();
-
 	// View Projection
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
-	matrix *= model;
+	matrix *= world;
 	matrix *= m_Camera->GetView();
 	matrix *= m_Camera->GetProjection();
 
 	DirectX::XMFLOAT3 position = m_Camera->GetPosition();
-	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, model);
+	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, world);
 	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
 }
