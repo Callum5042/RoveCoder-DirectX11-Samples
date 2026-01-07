@@ -19,6 +19,12 @@
     <Filter Include="External">
       <UniqueIdentifier>{f5c7a55e-c1f1-40ca-af9c-abf40cdaffbe}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Cameras">
+      <UniqueIdentifier>{1f310307-e799-470d-aad9-1c41791d33be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Camera">
+      <UniqueIdentifier>{f9b7c706-699d-4c65-b47e-681cb9d335b6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -45,11 +51,14 @@
     <ClCompile Include="..\External\WICTextureLoader.cpp">
       <Filter>External</Filter>
     </ClCompile>
-    <ClCompile Include="Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Floor.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="OrbitalCamera.cpp">
+      <Filter>Source Files\Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="FreeCamera.cpp">
+      <Filter>Source Files\Camera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -77,11 +86,14 @@
     <ClInclude Include="..\External\WICTextureLoader.h">
       <Filter>External</Filter>
     </ClInclude>
-    <ClInclude Include="Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Floor.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="OrbitalCamera.h">
+      <Filter>Header Files\Cameras</Filter>
+    </ClInclude>
+    <ClInclude Include="FreeCamera.h">
+      <Filter>Header Files\Cameras</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

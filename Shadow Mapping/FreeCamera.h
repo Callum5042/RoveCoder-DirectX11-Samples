@@ -2,12 +2,15 @@
 
 #include <DirectXMath.h>
 
-// Perspective orbital camera
-class Camera
+// Perspective free camera
+class FreeCamera
 {
 public:
-	Camera(int width, int height);
-	virtual ~Camera() = default;
+	FreeCamera(int width, int height);
+	virtual ~FreeCamera() = default;
+
+	// Move the camera
+	void Move(float delta_time);
 
 	// Recalculates the view based on the pitch and yaw
 	void Rotate(float pitch, float yaw);
@@ -51,4 +54,7 @@ private:
 
 	// Recalculates the projection based on the new window size
 	void CalculateProjection();
+
+	// Camera speed
+	float m_CameraSpeed = 1.0f;
 };

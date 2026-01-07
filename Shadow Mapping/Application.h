@@ -13,7 +13,9 @@ using namespace DirectX;
 class Window;
 class Renderer;
 class Shader;
-class Camera;
+
+class OrbitalCamera;
+class FreeCamera;
 
 class Model;
 class Floor;
@@ -35,7 +37,9 @@ private:
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<Shader> m_Shader = nullptr;
-	std::unique_ptr<Camera> m_Camera = nullptr;
+
+	std::unique_ptr<OrbitalCamera> m_OrbitalCamera = nullptr;
+	std::unique_ptr<FreeCamera> m_FreeCamera = nullptr;
 
 	std::unique_ptr<Model> m_Model = nullptr;
 	std::unique_ptr<Floor> m_Floor = nullptr;

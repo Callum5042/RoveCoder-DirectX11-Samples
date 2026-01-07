@@ -3,7 +3,8 @@
 #include "Timer.h"
 #include "Renderer.h"
 #include "Shader.h"
-#include "Camera.h"
+#include "OrbitalCamera.h"
+#include "FreeCamera.h"
 #include "Model.h"
 #include "Floor.h"
 
@@ -32,7 +33,8 @@ Application::Application()
 	m_Shader->UpdateDirectionalLightBuffer(DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f));
 
 	// Create camera
-	m_Camera = std::make_unique<Camera>(window_width, window_height);
+	// m_Camera = std::make_unique<OrbitalCamera>(window_width, window_height);
+	m_FreeCamera = std::make_unique<FreeCamera>(window_width, window_height);
 }
 
 int Application::Execute()
@@ -66,6 +68,9 @@ int Application::Execute()
 		}
 		else
 		{
+			// Update camera
+			m_FreeCamera->Move(timer.DeltaTime());
+
 			// Clear the buffers
 			m_Renderer->Clear();
 
@@ -125,7 +130,7 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	m_Renderer->Resize(window_width, window_height);
 
 	// Update camera
-	m_Camera->UpdateAspectRatio(window_width, window_height);
+	m_FreeCamera->UpdateAspectRatio(window_width, window_height);
 }
 
 void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -145,7 +150,7 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		float yaw = relative_mouse_x * 0.01f;
 		float pitch = relative_mouse_y * 0.01f;
 
-		m_Camera->Rotate(pitch, yaw);
+		m_FreeCamera->Rotate(pitch, yaw);
 	}
 
 	previous_mouse_x = mouse_x;
@@ -175,10 +180,10 @@ void Application::ComputeModelViewProjectionMatrix(const DirectX::XMMATRIX& worl
 	// View Projection
 	DirectX::XMMATRIX matrix = DirectX::XMMatrixIdentity();
 	matrix *= world;
-	matrix *= m_Camera->GetView();
-	matrix *= m_Camera->GetProjection();
+	matrix *= m_FreeCamera->GetView();
+	matrix *= m_FreeCamera->GetProjection();
 
-	DirectX::XMFLOAT3 position = m_Camera->GetPosition();
+	DirectX::XMFLOAT3 position = m_FreeCamera->GetPosition();
 	DirectX::XMMATRIX inverse_model = DirectX::XMMatrixInverse(nullptr, world);
 	m_Shader->UpdateModelViewProjectionBuffer(matrix, inverse_model, position);
 }
