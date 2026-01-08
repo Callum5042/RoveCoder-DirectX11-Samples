@@ -19,42 +19,42 @@ void Floor::CreateVertexBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
-	const float width = 10.0f;
+	const float width = 20.0f;
 	const float height = 0.1f;
-	const float depth = 10.0f;
+	const float depth = 20.0f;
 
 	// Vertex data
 	std::vector<Vertex> vertices =
 	{
-		{ VertexPosition(-width, -height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f), VertexUV(0.0f, 1.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f), VertexUV(0.0f, 0.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f), VertexUV(1.0f, 0.0f) },
+		{ VertexPosition(+width, -height, -depth), VertexNormal(+0.0f, +0.0f, -1.0f), VertexUV(1.0f, 1.0f) },
 
-		{ VertexPosition(-width, -height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f), VertexUV(1.0f, 1.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f), VertexUV(0.0f, 1.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f), VertexUV(0.0f, 0.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexNormal(+0.0f, +0.0f, +1.0f), VertexUV(1.0f, 0.0f) },
 
-		{ VertexPosition(-width, +height, -depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexNormal(+0.0f, +1.0f, +0.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexNormal(+0.0f, +1.0f, +0.0f), VertexUV(0.0f, 1.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexNormal(+0.0f, +1.0f, +0.0f), VertexUV(0.0f, 0.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexNormal(+0.0f, +1.0f, +0.0f), VertexUV(1.0f, 0.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexNormal(+0.0f, +1.0f, +0.0f), VertexUV(1.0f, 1.0f) },
 
-		{ VertexPosition(-width, -height, -depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(+width, -height, -depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
-		{ VertexPosition(-width, -height, +depth), VertexNormal(+0.0f, -1.0f, +0.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexNormal(+0.0f, -1.0f, +0.0f), VertexUV(1.0f, 1.0f) },
+		{ VertexPosition(+width, -height, -depth), VertexNormal(+0.0f, -1.0f, +0.0f), VertexUV(0.0f, 1.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexNormal(+0.0f, -1.0f, +0.0f), VertexUV(0.0f, 0.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexNormal(+0.0f, -1.0f, +0.0f), VertexUV(1.0f, 0.0f) },
 
-		{ VertexPosition(-width, -height, +depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, +height, +depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, +height, -depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(-width, -height, -depth), VertexNormal(-1.0f, +0.0f, +0.0f) },
+		{ VertexPosition(-width, -height, +depth), VertexNormal(-1.0f, +0.0f, +0.0f), VertexUV(0.0f, 1.0f) },
+		{ VertexPosition(-width, +height, +depth), VertexNormal(-1.0f, +0.0f, +0.0f), VertexUV(0.0f, 0.0f) },
+		{ VertexPosition(-width, +height, -depth), VertexNormal(-1.0f, +0.0f, +0.0f), VertexUV(1.0f, 0.0f) },
+		{ VertexPosition(-width, -height, -depth), VertexNormal(-1.0f, +0.0f, +0.0f), VertexUV(1.0f, 1.0f) },
 
-		{ VertexPosition(+width, -height, -depth), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, +height, -depth), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, +height, +depth), VertexNormal(+1.0f, +0.0f, +0.0f) },
-		{ VertexPosition(+width, -height, +depth), VertexNormal(+1.0f, +0.0f, +0.0f) }
+		{ VertexPosition(+width, -height, -depth), VertexNormal(+1.0f, +0.0f, +0.0f), VertexUV(0.0f, 1.0f) },
+		{ VertexPosition(+width, +height, -depth), VertexNormal(+1.0f, +0.0f, +0.0f), VertexUV(0.0f, 0.0f) },
+		{ VertexPosition(+width, +height, +depth), VertexNormal(+1.0f, +0.0f, +0.0f), VertexUV(1.0f, 0.0f) },
+		{ VertexPosition(+width, -height, +depth), VertexNormal(+1.0f, +0.0f, +0.0f), VertexUV(1.0f, 1.0f) }
 	};
 
 	// Create vertex buffer

@@ -46,6 +46,9 @@ public:
 	// Viewport
 	void SetViewport(int width, int height);
 
+	// Bind raster state
+	void SetRasterState();
+
 	// Get render device
 	inline ID3D11Device* GetDevice() const { return m_Device.Get(); }
 
@@ -67,4 +70,8 @@ private:
 	ComPtr<ID3D11RenderTargetView> m_RenderTargetView = nullptr;
 	ComPtr<ID3D11DepthStencilView> m_DepthStencilView = nullptr;
 	void CreateRenderTargetAndDepthStencilView(int width, int height);
+
+	// Raster mode
+	ComPtr<ID3D11RasterizerState> m_RasterState;
+	void CreateRasterState();
 };

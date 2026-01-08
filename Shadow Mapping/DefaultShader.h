@@ -31,7 +31,7 @@ public:
 	void UpdateCameraBuffer(const XMMATRIX& view, const XMMATRIX& projection, const XMFLOAT3& position);
 
 	// Update the light buffer
-	void UpdateDirectionalLightBuffer(const XMFLOAT4& direction);
+	void UpdateDirectionalLightBuffer(const XMFLOAT4& direction, const XMMATRIX& light_view, const XMMATRIX& light_projection);
 
 private:
 	// Create vertex shader

@@ -26,6 +26,8 @@ namespace
 	struct DirectionalLightBuffer
 	{
 		XMFLOAT4 direction;
+		XMMATRIX light_view;
+		XMMATRIX light_projection;
 	};
 }
 
@@ -66,8 +68,9 @@ void DefaultShader::Use()
 	context->VSSetConstantBuffers(camera_buffer_slot, 1, m_CameraConstantBuffer.GetAddressOf());
 	context->PSSetConstantBuffers(camera_buffer_slot, 1, m_CameraConstantBuffer.GetAddressOf());
 
-	// Bind the world constant buffer to the vertex shader
+	// Bind the world constant buffer to the vertex and pixel shader
 	const int light_buffer_slot = 2;
+	context->VSSetConstantBuffers(light_buffer_slot, 1, m_DirectionalLightBuffer.GetAddressOf());
 	context->PSSetConstantBuffers(light_buffer_slot, 1, m_DirectionalLightBuffer.GetAddressOf());
 }
 
@@ -83,6 +86,7 @@ void DefaultShader::LoadVertexShader()
 	{
 		{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 		{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+		{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 24, D3D11_INPUT_PER_VERTEX_DATA, 0 },
 	};
 
 	UINT number_elements = ARRAYSIZE(layout);
@@ -155,10 +159,12 @@ void DefaultShader::CreateDirectionalLightBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_DirectionalLightBuffer.ReleaseAndGetAddressOf()));
 }
 
-void DefaultShader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction)
+void DefaultShader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction, const XMMATRIX& light_view, const XMMATRIX& light_projection)
 {
 	DirectionalLightBuffer buffer = {};
 	buffer.direction = direction;
+	buffer.light_view = XMMatrixTranspose(light_view);
+	buffer.light_projection = XMMatrixTranspose(light_projection);
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_DirectionalLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);

@@ -18,6 +18,7 @@ void Renderer::Create()
 	CreateSwapChain(window_width, window_height);
 	CreateRenderTargetAndDepthStencilView(window_width, window_height);
 	SetViewport(window_width, window_height);
+	CreateRasterState();
 }
 
 void Renderer::CreateDeviceAndContext()
@@ -158,6 +159,11 @@ void Renderer::SetViewport(int width, int height)
 	m_DeviceContext->RSSetViewports(1, &viewport);
 }
 
+void Renderer::SetRasterState()
+{
+	m_DeviceContext->RSSetState(m_RasterState.Get());
+}
+
 void Renderer::Clear()
 {
 	// Clear the render target view to the chosen colour
@@ -205,4 +211,17 @@ void Renderer::Resize(int width, int height)
 
 	// Sets a new viewport with the new window size
 	SetViewport(width, height);
+}
+
+void Renderer::CreateRasterState()
+{
+	D3D11_RASTERIZER_DESC desc = {};
+	desc.AntialiasedLineEnable = false;
+	desc.CullMode = D3D11_CULL_BACK;
+	desc.FillMode = D3D11_FILL_SOLID;
+	desc.DepthClipEnable = false;
+	desc.FrontCounterClockwise = false;
+	desc.MultisampleEnable = false;
+
+	DX::Check(m_Device->CreateRasterizerState(&desc, m_RasterState.ReleaseAndGetAddressOf()));
 }

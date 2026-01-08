@@ -44,9 +44,6 @@ Application::Application()
 	m_DefaultShader = std::make_unique<DefaultShader>(m_Renderer.get());
 	m_DefaultShader->Load();
 
-	XMFLOAT4 light_direction = DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f);
-	m_DefaultShader->UpdateDirectionalLightBuffer(light_direction);
-
 	// Create shader
 	m_LineShader = std::make_unique<LineShader>(m_Renderer.get());
 	m_LineShader->Load();
@@ -55,7 +52,9 @@ Application::Application()
 	m_OrbitalCamera = std::make_unique<OrbitalCamera>(window_width, window_height);
 	m_FreeCamera = std::make_unique<FreeCamera>(window_width, window_height);
 	m_ShadowCamera = std::make_unique<ShadowCamera>(window_width, window_height);
-	m_ShadowCamera->LookAt(XMLoadFloat4(&light_direction));
+
+	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
+	m_Renderer->GetDeviceContext()->PSSetSamplers(0, 1, &shadow_sampler);
 
 	// Print some info
 	std::cout << "1) Orbital camera\n2) Free (visualisation) camera\n3) Shadow camera" << '\n';
@@ -91,6 +90,11 @@ int Application::Execute()
 		}
 		else
 		{
+			// Update light buffer
+			XMFLOAT4 light_direction = DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f);
+			m_DefaultShader->UpdateDirectionalLightBuffer(light_direction, m_ShadowCamera->GetView(), m_ShadowCamera->GetProjection());
+			m_ShadowCamera->LookAt(XMLoadFloat4(&light_direction));
+
 			// Update camera
 			if (m_CameraToggle == CameraToggle::Free)
 			{
@@ -167,6 +171,10 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 
 void Application::RenderShadows()
 {
+	// Unbind shadow map from the pipeline so we can render the depth
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+	m_Renderer->GetDeviceContext()->PSSetShaderResources(0, 1, &nullSRV);
+
 	// Bind the shadow map render target
 	m_ShadowMap->Bind();
 
@@ -197,6 +205,9 @@ void Application::RenderScene()
 	int width, height;
 	m_Window->GetSize(&width, &height);
 	m_Renderer->SetViewport(width, height);
+
+	// Bind default raster
+	m_Renderer->SetRasterState();
 
 	// Clear the buffers
 	m_Renderer->Clear();

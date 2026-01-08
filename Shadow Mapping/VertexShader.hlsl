@@ -16,5 +16,13 @@ PixelInput main(VertexInput input)
     // Transform the normals by the inverse world space
     pixel_input.normal = mul(input.normal, (float3x3) cModelTransformInverse).xyz;
 
+    // Pass UV
+    pixel_input.uv = input.uv;
+    
+    // Calculate light position - used to sample the shadow map
+    pixel_input.lightViewProjection = mul(float4(input.position, 1.0f), cModelTransform);
+    pixel_input.lightViewProjection = mul(pixel_input.lightViewProjection, cLightView);
+    pixel_input.lightViewProjection = mul(pixel_input.lightViewProjection, cLightProjection);
+    
     return pixel_input;
 }

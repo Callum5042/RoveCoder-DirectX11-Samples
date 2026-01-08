@@ -1,6 +1,6 @@
 #include "ShaderData.hlsli"
 
-float4 CalculateDirectionalLighting(float3 position, float3 normal)
+float4 CalculateDirectionalLighting(float3 position, float3 normal, float shadow_factor)
 {
     float4 diffuse_light_colour = float4(0.6f, 0.6f, 0.6f, 1.0f);
     float4 ambient_light_colour = float4(0.1f, 0.1f, 0.1f, 1.0f);
@@ -30,7 +30,27 @@ float4 CalculateDirectionalLighting(float3 position, float3 normal)
     }
 
 	// Combine the lights
-    return diffuse_light + ambient_light + specular_light;
+    return ambient_light + ((diffuse_light + specular_light) * shadow_factor);
+}
+
+float CalculateShadowFactor(PixelInput input)
+{
+	// Calculate pixels depth
+    float pixel_depth = input.lightViewProjection.z / input.lightViewProjection.w;
+    if (pixel_depth > 1.0f)
+    {
+        return 1.0f;
+    }
+
+	// Calculate shadow texture coordinates
+    float2 tex_coords;
+    tex_coords = input.lightViewProjection.xy / input.lightViewProjection.w;
+    tex_coords.x = +tex_coords.x * 0.5f + 0.5f;
+    tex_coords.y = -tex_coords.y * 0.5f + 0.5f;
+
+    float closestDepth = gShadowMap.SampleCmpLevelZero(gShadowSampler, tex_coords.xy, pixel_depth).r;
+    float shadow = pixel_depth > closestDepth ? 1.0 : 0.0;
+    return (1.0 - shadow);
 }
 
 // Entry point for the vertex shader - will be executed for each pixel
@@ -38,10 +58,14 @@ float4 main(PixelInput input) : SV_TARGET
 {
     // Interpolating normal can unnormalize it, so normalize it.
     input.normal = normalize(input.normal);
-
+    
+    // Shadow
+    float shadow_factor = CalculateShadowFactor(input);
+    
 	// Calculate directional light
-    float4 light_colour = CalculateDirectionalLighting(input.position.xyz, input.normal);
-
+    float4 light_colour = CalculateDirectionalLighting(input.position.xyz, input.normal, shadow_factor);
+    
+    // Gammer correction
     light_colour = pow(light_colour, 1.0f / 2.2f);
     
     return light_colour;

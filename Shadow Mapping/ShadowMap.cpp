@@ -4,6 +4,7 @@ ShadowMap::ShadowMap(Renderer* renderer) : m_Renderer(renderer)
 {
 	this->CreateShadowMapTexture();
 	this->CreateShadowMapTexture();
+	this->CreateRasterModeBackCull();
 	this->CreateShadowSampler();
 }
 
@@ -28,10 +29,10 @@ void ShadowMap::Bind()
 	viewport.TopLeftY = 0;
 
 	// Bind viewport to the pipline's rasterization stage
-	m_Renderer->GetDeviceContext()->RSSetViewports(1, &viewport);
+	context->RSSetViewports(1, &viewport);
 
 	// Set raster state
-	// m_Renderer->GetDeviceContext()->RSSetState(m_RasterModelBackShadow.Get());
+	context->RSSetState(m_RasterModelBackShadow.Get());
 }
 
 void ShadowMap::CreateShadowMapTexture()
@@ -78,9 +79,9 @@ void ShadowMap::CreateRasterModeBackCull()
 	desc.FrontCounterClockwise = false;
 	desc.MultisampleEnable = false;
 
-	desc.DepthBias = 100;
+	desc.DepthBias = 20;
 	desc.DepthBiasClamp = 0.01f;
-	desc.SlopeScaledDepthBias = 1.0f;
+	desc.SlopeScaledDepthBias = 2.0f;
 
 	ID3D11Device* device = m_Renderer->GetDevice();
 	DX::Check(device->CreateRasterizerState(&desc, m_RasterModelBackShadow.ReleaseAndGetAddressOf()));

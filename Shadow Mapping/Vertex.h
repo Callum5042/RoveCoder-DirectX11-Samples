@@ -20,6 +20,15 @@ struct VertexNormal
 	float normal_z = 0;
 };
 
+struct VertexUV
+{
+	VertexUV() {}
+	VertexUV(float u, float v) : u(u), v(v) {}
+
+	float u = 0;
+	float v = 0;
+};
+
 struct VertexColour
 {
 	VertexColour() {}
@@ -34,6 +43,7 @@ struct Vertex
 {
 	VertexPosition position;
 	VertexNormal normal;
+	VertexUV uv;
 };
 
 struct LineVertex
