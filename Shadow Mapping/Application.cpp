@@ -117,6 +117,8 @@ int Application::Execute()
 			{
 				m_LineShader->Use();
 				this->VisualizeCameraFrustum();
+				this->VisualizeShadowCamera();
+				this->VisualizeLightDirection();
 			}
 
 			// Display the rendered scene
@@ -325,9 +327,72 @@ void Application::VisualizeCameraFrustum()
 		v++;
 	}
 
-	// Thing
-	BoundingBox bounding_box;
-	BoundingBox::CreateFromPoints(bounding_box, line_vertices.size(), reinterpret_cast<const XMFLOAT3*>(line_vertices.data()), sizeof(LineVertex));
+	// Map lines to the buffer
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
+	D3D11_MAPPED_SUBRESOURCE resource = {};
+	DX::Check(context->Map(m_LineBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource));
+	std::memcpy(resource.pData, line_vertices.data(), line_vertices.size() * sizeof(Vertex));
+	context->Unmap(m_LineBuffer.Get(), 0);
+
+	// Render
+	this->RenderDebugLines();
+}
+
+void Application::VisualizeShadowCamera()
+{
+	// Calculate shadow bounding box
+	float w = 10.0f;
+	float h = 10.0f;
+	float n = 1.0f;
+	float f = 20.0f;
+
+	XMFLOAT3 cornersVS[8] =
+	{
+		{ -w, -h, n }, { -w,  h, n },
+		{  w,  h, n }, {  w, -h, n },
+
+		{ -w, -h, f }, { -w,  h, f },
+		{  w,  h, f }, {  w, -h, f },
+	};
+
+	BoundingOrientedBox bounding_box;
+	BoundingOrientedBox::CreateFromPoints(bounding_box, 8, cornersVS, sizeof(XMFLOAT3));
+
+	XMMATRIX invView = XMMatrixInverse(nullptr, m_ShadowCamera->GetView());
+	bounding_box.Transform(bounding_box, invView);
+
+
+
+	// Calculate the edges to render the lines
+	std::array<XMFLOAT3, 8> corners;
+	bounding_box.GetCorners(corners.data());
+
+	// Build line list (24 vertices)
+	std::array<LineVertex, 24> line_vertices;
+
+	static const uint32_t FrustumEdges[12][2] =
+	{
+		{0,1}, {1,2}, {2,3}, {3,0}, // Near
+		{4,5}, {5,6}, {6,7}, {7,4}, // Far
+		{0,4}, {1,5}, {2,6}, {3,7}  // Connections
+	};
+
+	int v = 0;
+	for (auto& edge : FrustumEdges)
+	{
+		line_vertices[v].position.x = corners[edge[0]].x;
+		line_vertices[v].position.y = corners[edge[0]].y;
+		line_vertices[v].position.z = corners[edge[0]].z;
+		line_vertices[v].colour = VertexColour(0.0f, 1.0f, 0.0f);
+		v++;
+
+		line_vertices[v].position.x = corners[edge[1]].x;
+		line_vertices[v].position.y = corners[edge[1]].y;
+		line_vertices[v].position.z = corners[edge[1]].z;
+		line_vertices[v].colour = VertexColour(0.0f, 1.0f, 0.0f);
+		v++;
+	}
 
 	// Map lines to the buffer
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
@@ -339,6 +404,36 @@ void Application::VisualizeCameraFrustum()
 
 	// Render
 	this->RenderDebugLines();
+}
+
+void Application::VisualizeLightDirection()
+{
+	XMFLOAT3 shadow_camera_position = m_ShadowCamera->GetPosition();
+
+	// Build light line
+	std::array<LineVertex, 2> line_vertices;
+	line_vertices[0].position = VertexPosition(0.0f, 0.0f, 0.0f);
+	line_vertices[0].colour = VertexColour(1.0f, 1.0f, 0.0f);
+
+	line_vertices[1].position = VertexPosition(shadow_camera_position.x, shadow_camera_position.y, shadow_camera_position.z);
+	line_vertices[1].colour = VertexColour(1.0f, 1.0f, 0.0f);
+
+	// Map lines to the buffer
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
+	D3D11_MAPPED_SUBRESOURCE resource = {};
+	DX::Check(context->Map(m_LineBuffer.Get(), 0, D3D11_MAP_WRITE_DISCARD, 0, &resource));
+	std::memcpy(resource.pData, line_vertices.data(), line_vertices.size() * sizeof(Vertex));
+	context->Unmap(m_LineBuffer.Get(), 0);
+
+	// Render
+	UINT stride = sizeof(LineVertex);
+	UINT offset = 0;
+
+	context->IASetVertexBuffers(0, 1, m_LineBuffer.GetAddressOf(), &stride, &offset);
+	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
+
+	context->Draw(2, 0);
 }
 
 void Application::CreateLineBuffer()

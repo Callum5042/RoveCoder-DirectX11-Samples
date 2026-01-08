@@ -15,15 +15,17 @@ ShadowCamera::ShadowCamera(int width, int height)
 
 void ShadowCamera::LookAt(const XMVECTOR& light_direction)
 {
+	XMVECTOR direction = XMVector3Normalize(light_direction);
+
 	const XMVECTOR global_up = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
 
 	const float radius = 10.0f;
-	XMVECTOR position = XMVector3Normalize(-light_direction) * radius;
+	XMVECTOR position = -direction * radius;
 	XMStoreFloat3(&m_Position, position);
 
 	XMVECTOR eye = position;
-	XMVECTOR at = light_direction;
-	m_View = XMMatrixLookToLH(eye, at, global_up);
+	XMVECTOR to = direction;
+	m_View = XMMatrixLookToLH(eye, to, global_up);
 }
 
 void ShadowCamera::SetPosition(const XMFLOAT3& position)

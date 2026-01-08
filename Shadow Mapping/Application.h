@@ -93,6 +93,8 @@ private:
 
 	// Visualize bounding frustum
 	void VisualizeCameraFrustum();
+	void VisualizeShadowCamera();
+	void VisualizeLightDirection();
 
 	// Render debug lines
 	ComPtr<ID3D11Buffer> m_LineBuffer;
