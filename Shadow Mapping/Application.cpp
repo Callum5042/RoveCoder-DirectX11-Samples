@@ -6,6 +6,7 @@
 #include "LineShader.h"
 #include "OrbitalCamera.h"
 #include "FreeCamera.h"
+#include "ShadowCamera.h"
 #include "Model.h"
 #include "Floor.h"
 #include "Vertex.h"
@@ -38,7 +39,8 @@ Application::Application()
 	m_DefaultShader = std::make_unique<DefaultShader>(m_Renderer.get());
 	m_DefaultShader->Load();
 
-	m_DefaultShader->UpdateDirectionalLightBuffer(DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f));
+	XMFLOAT4 light_direction = DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f);
+	m_DefaultShader->UpdateDirectionalLightBuffer(light_direction);
 
 	// Create shader
 	m_LineShader = std::make_unique<LineShader>(m_Renderer.get());
@@ -47,6 +49,8 @@ Application::Application()
 	// Create camera
 	m_OrbitalCamera = std::make_unique<OrbitalCamera>(window_width, window_height);
 	m_FreeCamera = std::make_unique<FreeCamera>(window_width, window_height);
+	m_ShadowCamera = std::make_unique<ShadowCamera>(window_width, window_height);
+	m_ShadowCamera->LookAt(XMLoadFloat4(&light_direction));
 
 	// Print some info
 	std::cout << "1) Orbital camera\n2) Free (visualisation) camera\n3) Shadow camera" << '\n';
@@ -271,6 +275,15 @@ void Application::UpdateCameraConstantBuffer()
 		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
 		m_LineShader->UpdateCameraBuffer(view, projection, position);
 	}
+	else if (m_CameraToggle == CameraToggle::Shadow)
+	{
+		XMMATRIX view = m_ShadowCamera->GetView();
+		XMMATRIX projection = m_ShadowCamera->GetProjection();
+		XMFLOAT3 position = m_ShadowCamera->GetPosition();
+
+		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
+		m_LineShader->UpdateCameraBuffer(view, projection, position);
+	}
 }
 
 void Application::VisualizeCameraFrustum()
@@ -311,6 +324,10 @@ void Application::VisualizeCameraFrustum()
 		line_vertices[v].colour = VertexColour(1.0f, 0.0f, 0.0f);
 		v++;
 	}
+
+	// Thing
+	BoundingBox bounding_box;
+	BoundingBox::CreateFromPoints(bounding_box, line_vertices.size(), reinterpret_cast<const XMFLOAT3*>(line_vertices.data()), sizeof(LineVertex));
 
 	// Map lines to the buffer
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();

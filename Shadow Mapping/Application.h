@@ -26,6 +26,7 @@ class LineShader;
 
 class OrbitalCamera;
 class FreeCamera;
+class ShadowCamera;
 
 class Model;
 class Floor;
@@ -67,6 +68,7 @@ private:
 	CameraToggle m_CameraToggle = CameraToggle::Orbital;
 	std::unique_ptr<OrbitalCamera> m_OrbitalCamera = nullptr;
 	std::unique_ptr<FreeCamera> m_FreeCamera = nullptr;
+	std::unique_ptr<ShadowCamera> m_ShadowCamera = nullptr;
 
 	// Internals
 	bool m_Running = true;
