@@ -43,6 +43,9 @@ public:
 	// Resizing
 	void Resize(int width, int height);
 
+	// Viewport
+	void SetViewport(int width, int height);
+
 	// Get render device
 	inline ID3D11Device* GetDevice() const { return m_Device.Get(); }
 
@@ -64,7 +67,4 @@ private:
 	ComPtr<ID3D11RenderTargetView> m_RenderTargetView = nullptr;
 	ComPtr<ID3D11DepthStencilView> m_DepthStencilView = nullptr;
 	void CreateRenderTargetAndDepthStencilView(int width, int height);
-
-	// Viewport
-	void SetViewport(int width, int height);
 };

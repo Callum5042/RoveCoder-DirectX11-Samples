@@ -162,6 +162,7 @@
     <ClCompile Include="Renderer.cpp" />
     <ClCompile Include="DefaultShader.cpp" />
     <ClCompile Include="ShadowCamera.cpp" />
+    <ClCompile Include="ShadowMap.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Window.cpp" />
   </ItemGroup>
@@ -176,6 +177,7 @@
     <ClInclude Include="Renderer.h" />
     <ClInclude Include="DefaultShader.h" />
     <ClInclude Include="ShadowCamera.h" />
+    <ClInclude Include="ShadowMap.h" />
     <ClInclude Include="Timer.h" />
     <ClInclude Include="Vertex.h" />
     <ClInclude Include="Window.h" />

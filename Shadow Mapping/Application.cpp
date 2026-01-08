@@ -10,6 +10,7 @@
 #include "Model.h"
 #include "Floor.h"
 #include "Vertex.h"
+#include "ShadowMap.h"
 
 #include <DirectXMath.h>
 #include <DirectXCollision.h>
@@ -18,6 +19,7 @@ using namespace DirectX;
 #include <windowsx.h>
 #include <iostream>
 #include <array>
+#include <string>
 
 Application::Application()
 {
@@ -31,6 +33,9 @@ Application::Application()
 	// Create renderer
 	m_Renderer = std::make_unique<Renderer>(this);
 	m_Renderer->Create();
+
+	// Create shadow map
+	m_ShadowMap = std::make_unique<ShadowMap>(m_Renderer.get());
 
 	// Used for visualiation
 	this->CreateLineBuffer();
@@ -92,34 +97,11 @@ int Application::Execute()
 				m_FreeCamera->Move(m_Timer.DeltaTime());
 			}
 
-			// Clear the buffers
-			m_Renderer->Clear();
+			// Must render the scene to generate the shadow map
+			this->RenderShadows();
 
-			// Bind the shader to the pipeline
-			m_DefaultShader->Use();
-
-			// Set camera constant buffer
-			this->UpdateCameraConstantBuffer();
-
-			// Render the floor
-			DirectX::XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
-			floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
-			this->UpdateModelConstantBuffer(floor_transform);
-			m_Floor->Render();
-
-			// Render the model
-			DirectX::XMMATRIX model_transform = DirectX::XMMatrixIdentity();
-			this->UpdateModelConstantBuffer(model_transform);
-			m_Model->Render();
-
-			// Visualize orbitial camera frustum
-			if (m_CameraToggle == CameraToggle::Free)
-			{
-				m_LineShader->Use();
-				this->VisualizeCameraFrustum();
-				this->VisualizeShadowCamera();
-				this->VisualizeLightDirection();
-			}
+			// Render the scene again this time applying the shadow map
+			this->RenderScene();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -181,6 +163,77 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 	}
 
 	return DefWindowProc(hwnd, msg, wParam, lParam);
+}
+
+void Application::RenderShadows()
+{
+	// Bind the shadow map render target
+	m_ShadowMap->Bind();
+
+	// Bind the shader to the pipeline
+	m_DefaultShader->Use();
+
+	// Set camera constant buffer from the shadow camera
+	XMMATRIX view = m_ShadowCamera->GetView();
+	XMMATRIX projection = m_ShadowCamera->GetProjection();
+	XMFLOAT3 position = m_ShadowCamera->GetPosition();
+	m_DefaultShader->UpdateCameraBuffer(view, projection, position);
+
+	// Render the floor
+	XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
+	floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
+	this->UpdateModelConstantBuffer(floor_transform);
+	m_Floor->Render();
+
+	// Render the model
+	XMMATRIX model_transform = DirectX::XMMatrixIdentity();
+	this->UpdateModelConstantBuffer(model_transform);
+	m_Model->Render();
+}
+
+void Application::RenderScene()
+{
+	// Set viewport back to scene
+	int width, height;
+	m_Window->GetSize(&width, &height);
+	m_Renderer->SetViewport(width, height);
+
+	// Clear the buffers
+	m_Renderer->Clear();
+
+	// Bind the shader to the pipeline
+	m_DefaultShader->Use();
+
+	// Set camera constant buffer
+	this->UpdateCameraConstantBuffer();
+
+	// Bind shadow map to the pipeline
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+	ID3D11ShaderResourceView* shadowmap_texture = m_ShadowMap->GetShadowMapTexture();
+	context->PSSetShaderResources(0, 1, &shadowmap_texture);
+
+	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
+	context->PSSetSamplers(0, 1, &shadow_sampler);
+
+	// Render the floor
+	XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
+	floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
+	this->UpdateModelConstantBuffer(floor_transform);
+	m_Floor->Render();
+
+	// Render the model
+	XMMATRIX model_transform = DirectX::XMMatrixIdentity();
+	this->UpdateModelConstantBuffer(model_transform);
+	m_Model->Render();
+
+	// Visualize orbitial camera frustum
+	if (m_CameraToggle == CameraToggle::Free)
+	{
+		m_LineShader->Use();
+		this->VisualizeCameraFrustum();
+		this->VisualizeShadowCamera();
+		this->VisualizeLightDirection();
+	}
 }
 
 void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -304,7 +357,7 @@ void Application::VisualizeCameraFrustum()
 	// Build line list (24 vertices)
 	std::array<LineVertex, 24> line_vertices;
 
-	static const uint32_t FrustumEdges[12][2] =
+	static const uint32_t edges[12][2] =
 	{
 		{0,1}, {1,2}, {2,3}, {3,0}, // Near
 		{4,5}, {5,6}, {6,7}, {7,4}, // Far
@@ -312,7 +365,7 @@ void Application::VisualizeCameraFrustum()
 	};
 
 	int v = 0;
-	for (auto& edge : FrustumEdges)
+	for (auto& edge : edges)
 	{
 		line_vertices[v].position.x = corners[edge[0]].x;
 		line_vertices[v].position.y = corners[edge[0]].y;
@@ -359,10 +412,8 @@ void Application::VisualizeShadowCamera()
 	BoundingOrientedBox bounding_box;
 	BoundingOrientedBox::CreateFromPoints(bounding_box, 8, cornersVS, sizeof(XMFLOAT3));
 
-	XMMATRIX invView = XMMatrixInverse(nullptr, m_ShadowCamera->GetView());
-	bounding_box.Transform(bounding_box, invView);
-
-
+	XMMATRIX view_inverse = XMMatrixInverse(nullptr, m_ShadowCamera->GetView());
+	bounding_box.Transform(bounding_box, view_inverse);
 
 	// Calculate the edges to render the lines
 	std::array<XMFLOAT3, 8> corners;
@@ -371,7 +422,7 @@ void Application::VisualizeShadowCamera()
 	// Build line list (24 vertices)
 	std::array<LineVertex, 24> line_vertices;
 
-	static const uint32_t FrustumEdges[12][2] =
+	static const uint32_t edges[12][2] =
 	{
 		{0,1}, {1,2}, {2,3}, {3,0}, // Near
 		{4,5}, {5,6}, {6,7}, {7,4}, // Far
@@ -379,7 +430,7 @@ void Application::VisualizeShadowCamera()
 	};
 
 	int v = 0;
-	for (auto& edge : FrustumEdges)
+	for (auto& edge : edges)
 	{
 		line_vertices[v].position.x = corners[edge[0]].x;
 		line_vertices[v].position.y = corners[edge[0]].y;
