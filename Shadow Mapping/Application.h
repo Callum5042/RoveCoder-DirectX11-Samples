@@ -25,8 +25,8 @@ class ShadowMap;
 class DefaultShader;
 class LineShader;
 
-class OrbitalCamera;
 class FreeCamera;
+class VisualCamera;
 class ShadowCamera;
 
 class Model;
@@ -34,8 +34,8 @@ class Floor;
 
 enum class CameraToggle
 {
+	Visual,
 	Free,
-	Orbital,
 	Shadow
 };
 
@@ -72,9 +72,9 @@ private:
 	std::unique_ptr<LineShader> m_LineShader = nullptr;
 
 	// Cameras
-	CameraToggle m_CameraToggle = CameraToggle::Orbital;
-	std::unique_ptr<OrbitalCamera> m_OrbitalCamera = nullptr;
+	CameraToggle m_CameraToggle = CameraToggle::Free;
 	std::unique_ptr<FreeCamera> m_FreeCamera = nullptr;
+	std::unique_ptr<VisualCamera> m_VisualCamera = nullptr;
 	std::unique_ptr<ShadowCamera> m_ShadowCamera = nullptr;
 
 	// Internals

@@ -3,7 +3,6 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-// Perspective free camera
 class FreeCamera
 {
 public:

@@ -4,8 +4,8 @@
 #include "Renderer.h"
 #include "DefaultShader.h"
 #include "LineShader.h"
-#include "OrbitalCamera.h"
 #include "FreeCamera.h"
+#include "VisualCamera.h"
 #include "ShadowCamera.h"
 #include "Model.h"
 #include "Floor.h"
@@ -49,15 +49,15 @@ Application::Application()
 	m_LineShader->Load();
 
 	// Create camera
-	m_OrbitalCamera = std::make_unique<OrbitalCamera>(window_width, window_height);
 	m_FreeCamera = std::make_unique<FreeCamera>(window_width, window_height);
+	m_VisualCamera = std::make_unique<VisualCamera>(window_width, window_height);
 	m_ShadowCamera = std::make_unique<ShadowCamera>(window_width, window_height);
 
 	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
 	m_Renderer->GetDeviceContext()->PSSetSamplers(0, 1, &shadow_sampler);
 
 	// Print some info
-	std::cout << "1) Orbital camera\n2) Free (visualisation) camera\n3) Shadow camera" << '\n';
+	std::cout << "1) Free camera\n2) Visual camera\n3) Shadow camera" << '\n';
 }
 
 int Application::Execute()
@@ -96,7 +96,11 @@ int Application::Execute()
 			m_ShadowCamera->LookAt(XMLoadFloat4(&light_direction));
 
 			// Update camera
-			if (m_CameraToggle == CameraToggle::Free)
+			if (m_CameraToggle == CameraToggle::Visual)
+			{
+				m_VisualCamera->Move(m_Timer.DeltaTime());
+			}
+			else if (m_CameraToggle == CameraToggle::Free)
 			{
 				m_FreeCamera->Move(m_Timer.DeltaTime());
 			}
@@ -137,20 +141,19 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 			switch (wParam)
 			{
 				case '1':
-					if (m_CameraToggle != CameraToggle::Orbital)
-					{
-						std::cout << "Orbital camera\n";
-						m_CameraToggle = CameraToggle::Orbital;
-					}
-					break;
-				case '2':
 					if (m_CameraToggle != CameraToggle::Free)
 					{
 						std::cout << "Free camera\n";
 						m_CameraToggle = CameraToggle::Free;
+					}
+					break;
+				case '2':
+					if (m_CameraToggle != CameraToggle::Visual)
+					{
+						std::cout << "Visual camera\n";
+						m_CameraToggle = CameraToggle::Visual;
 
-						m_FreeCamera->SetPosition(m_OrbitalCamera->GetPosition());
-						m_FreeCamera->SetPitchAndYaw(m_OrbitalCamera->GetPitch(), m_OrbitalCamera->GetYaw());
+						m_VisualCamera->SetPosition(m_FreeCamera->GetPosition());
 					}
 					break;
 				case '3':
@@ -225,18 +228,32 @@ void Application::RenderMainPass()
 void Application::RenderScene()
 {
 	// Render the floor
-	XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
-	floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
+	XMMATRIX floor_transform = XMMatrixIdentity();
+	floor_transform *= XMMatrixTranslation(0.0f, -1.0f, 0.0f);
 	this->UpdateModelConstantBuffer(floor_transform);
 	m_Floor->Render();
 
-	// Render the model
-	XMMATRIX model_transform = DirectX::XMMatrixIdentity();
+	// Render the model as giant
+	XMMATRIX model_transform = XMMatrixIdentity();
+	model_transform *= XMMatrixScaling(10.0f, 10.0f, 10.0f);
+	model_transform *= XMMatrixTranslation(0.0f, 5.0f, -50.0f);
 	this->UpdateModelConstantBuffer(model_transform);
 	m_Model->Render();
 
+	// Render small models
+	for (int x = -50; x <= 50; x += 8)
+	{
+		for (int w = -50; w <= 50; w += 8)
+		{
+			model_transform = XMMatrixIdentity();
+			model_transform *= XMMatrixTranslation(x, 0.0f, w);
+			this->UpdateModelConstantBuffer(model_transform);
+			m_Model->Render();
+		}
+	}
+
 	// Visualize orbitial camera frustum
-	if (m_CameraToggle == CameraToggle::Free)
+	if (m_CameraToggle == CameraToggle::Visual)
 	{
 		m_LineShader->Use();
 		this->VisualizeCameraFrustum();
@@ -259,8 +276,8 @@ void Application::OnResized(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	m_Renderer->Resize(window_width, window_height);
 
 	// Update camera
-	m_OrbitalCamera->UpdateAspectRatio(window_width, window_height);
 	m_FreeCamera->UpdateAspectRatio(window_width, window_height);
+	m_VisualCamera->UpdateAspectRatio(window_width, window_height);
 }
 
 void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
@@ -281,13 +298,13 @@ void Application::OnMouseMove(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		float yaw = relative_mouse_x * rotate_speed * m_Timer.DeltaTime();
 		float pitch = relative_mouse_y * rotate_speed * m_Timer.DeltaTime();
 
-		if (m_CameraToggle == CameraToggle::Free)
+		if (m_CameraToggle == CameraToggle::Visual)
+		{
+			m_VisualCamera->Rotate(pitch, yaw);
+		}
+		else if (m_CameraToggle == CameraToggle::Free)
 		{
 			m_FreeCamera->Rotate(pitch, yaw);
-		}
-		else if (m_CameraToggle == CameraToggle::Orbital)
-		{
-			m_OrbitalCamera->Rotate(pitch, yaw);
 		}
 	}
 
@@ -321,20 +338,20 @@ void Application::UpdateModelConstantBuffer(const DirectX::XMMATRIX& world)
 
 void Application::UpdateCameraConstantBuffer()
 {
-	if (m_CameraToggle == CameraToggle::Free)
+	if (m_CameraToggle == CameraToggle::Visual)
 	{
-		XMMATRIX view = m_FreeCamera->GetView();
-		XMMATRIX projection = m_FreeCamera->GetProjection();
-		XMFLOAT3 position = m_FreeCamera->GetPosition();
+		XMMATRIX view = m_VisualCamera->GetView();
+		XMMATRIX projection = m_VisualCamera->GetProjection();
+		XMFLOAT3 position = m_VisualCamera->GetPosition();
 
 		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
 		m_LineShader->UpdateCameraBuffer(view, projection, position);
 	}
-	else if (m_CameraToggle == CameraToggle::Orbital)
+	else if (m_CameraToggle == CameraToggle::Free)
 	{
-		XMMATRIX view = m_OrbitalCamera->GetView();
-		XMMATRIX projection = m_OrbitalCamera->GetProjection();
-		XMFLOAT3 position = m_OrbitalCamera->GetPosition();
+		XMMATRIX view = m_FreeCamera->GetView();
+		XMMATRIX projection = m_FreeCamera->GetProjection();
+		XMFLOAT3 position = m_FreeCamera->GetPosition();
 
 		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
 		m_LineShader->UpdateCameraBuffer(view, projection, position);
@@ -354,9 +371,9 @@ void Application::VisualizeCameraFrustum()
 {
 	// Get bounding frustum from camera
 	BoundingFrustum bounding_frustum;
-	BoundingFrustum::CreateFromMatrix(bounding_frustum, m_OrbitalCamera->GetProjection());
+	BoundingFrustum::CreateFromMatrix(bounding_frustum, m_FreeCamera->GetProjection());
 
-	XMMATRIX view_inverse = XMMatrixInverse(nullptr, m_OrbitalCamera->GetView());
+	XMMATRIX view_inverse = XMMatrixInverse(nullptr, m_FreeCamera->GetView());
 	bounding_frustum.Transform(bounding_frustum, view_inverse);
 
 	// Calculate the edges to render the lines

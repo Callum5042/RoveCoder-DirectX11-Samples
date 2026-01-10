@@ -11,6 +11,9 @@ void ShadowMap::Bind()
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
+	// Unbind the pixel shader as we don't use it for simple shadows
+	context->PSSetShader(nullptr, nullptr, 0);
+
 	// Clear the render target view to the chosen colour
 	context->ClearDepthStencilView(m_DepthStencilView.Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 

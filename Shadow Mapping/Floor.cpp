@@ -19,9 +19,9 @@ void Floor::CreateVertexBuffer()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 
-	const float width = 20.0f;
+	const float width = 100.0f;
 	const float height = 0.1f;
-	const float depth = 20.0f;
+	const float depth = 100.0f;
 
 	// Vertex data
 	std::vector<Vertex> vertices =

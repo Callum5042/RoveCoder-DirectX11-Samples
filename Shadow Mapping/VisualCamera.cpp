@@ -1,4 +1,4 @@
-#include "FreeCamera.h"
+#include "VisualCamera.h"
 #include <algorithm>
 
 #include <DirectXMath.h>
@@ -7,7 +7,7 @@ using namespace DirectX;
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
 
-FreeCamera::FreeCamera(int width, int height)
+VisualCamera::VisualCamera(int width, int height)
 {
 	constexpr float pitch_radians = XMConvertToRadians(30.0f);
 	this->UpdateAspectRatio(width, height);
@@ -16,7 +16,7 @@ FreeCamera::FreeCamera(int width, int height)
 	m_Position = XMFLOAT3(0.0f, 5.0f, -10.0f);
 }
 
-void FreeCamera::Rotate(float pitch_radians, float yaw_radians)
+void VisualCamera::Rotate(float pitch_radians, float yaw_radians)
 {
 	m_PitchRadians += pitch_radians;
 	m_YawRadians += yaw_radians;
@@ -36,7 +36,7 @@ void FreeCamera::Rotate(float pitch_radians, float yaw_radians)
 	m_View = XMMatrixLookToLH(eye, at, up);
 }
 
-void FreeCamera::Move(float delta_time)
+void VisualCamera::Move(float delta_time)
 {
 	const XMVECTOR global_up = XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f);
 	const XMVECTOR global_forward = XMVectorSet(0.0f, 0.0f, 1.0f, 1.0f);
@@ -85,36 +85,36 @@ void FreeCamera::Move(float delta_time)
 	m_View = XMMatrixLookToLH(eye, at, global_up);
 }
 
-void FreeCamera::UpdateAspectRatio(int width, int height)
+void VisualCamera::UpdateAspectRatio(int width, int height)
 {
 	// Calculate window aspect ratio
 	m_AspectRatio = static_cast<float>(width) / height;
 	CalculateProjection();
 }
 
-void FreeCamera::UpdateFov(float fov)
+void VisualCamera::UpdateFov(float fov)
 {
 	m_FieldOfViewDegrees += fov;
 	m_FieldOfViewDegrees = std::clamp(m_FieldOfViewDegrees, 0.1f, 179.9f);
 	CalculateProjection();
 }
 
-void FreeCamera::SetPosition(const XMFLOAT3& position)
+void VisualCamera::SetPosition(const XMFLOAT3& position)
 {
 	m_Position = position;
 }
 
-void FreeCamera::SetPitchAndYaw(float pitch_radians, float yaw_radians)
+void VisualCamera::SetPitchAndYaw(float pitch_radians, float yaw_radians)
 {
 	m_PitchRadians = pitch_radians;
 	m_YawRadians = yaw_radians;
 }
 
-void FreeCamera::CalculateProjection()
+void VisualCamera::CalculateProjection()
 {
 	// Convert degrees to radians
 	float field_of_view_radians = XMConvertToRadians(m_FieldOfViewDegrees);
 
-	// Calculate FreeCamera's perspective
-	m_Projection = XMMatrixPerspectiveFovLH(field_of_view_radians, m_AspectRatio, 1.0f, 100.0f);
+	// Calculate VisualCamera's perspective
+	m_Projection = XMMatrixPerspectiveFovLH(field_of_view_radians, m_AspectRatio, 0.1f, 1000.0f);
 }

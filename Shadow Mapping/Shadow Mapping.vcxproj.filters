@@ -63,10 +63,10 @@
     <ClCompile Include="Floor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="OrbitalCamera.cpp">
+    <ClCompile Include="FreeCamera.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
-    <ClCompile Include="FreeCamera.cpp">
+    <ClCompile Include="VisualCamera.cpp">
       <Filter>Source Files\Camera</Filter>
     </ClCompile>
     <ClCompile Include="DefaultShader.cpp">
@@ -107,10 +107,10 @@
     <ClInclude Include="Floor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="OrbitalCamera.h">
+    <ClInclude Include="FreeCamera.h">
       <Filter>Header Files\Cameras</Filter>
     </ClInclude>
-    <ClInclude Include="FreeCamera.h">
+    <ClInclude Include="VisualCamera.h">
       <Filter>Header Files\Cameras</Filter>
     </ClInclude>
     <ClInclude Include="DefaultShader.h">

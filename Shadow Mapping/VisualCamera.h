@@ -3,12 +3,15 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
-// Perspective orbital camera
-class OrbitalCamera
+// Perspective free camera
+class VisualCamera
 {
 public:
-	OrbitalCamera(int width, int height);
-	virtual ~OrbitalCamera() = default;
+	VisualCamera(int width, int height);
+	virtual ~VisualCamera() = default;
+
+	// Move the camera
+	void Move(float delta_time);
 
 	// Recalculates the view based on the pitch and yaw
 	void Rotate(float pitch, float yaw);
@@ -19,6 +22,12 @@ public:
 	// Set field of view
 	void UpdateFov(float fov);
 
+	// Set camera position
+	void SetPosition(const XMFLOAT3& position);
+
+	// Set camera pitch and yaw
+	void SetPitchAndYaw(float pitch_radians, float yaw_radians);
+
 	// Get projection matrix
 	inline const XMMATRIX& GetProjection() const { return m_Projection; }
 
@@ -27,12 +36,6 @@ public:
 
 	// Get camera position in world space
 	inline const XMFLOAT3& GetPosition() const { return m_Position; }
-
-	// Get pitch
-	inline float GetPitch() const { return m_PitchRadians; }
-
-	// Get pitch
-	inline float GetYaw() const { return m_YawRadians; }
 
 private:
 	// Projection matrix
@@ -58,4 +61,7 @@ private:
 
 	// Recalculates the projection based on the new window size
 	void CalculateProjection();
+
+	// Camera speed
+	float m_CameraSpeed = 1.0f;
 };
