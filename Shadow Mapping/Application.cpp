@@ -102,10 +102,10 @@ int Application::Execute()
 			}
 
 			// Must render the scene to generate the shadow map
-			this->RenderShadows();
+			this->RenderShadowsPass();
 
 			// Render the scene again this time applying the shadow map
-			this->RenderScene();
+			this->RenderMainPass();
 
 			// Display the rendered scene
 			m_Renderer->Present();
@@ -169,7 +169,7 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-void Application::RenderShadows()
+void Application::RenderShadowsPass()
 {
 	// Unbind shadow map from the pipeline so we can render the depth
 	ID3D11ShaderResourceView* nullSRV = nullptr;
@@ -179,7 +179,7 @@ void Application::RenderShadows()
 	m_ShadowMap->Bind();
 
 	// Bind the shader to the pipeline
-	m_DefaultShader->Use();
+	m_DefaultShader->Use(false);
 
 	// Set camera constant buffer from the shadow camera
 	XMMATRIX view = m_ShadowCamera->GetView();
@@ -187,19 +187,11 @@ void Application::RenderShadows()
 	XMFLOAT3 position = m_ShadowCamera->GetPosition();
 	m_DefaultShader->UpdateCameraBuffer(view, projection, position);
 
-	// Render the floor
-	XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
-	floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
-	this->UpdateModelConstantBuffer(floor_transform);
-	m_Floor->Render();
-
-	// Render the model
-	XMMATRIX model_transform = DirectX::XMMatrixIdentity();
-	this->UpdateModelConstantBuffer(model_transform);
-	m_Model->Render();
+	// Render the scene
+	this->RenderScene();
 }
 
-void Application::RenderScene()
+void Application::RenderMainPass()
 {
 	// Set viewport back to scene
 	int width, height;
@@ -213,7 +205,7 @@ void Application::RenderScene()
 	m_Renderer->Clear();
 
 	// Bind the shader to the pipeline
-	m_DefaultShader->Use();
+	m_DefaultShader->Use(true);
 
 	// Set camera constant buffer
 	this->UpdateCameraConstantBuffer();
@@ -226,6 +218,12 @@ void Application::RenderScene()
 	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
 	context->PSSetSamplers(0, 1, &shadow_sampler);
 
+	// Render the scene
+	this->RenderScene();
+}
+
+void Application::RenderScene()
+{
 	// Render the floor
 	XMMATRIX floor_transform = DirectX::XMMatrixIdentity();
 	floor_transform *= DirectX::XMMatrixTranslation(0.0f, -1.0f, 0.0f);
@@ -318,7 +316,7 @@ void Application::CalculateFrameStats()
 void Application::UpdateModelConstantBuffer(const DirectX::XMMATRIX& world)
 {
 	m_DefaultShader->UpdateModelBuffer(world);
-	m_LineShader->UpdateModelBuffer(world);
+	m_LineShader->UpdateModelBuffer(XMMatrixIdentity());
 }
 
 void Application::UpdateCameraConstantBuffer()

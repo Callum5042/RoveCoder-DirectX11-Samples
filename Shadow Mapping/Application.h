@@ -58,7 +58,9 @@ private:
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
 	std::unique_ptr<ShadowMap> m_ShadowMap = nullptr;
 
-	void RenderShadows();
+	void RenderShadowsPass();
+	void RenderMainPass();
+
 	void RenderScene();
 
 	// Models

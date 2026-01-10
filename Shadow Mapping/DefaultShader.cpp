@@ -45,7 +45,7 @@ void DefaultShader::Load()
 	this->CreateDirectionalLightBuffer();
 }
 
-void DefaultShader::Use()
+void DefaultShader::Use(bool bind_pixel_shader)
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
@@ -56,7 +56,14 @@ void DefaultShader::Use()
 	context->VSSetShader(m_VertexShader.Get(), nullptr, 0);
 
 	// Bind the pixel shader to the pipeline's Pixel Shader stage
-	context->PSSetShader(m_PixelShader.Get(), nullptr, 0);
+	if (bind_pixel_shader)
+	{
+		context->PSSetShader(m_PixelShader.Get(), nullptr, 0);
+	}
+	else
+	{
+		context->PSSetShader(nullptr, nullptr, 0);
+	}
 
 	// Bind the world constant buffer to the vertex and pixel shader
 	const int constant_buffer_slot = 0;

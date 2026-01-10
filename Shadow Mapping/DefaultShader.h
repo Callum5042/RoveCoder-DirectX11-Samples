@@ -22,7 +22,7 @@ public:
 	void Load();
 
 	// Bind shader to the pipeline
-	void Use();
+	void Use(bool bind_pixel_shader);
 
 	// Update the model view projection constant buffer
 	void UpdateModelBuffer(const XMMATRIX& transform);
