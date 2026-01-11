@@ -45,6 +45,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Sprite - Priority", "Sprite
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Texture Blending", "Texture Blending\Texture Blending.vcxproj", "{26417F90-E656-4118-945A-C4DC390B8ADA}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Advance", "03 Advance", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shadow Mapping", "Shadow Mapping\Shadow Mapping.vcxproj", "{1F342C7E-493A-4216-8E30-24AC477E06DB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -205,6 +209,14 @@ Global
 		{26417F90-E656-4118-945A-C4DC390B8ADA}.Release|x64.Build.0 = Release|x64
 		{26417F90-E656-4118-945A-C4DC390B8ADA}.Release|x86.ActiveCfg = Release|Win32
 		{26417F90-E656-4118-945A-C4DC390B8ADA}.Release|x86.Build.0 = Release|Win32
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Debug|x64.ActiveCfg = Debug|x64
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Debug|x64.Build.0 = Debug|x64
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Debug|x86.ActiveCfg = Debug|Win32
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Debug|x86.Build.0 = Debug|Win32
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Release|x64.ActiveCfg = Release|x64
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Release|x64.Build.0 = Release|x64
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Release|x86.ActiveCfg = Release|Win32
+		{1F342C7E-493A-4216-8E30-24AC477E06DB}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -229,6 +241,7 @@ Global
 		{2E86F0C6-C5C9-41A0-B4B5-803E26E16F6B} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 		{D2EA0B09-08A7-4328-9DA5-7BB81D1E527C} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 		{26417F90-E656-4118-945A-C4DC390B8ADA} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
+		{1F342C7E-493A-4216-8E30-24AC477E06DB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46924DD2-99CC-4730-902A-FB2C4CFCBE33}
