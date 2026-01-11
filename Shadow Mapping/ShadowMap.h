@@ -2,6 +2,8 @@
 
 #include "Renderer.h"
 
+const float SHADOW_MAP_SIZE = 4096.0f;
+
 class ShadowMap
 {
 	Renderer* m_Renderer = nullptr;
@@ -23,7 +25,7 @@ public:
 	}
 
 private:
-	const float m_ShadowMapTextureSize = 4096.0f;
+	const float m_ShadowMapTextureSize = SHADOW_MAP_SIZE;
 
 	// Create resources
 	void CreateShadowMapTexture();

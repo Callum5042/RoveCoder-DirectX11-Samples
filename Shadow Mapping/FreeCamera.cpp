@@ -11,6 +11,7 @@ FreeCamera::FreeCamera(int width, int height)
 {
 	constexpr float pitch_radians = XMConvertToRadians(30.0f);
 	this->UpdateAspectRatio(width, height);
+	this->Rotate(0.0f, 0.0f);
 
 	m_CameraSpeed = 5.0f;
 	m_Position = XMFLOAT3(0.0f, 5.0f, -10.0f);

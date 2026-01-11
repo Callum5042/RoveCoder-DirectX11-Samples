@@ -33,24 +33,25 @@ float4 CalculateDirectionalLighting(float3 position, float3 normal, float shadow
     return ambient_light + ((diffuse_light + specular_light) * shadow_factor);
 }
 
-float CalculateShadowFactor(PixelInput input)
+float CalculateShadowFactor(float4 light_view_projection)
 {
-	// Calculate pixels depth
-    float pixel_depth = input.lightViewProjection.z / input.lightViewProjection.w;
-    if (pixel_depth > 1.0f)
+    // Complete projection to NDC
+    float3 shadow_coords = light_view_projection.xyz / light_view_projection.w;
+    
+    // Check if outside light frustum
+    if (shadow_coords.z > 1.0f || shadow_coords.z < 0.0f)
     {
         return 1.0f;
     }
 
-	// Calculate shadow texture coordinates
+    // Transform from NDC [-1, 1] to UV [0, 1]
     float2 tex_coords;
-    tex_coords = input.lightViewProjection.xy / input.lightViewProjection.w;
-    tex_coords.x = +tex_coords.x * 0.5f + 0.5f;
-    tex_coords.y = -tex_coords.y * 0.5f + 0.5f;
+    tex_coords.x = shadow_coords.x * 0.5f + 0.5f;
+    tex_coords.y = -shadow_coords.y * 0.5f + 0.5f;
 
-    float closestDepth = gShadowMap.SampleCmpLevelZero(gShadowSampler, tex_coords.xy, pixel_depth).r;
-    float shadow = pixel_depth > closestDepth ? 1.0 : 0.0;
-    return (1.0 - shadow);
+    // SampleCmp performs the comparison (pixel_depth < map_depth) 
+    // and returns 1.0 if NOT in shadow, 0.0 if in shadow (based on D3D11_COMPARISON_LESS)
+    return gShadowMap.SampleCmpLevelZero(gShadowSampler, tex_coords, shadow_coords.z);
 }
 
 // Entry point for the vertex shader - will be executed for each pixel
@@ -60,7 +61,7 @@ float4 main(PixelInput input) : SV_TARGET
     input.normal = normalize(input.normal);
     
     // Shadow
-    float shadow_factor = CalculateShadowFactor(input);
+    float shadow_factor = CalculateShadowFactor(input.lightViewProjection);
     
 	// Calculate directional light
     float4 light_colour = CalculateDirectionalLighting(input.position.xyz, input.normal, shadow_factor);

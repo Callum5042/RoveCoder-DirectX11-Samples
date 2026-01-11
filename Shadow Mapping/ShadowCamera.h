@@ -3,6 +3,8 @@
 #include <DirectXMath.h>
 using namespace DirectX;
 
+class FreeCamera;
+
 // Perspective free camera
 class ShadowCamera
 {
@@ -12,6 +14,7 @@ public:
 
 	// Look at direction
 	void LookAt(const XMVECTOR& light_direction);
+	void LookAt(FreeCamera* free_camera, const XMFLOAT3& position, const XMVECTOR& light_direction);
 
 	// Set field of view
 	void UpdateFov(float fov);
@@ -28,6 +31,9 @@ public:
 	// Get camera position in world space
 	inline const XMFLOAT3& GetPosition() const { return m_Position; }
 
+	// Get light direction
+	inline const XMVECTOR& GetLightDirection() const { return m_LightDirection; }
+
 private:
 	// Projection matrix
 	DirectX::XMMATRIX m_Projection;
@@ -43,9 +49,6 @@ private:
 
 	// Camera yaw in radians
 	float m_YawRadians = 0.0f;
-
-	// Recalculates the projection based on the new window size
-	void CalculateProjection();
 
 	// Light direction
 	XMVECTOR m_LightDirection;

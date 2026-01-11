@@ -83,7 +83,7 @@ void ShadowMap::CreateRasterModeBackCull()
 	desc.MultisampleEnable = false;
 
 	desc.DepthBias = 20;
-	desc.DepthBiasClamp = 0.01f;
+	desc.DepthBiasClamp = 0.1f;
 	desc.SlopeScaledDepthBias = 2.0f;
 
 	ID3D11Device* device = m_Renderer->GetDevice();

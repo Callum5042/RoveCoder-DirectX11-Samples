@@ -71,6 +71,9 @@ int Application::Execute()
 	m_Model = std::make_unique<Model>(m_Renderer.get());
 	m_Model->Create();
 
+	// Light direction
+	XMFLOAT4 light_direction = DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f);
+
 	// Main application loop
 	while (m_Running)
 	{
@@ -90,11 +93,6 @@ int Application::Execute()
 		}
 		else
 		{
-			// Update light buffer
-			XMFLOAT4 light_direction = DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f);
-			m_DefaultShader->UpdateDirectionalLightBuffer(light_direction, m_ShadowCamera->GetView(), m_ShadowCamera->GetProjection());
-			m_ShadowCamera->LookAt(XMLoadFloat4(&light_direction));
-
 			// Update camera
 			if (m_CameraToggle == CameraToggle::Visual)
 			{
@@ -104,6 +102,12 @@ int Application::Execute()
 			{
 				m_FreeCamera->Move(m_Timer.DeltaTime());
 			}
+
+			// Calculate light view and projection
+			m_ShadowCamera->LookAt(m_FreeCamera.get(), m_FreeCamera->GetPosition(), XMLoadFloat4(&light_direction));
+
+			// Update light buffer
+			m_DefaultShader->UpdateDirectionalLightBuffer(light_direction, m_ShadowCamera->GetView(), m_ShadowCamera->GetProjection());
 
 			// Must render the scene to generate the shadow map
 			this->RenderShadowsPass();
@@ -420,53 +424,61 @@ void Application::VisualizeCameraFrustum()
 
 void Application::VisualizeShadowCamera()
 {
-	// Calculate shadow bounding box
-	float w = 10.0f;
-	float h = 10.0f;
-	float n = 1.0f;
-	float f = 20.0f;
+	XMMATRIX view = m_ShadowCamera->GetView();
+	XMMATRIX projection = m_ShadowCamera->GetProjection();
 
-	XMFLOAT3 cornersVS[8] =
+	// NDC 
+	XMVECTOR ndcCorners[8] =
 	{
-		{ -w, -h, n }, { -w,  h, n },
-		{  w,  h, n }, {  w, -h, n },
-
-		{ -w, -h, f }, { -w,  h, f },
-		{  w,  h, f }, {  w, -h, f },
+		{-1,  1, 0, 1}, { 1,  1, 0, 1}, {-1, -1, 0, 1}, { 1, -1, 0, 1}, // Near
+		{-1,  1, 1, 1}, { 1,  1, 1, 1}, {-1, -1, 1, 1}, { 1, -1, 1, 1}  // Far
 	};
 
-	BoundingOrientedBox bounding_box;
-	BoundingOrientedBox::CreateFromPoints(bounding_box, 8, cornersVS, sizeof(XMFLOAT3));
+	// Calculate the inverse of the view projection
+	XMMATRIX view_projection = view * projection;
+	XMMATRIX inverse_view_projection = XMMatrixInverse(nullptr, view_projection);
 
-	XMMATRIX view_inverse = XMMatrixInverse(nullptr, m_ShadowCamera->GetView());
-	bounding_box.Transform(bounding_box, view_inverse);
-
-	// Calculate the edges to render the lines
-	std::array<XMFLOAT3, 8> corners;
-	bounding_box.GetCorners(corners.data());
+	// Get corners
+	XMVECTOR corners[8];
+	for (int i = 0; i < 8; ++i)
+	{
+		corners[i] = XMVector3TransformCoord(ndcCorners[i], inverse_view_projection);
+	}
 
 	// Build line list (24 vertices)
 	std::array<LineVertex, 24> line_vertices;
 
 	static const uint32_t edges[12][2] =
 	{
-		{0,1}, {1,2}, {2,3}, {3,0}, // Near
-		{4,5}, {5,6}, {6,7}, {7,4}, // Far
-		{0,4}, {1,5}, {2,6}, {3,7}  // Connections
+		// Near face (clockwise)
+		{0,1}, {1,3}, {3,2}, {2,0},
+
+		// Far face (clockwise)
+		{4,5}, {5,7}, {7,6}, {6,4},
+
+		// Near -> Far connections
+		{0,4}, {1,5}, {2,6}, {3,7}
 	};
+
 
 	int v = 0;
 	for (auto& edge : edges)
 	{
-		line_vertices[v].position.x = corners[edge[0]].x;
-		line_vertices[v].position.y = corners[edge[0]].y;
-		line_vertices[v].position.z = corners[edge[0]].z;
+		XMFLOAT3 corner0;
+		XMFLOAT3 corner1;
+
+		XMStoreFloat3(&corner0, corners[edge[0]]);
+		XMStoreFloat3(&corner1, corners[edge[1]]);
+
+		line_vertices[v].position.x = corner0.x;
+		line_vertices[v].position.y = corner0.y;
+		line_vertices[v].position.z = corner0.z;
 		line_vertices[v].colour = VertexColour(0.0f, 1.0f, 0.0f);
 		v++;
 
-		line_vertices[v].position.x = corners[edge[1]].x;
-		line_vertices[v].position.y = corners[edge[1]].y;
-		line_vertices[v].position.z = corners[edge[1]].z;
+		line_vertices[v].position.x = corner1.x;
+		line_vertices[v].position.y = corner1.y;
+		line_vertices[v].position.z = corner1.z;
 		line_vertices[v].colour = VertexColour(0.0f, 1.0f, 0.0f);
 		v++;
 	}
@@ -487,12 +499,18 @@ void Application::VisualizeLightDirection()
 {
 	XMFLOAT3 shadow_camera_position = m_ShadowCamera->GetPosition();
 
+	XMVECTOR camera_vec = XMLoadFloat3(&shadow_camera_position);
+	XMVECTOR light_direction = (m_ShadowCamera->GetLightDirection() * 50.0f);
+
+	XMFLOAT3 light_position;
+	XMStoreFloat3(&light_position, light_direction);
+
 	// Build light line
 	std::array<LineVertex, 2> line_vertices;
-	line_vertices[0].position = VertexPosition(0.0f, 0.0f, 0.0f);
+	line_vertices[0].position = VertexPosition(shadow_camera_position.x, shadow_camera_position.y, shadow_camera_position.z);
 	line_vertices[0].colour = VertexColour(1.0f, 1.0f, 0.0f);
 
-	line_vertices[1].position = VertexPosition(shadow_camera_position.x, shadow_camera_position.y, shadow_camera_position.z);
+	line_vertices[1].position = VertexPosition(light_position.x, light_position.y, light_position.z);
 	line_vertices[1].colour = VertexColour(1.0f, 1.0f, 0.0f);
 
 	// Map lines to the buffer
