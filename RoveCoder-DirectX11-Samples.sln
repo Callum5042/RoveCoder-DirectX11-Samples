@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 18
-VisualStudioVersion = 18.3.11520.95 d18.3
+VisualStudioVersion = 18.3.11520.95
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Initializing", "Initializing\Initializing.vcxproj", "{949FC980-7B95-4A5B-81CC-A1491D54E87E}"
 EndProject
@@ -49,9 +49,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Advance", "03 Advance", 
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Shadow Mapping", "Shadow Mapping\Shadow Mapping.vcxproj", "{1F342C7E-493A-4216-8E30-24AC477E06DB}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "03 Samples", "03 Samples", "{F40A1E1E-3147-418D-8E98-E9824C147C33}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 Samples", "04 Samples", "{F40A1E1E-3147-418D-8E98-E9824C147C33}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Water", "Water\Water.vcxproj", "{2E5F94A8-2657-4D14-9621-2CE2A34E3583}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Omnidirectional Shadow Mapping", "Omnidirectional Shadow Mapping\Omnidirectional Shadow Mapping.vcxproj", "{0ABF6C3E-5317-455B-BB20-24BA40DD8743}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -229,6 +231,14 @@ Global
 		{2E5F94A8-2657-4D14-9621-2CE2A34E3583}.Release|x64.Build.0 = Release|x64
 		{2E5F94A8-2657-4D14-9621-2CE2A34E3583}.Release|x86.ActiveCfg = Release|Win32
 		{2E5F94A8-2657-4D14-9621-2CE2A34E3583}.Release|x86.Build.0 = Release|Win32
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Debug|x64.ActiveCfg = Debug|x64
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Debug|x64.Build.0 = Debug|x64
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Debug|x86.ActiveCfg = Debug|Win32
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Debug|x86.Build.0 = Debug|Win32
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Release|x64.ActiveCfg = Release|x64
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Release|x64.Build.0 = Release|x64
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Release|x86.ActiveCfg = Release|Win32
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -255,6 +265,7 @@ Global
 		{26417F90-E656-4118-945A-C4DC390B8ADA} = {1B890E53-BE7C-4D07-97D9-1E67D9D7CC82}
 		{1F342C7E-493A-4216-8E30-24AC477E06DB} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 		{2E5F94A8-2657-4D14-9621-2CE2A34E3583} = {F40A1E1E-3147-418D-8E98-E9824C147C33}
+		{0ABF6C3E-5317-455B-BB20-24BA40DD8743} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {46924DD2-99CC-4730-902A-FB2C4CFCBE33}
