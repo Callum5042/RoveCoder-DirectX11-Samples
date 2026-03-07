@@ -217,5 +217,5 @@ void Model::Render()
 	context->PSSetShaderResources(0, 2, srvs);
 
 	// Render geometry
-	context->DrawIndexed(m_Indices.size(), 0, 0);
+	context->DrawIndexed(static_cast<UINT>(m_Indices.size()), 0, 0);
 }
