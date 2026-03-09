@@ -108,6 +108,7 @@ int Application::Execute()
 
 			// Update light buffer
 			m_DefaultShader->UpdateDirectionalLightBuffer(light_direction, m_ShadowCamera->GetView(), m_ShadowCamera->GetProjection());
+			m_DefaultShader->UpdatePointLightBuffer();
 
 			// Must render the scene to generate the shadow map
 			this->RenderShadowsPass();

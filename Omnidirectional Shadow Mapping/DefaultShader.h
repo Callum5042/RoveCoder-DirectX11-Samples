@@ -33,6 +33,9 @@ public:
 	// Update the light buffer
 	void UpdateDirectionalLightBuffer(const XMFLOAT4& direction, const XMMATRIX& light_view, const XMMATRIX& light_projection);
 
+	// Update the light buffer
+	void UpdatePointLightBuffer();
+
 private:
 	// Create vertex shader
 	void LoadVertexShader();
@@ -54,4 +57,8 @@ private:
 	// Create the DirectionalLightBuffer
 	ComPtr<ID3D11Buffer> m_DirectionalLightBuffer = nullptr;
 	void CreateDirectionalLightBuffer();
+
+	// Create the PointLightBuffer
+	ComPtr<ID3D11Buffer> m_PointLightBuffer = nullptr;
+	void CreatePointLightBuffer();
 };

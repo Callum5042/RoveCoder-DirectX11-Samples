@@ -16,6 +16,14 @@ struct PixelInput
     float4 lightViewProjection : TEXCOORD1;
 };
 
+struct Attenuation
+{
+    float constant;
+    float linear_;
+    float quadratic;
+    float _padding;
+};
+
 // World constant buffer
 cbuffer ModelBuffer : register(b0)
 {
@@ -36,6 +44,14 @@ cbuffer DirectionalLightBuffer : register(b2)
     float4 cLightDirection;
     matrix cLightView;
     matrix cLightProjection;
+}
+
+// Directional light constant buffer
+cbuffer PointLightBuffer : register(b3)
+{
+    float3 cLightPosition;
+    float _padding1;
+    Attenuation CLightAttenuate;
 }
 
 // Shadow map

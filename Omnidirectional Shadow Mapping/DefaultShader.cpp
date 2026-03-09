@@ -29,6 +29,21 @@ namespace
 		XMMATRIX light_view;
 		XMMATRIX light_projection;
 	};
+
+	struct Attenuation
+	{
+		float constant;
+		float linear;
+		float quadratic;
+	};
+
+	struct PointLightBuffer
+	{
+		DirectX::XMFLOAT3 position;
+		float padding1;
+		Attenuation attenuation;
+		float padding2;
+	};
 }
 
 DefaultShader::DefaultShader(Renderer* renderer) : m_Renderer(renderer)
@@ -43,6 +58,7 @@ void DefaultShader::Load()
 	this->CreateModelConstantBuffer();
 	this->CreateCameraConstantBuffer();
 	this->CreateDirectionalLightBuffer();
+	this->CreatePointLightBuffer();
 }
 
 void DefaultShader::Use(bool bind_pixel_shader)
@@ -75,10 +91,15 @@ void DefaultShader::Use(bool bind_pixel_shader)
 	context->VSSetConstantBuffers(camera_buffer_slot, 1, m_CameraConstantBuffer.GetAddressOf());
 	context->PSSetConstantBuffers(camera_buffer_slot, 1, m_CameraConstantBuffer.GetAddressOf());
 
-	// Bind the world constant buffer to the vertex and pixel shader
+	// Bind the directional light constant buffer to the vertex and pixel shader
 	const int light_buffer_slot = 2;
 	context->VSSetConstantBuffers(light_buffer_slot, 1, m_DirectionalLightBuffer.GetAddressOf());
 	context->PSSetConstantBuffers(light_buffer_slot, 1, m_DirectionalLightBuffer.GetAddressOf());
+
+	// Bind the point light constant buffer to the vertex and pixel shader
+	const int point_light_buffer_slot = 3;
+	context->VSSetConstantBuffers(point_light_buffer_slot, 1, m_PointLightBuffer.GetAddressOf());
+	context->PSSetConstantBuffers(point_light_buffer_slot, 1, m_PointLightBuffer.GetAddressOf());
 }
 
 void DefaultShader::LoadVertexShader()
@@ -166,6 +187,19 @@ void DefaultShader::CreateDirectionalLightBuffer()
 	DX::Check(device->CreateBuffer(&bd, nullptr, m_DirectionalLightBuffer.ReleaseAndGetAddressOf()));
 }
 
+void DefaultShader::CreatePointLightBuffer()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	// Create world constant buffer
+	D3D11_BUFFER_DESC bd = {};
+	bd.Usage = D3D11_USAGE_DEFAULT;
+	bd.ByteWidth = sizeof(PointLightBuffer);
+	bd.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+
+	DX::Check(device->CreateBuffer(&bd, nullptr, m_PointLightBuffer.ReleaseAndGetAddressOf()));
+}
+
 void DefaultShader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direction, const XMMATRIX& light_view, const XMMATRIX& light_projection)
 {
 	DirectionalLightBuffer buffer = {};
@@ -175,4 +209,16 @@ void DefaultShader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direct
 
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 	context->UpdateSubresource(m_DirectionalLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);
+}
+
+void DefaultShader::UpdatePointLightBuffer()
+{
+	PointLightBuffer buffer = {};
+	buffer.position = DirectX::XMFLOAT3(1.0f, 3.0f, -2.0f);
+	buffer.attenuation.constant = 1.0f;
+	buffer.attenuation.linear = 0.22f;
+	buffer.attenuation.quadratic = 0.20f;
+
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+	context->UpdateSubresource(m_PointLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
