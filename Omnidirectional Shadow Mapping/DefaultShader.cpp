@@ -211,10 +211,10 @@ void DefaultShader::UpdateDirectionalLightBuffer(const DirectX::XMFLOAT4& direct
 	context->UpdateSubresource(m_DirectionalLightBuffer.Get(), 0, nullptr, &buffer, 0, 0);
 }
 
-void DefaultShader::UpdatePointLightBuffer()
+void DefaultShader::UpdatePointLightBuffer(const XMFLOAT3& position)
 {
 	PointLightBuffer buffer = {};
-	buffer.position = DirectX::XMFLOAT3(1.0f, 3.0f, -2.0f);
+	buffer.position = position;
 	buffer.attenuation.constant = 1.0f;
 	buffer.attenuation.linear = 0.22f;
 	buffer.attenuation.quadratic = 0.20f;

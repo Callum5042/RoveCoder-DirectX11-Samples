@@ -8,6 +8,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 #include <DirectXMath.h>
 using namespace DirectX;
@@ -36,7 +37,13 @@ enum class CameraToggle
 {
 	Visual,
 	Free,
-	Shadow
+	Shadow,
+	ShadowPlusX,
+	ShadowMinusX,
+	ShadowPlusY,
+	ShadowMinusY,
+	ShadowPlusZ,
+	ShadowMinusZ,
 };
 
 class Application
@@ -59,6 +66,7 @@ private:
 	std::unique_ptr<ShadowMap> m_ShadowMap = nullptr;
 
 	void RenderShadowsPass();
+	void RenderPointShadowPass();
 	void RenderMainPass();
 
 	void RenderScene();
@@ -107,4 +115,11 @@ private:
 	ComPtr<ID3D11Buffer> m_LineBuffer;
 	void CreateLineBuffer();
 	void RenderDebugLines();
+
+	// Point light data
+	DirectX::XMFLOAT3 m_PointLight;
+	ComPtr<ID3D11Texture2D> m_CubeTex = nullptr;
+	ComPtr<ID3D11ShaderResourceView> m_ShadowCubeMap = nullptr;
+	std::vector<ComPtr<ID3D11DepthStencilView>> m_TextureDepthStencilViews;
+	void CreateRenderToTextureDepthStencilView();
 };

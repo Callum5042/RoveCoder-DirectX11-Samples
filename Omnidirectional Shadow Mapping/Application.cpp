@@ -56,6 +56,9 @@ Application::Application()
 	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
 	m_Renderer->GetDeviceContext()->PSSetSamplers(0, 1, &shadow_sampler);
 
+	// Shadows
+	this->CreateRenderToTextureDepthStencilView();
+
 	// Print some info
 	std::cout << "1) Free camera\n2) Visual camera\n3) Shadow camera" << '\n';
 }
@@ -73,6 +76,8 @@ int Application::Execute()
 
 	// Light direction
 	XMFLOAT4 light_direction = DirectX::XMFLOAT4(0.7f, -0.6f, 0.4f, 1.0f);
+
+	m_PointLight = DirectX::XMFLOAT3(1.0f, 3.0f, -2.0f);
 
 	// Main application loop
 	while (m_Running)
@@ -108,10 +113,13 @@ int Application::Execute()
 
 			// Update light buffer
 			m_DefaultShader->UpdateDirectionalLightBuffer(light_direction, m_ShadowCamera->GetView(), m_ShadowCamera->GetProjection());
-			m_DefaultShader->UpdatePointLightBuffer();
+			m_DefaultShader->UpdatePointLightBuffer(m_PointLight);
 
 			// Must render the scene to generate the shadow map
 			this->RenderShadowsPass();
+
+			// Render point shadows to generate the shadow map
+			this->RenderPointShadowPass();
 
 			// Render the scene again this time applying the shadow map
 			this->RenderMainPass();
@@ -168,6 +176,48 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 						m_CameraToggle = CameraToggle::Shadow;
 					}
 					break;
+				case '4':
+					if (m_CameraToggle != CameraToggle::ShadowPlusX)
+					{
+						std::cout << "Shadow camera +X\n";
+						m_CameraToggle = CameraToggle::ShadowPlusX;
+					}
+					break;
+				case '5':
+					if (m_CameraToggle != CameraToggle::ShadowMinusX)
+					{
+						std::cout << "Shadow camera -X\n";
+						m_CameraToggle = CameraToggle::ShadowMinusX;
+					}
+					break;
+				case '6':
+					if (m_CameraToggle != CameraToggle::ShadowPlusY)
+					{
+						std::cout << "Shadow camera +Y\n";
+						m_CameraToggle = CameraToggle::ShadowPlusY;
+					}
+					break;
+				case '7':
+					if (m_CameraToggle != CameraToggle::ShadowMinusY)
+					{
+						std::cout << "Shadow camera -Y\n";
+						m_CameraToggle = CameraToggle::ShadowMinusY;
+					}
+					break;
+				case '8':
+					if (m_CameraToggle != CameraToggle::ShadowPlusZ)
+					{
+						std::cout << "Shadow camera +Z\n";
+						m_CameraToggle = CameraToggle::ShadowPlusZ;
+					}
+					break;
+				case '9':
+					if (m_CameraToggle != CameraToggle::ShadowMinusZ)
+					{
+						std::cout << "Shadow camera -Z\n";
+						m_CameraToggle = CameraToggle::ShadowMinusZ;
+					}
+					break;
 			}
 
 			return 0;
@@ -199,6 +249,102 @@ void Application::RenderShadowsPass()
 	this->RenderScene();
 }
 
+void Application::RenderPointShadowPass()
+{
+	// Unbind shadow map from the pipeline so we can render the depth
+	ID3D11ShaderResourceView* nullSRV = nullptr;
+	m_Renderer->GetDeviceContext()->PSSetShaderResources(1, 1, &nullSRV);
+
+	auto projection = DirectX::XMMatrixPerspectiveFovLH(0.5f * DirectX::XM_PI, static_cast<float>(1024) / 1024, 0.1f, 100.0f);
+
+	DirectX::XMFLOAT3 center = m_PointLight;
+	DirectX::XMFLOAT3 worldUp(0.0f, 1.0f, 0.0f);
+
+	DirectX::XMFLOAT3 targets[6] =
+	{
+		DirectX::XMFLOAT3(center.x + 1.0f, center.y, center.z), // +X
+		DirectX::XMFLOAT3(center.x - 1.0f, center.y, center.z), // -X
+		DirectX::XMFLOAT3(center.x, center.y + 1.0f, center.z), // +Y
+		DirectX::XMFLOAT3(center.x, center.y - 1.0f, center.z), // -Y
+		DirectX::XMFLOAT3(center.x, center.y, center.z + 1.0f), // +Z
+		DirectX::XMFLOAT3(center.x, center.y, center.z - 1.0f)  // -Z
+	};
+
+	// Use world up vector (0,1,0) for all directions except +Y/-Y.  In these cases, we
+	// are looking down +Y or -Y, so we need a different "up" vector.
+	DirectX::XMFLOAT3 ups[6] =
+	{
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),  // +X
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),  // -X
+		DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), // +Y
+		DirectX::XMFLOAT3(0.0f, 0.0f, +1.0f), // -Y
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),  // +Z
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)	  // -Z
+	};
+
+	ID3D11Device* device = m_Renderer->GetDevice();
+	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
+
+	// Slot 1
+	D3D11_SAMPLER_DESC samplerDesc = {};
+	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
+	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.AddressW = D3D11_TEXTURE_ADDRESS_WRAP;
+	samplerDesc.MipLODBias = 0;
+	samplerDesc.MaxAnisotropy = D3D11_REQ_MAXANISOTROPY;
+	samplerDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
+	samplerDesc.MinLOD = 0;
+	samplerDesc.MaxLOD = 1000.0f;
+
+	ComPtr<ID3D11SamplerState> shadow_sampler1 = nullptr;
+	device->CreateSamplerState(&samplerDesc, shadow_sampler1.GetAddressOf());
+
+	context->PSSetSamplers(1, 1, shadow_sampler1.GetAddressOf());
+
+	// Bind the shader to the pipeline
+	m_DefaultShader->Use(false);
+
+	for (int i = 0; i < 6; i++)
+	{
+		// Clear the render target view to the chosen colour
+		context->ClearDepthStencilView(m_TextureDepthStencilViews[i].Get(), D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
+
+		// Bind the render target view to the pipeline's output merger stage
+		ID3D11RenderTargetView* target[1] = { nullptr };
+		context->OMSetRenderTargets(1, target, m_TextureDepthStencilViews[i].Get());
+
+		// Viewport
+		m_Renderer->SetViewport(1024, 1024);
+
+		// Normal raster
+		D3D11_RASTERIZER_DESC rasterizerState = {};
+		rasterizerState.CullMode = D3D11_CULL_BACK;
+		rasterizerState.FillMode = D3D11_FILL_SOLID;
+		rasterizerState.DepthClipEnable = true;
+
+		rasterizerState.DepthBias = 10000;
+		rasterizerState.DepthBiasClamp = 0.0f;
+		rasterizerState.SlopeScaledDepthBias = 1.0f;
+
+		ComPtr<ID3D11RasterizerState> rasterState = nullptr;
+		DX::Check(device->CreateRasterizerState(&rasterizerState, rasterState.GetAddressOf()));
+
+		context->RSSetState(rasterState.Get());
+
+		// Camera
+		DirectX::XMVECTOR eye = DirectX::XMLoadFloat3(&center);
+		DirectX::XMVECTOR at = DirectX::XMLoadFloat3(&targets[i]);
+		DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&ups[i]);
+		auto view = DirectX::XMMatrixLookAtLH(eye, at, up);
+
+		m_DefaultShader->UpdateCameraBuffer(view, projection, m_PointLight);
+
+		// Render the scene
+		this->RenderScene();
+	}
+}
+
 void Application::RenderMainPass()
 {
 	// Set viewport back to scene
@@ -225,6 +371,9 @@ void Application::RenderMainPass()
 
 	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
 	context->PSSetSamplers(0, 1, &shadow_sampler);
+
+	// Set point shadow map to the pipeline
+	context->PSSetShaderResources(1, 1, m_ShadowCubeMap.GetAddressOf());
 
 	// Render the scene
 	this->RenderScene();
@@ -343,6 +492,34 @@ void Application::UpdateModelConstantBuffer(const DirectX::XMMATRIX& world)
 
 void Application::UpdateCameraConstantBuffer()
 {
+	// Point light things
+	DirectX::XMFLOAT3 center = m_PointLight;
+	DirectX::XMFLOAT3 worldUp(0.0f, 1.0f, 0.0f);
+
+	DirectX::XMFLOAT3 targets[6] =
+	{
+		DirectX::XMFLOAT3(center.x + 1.0f, center.y, center.z), // +X
+		DirectX::XMFLOAT3(center.x - 1.0f, center.y, center.z), // -X
+		DirectX::XMFLOAT3(center.x, center.y + 1.0f, center.z), // +Y
+		DirectX::XMFLOAT3(center.x, center.y - 1.0f, center.z), // -Y
+		DirectX::XMFLOAT3(center.x, center.y, center.z + 1.0f), // +Z
+		DirectX::XMFLOAT3(center.x, center.y, center.z - 1.0f)  // -Z
+	};
+
+	// Use world up vector (0,1,0) for all directions except +Y/-Y.  In these cases, we
+	// are looking down +Y or -Y, so we need a different "up" vector.
+	DirectX::XMFLOAT3 ups[6] =
+	{
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),  // +X
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),  // -X
+		DirectX::XMFLOAT3(0.0f, 0.0f, -1.0f), // +Y
+		DirectX::XMFLOAT3(0.0f, 0.0f, +1.0f), // -Y
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f),  // +Z
+		DirectX::XMFLOAT3(0.0f, 1.0f, 0.0f)	  // -Z
+	};
+
+
+
 	if (m_CameraToggle == CameraToggle::Visual)
 	{
 		XMMATRIX view = m_VisualCamera->GetView();
@@ -366,6 +543,46 @@ void Application::UpdateCameraConstantBuffer()
 		XMMATRIX view = m_ShadowCamera->GetView();
 		XMMATRIX projection = m_ShadowCamera->GetProjection();
 		XMFLOAT3 position = m_ShadowCamera->GetPosition();
+
+		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
+		m_LineShader->UpdateCameraBuffer(view, projection, position);
+	}
+	else
+	{
+		int i = 0;
+		if (m_CameraToggle == CameraToggle::ShadowPlusX)
+		{
+			i = 0;
+		}
+		else if (m_CameraToggle == CameraToggle::ShadowMinusX)
+		{
+			i = 1;
+		}
+		if (m_CameraToggle == CameraToggle::ShadowPlusY)
+		{
+			i = 2;
+		}
+		else if (m_CameraToggle == CameraToggle::ShadowMinusY)
+		{
+			i = 3;
+		}
+		if (m_CameraToggle == CameraToggle::ShadowPlusZ)
+		{
+			i = 4;
+		}
+		else if (m_CameraToggle == CameraToggle::ShadowMinusZ)
+		{
+			i = 5;
+		}
+
+		DirectX::XMVECTOR eye = DirectX::XMLoadFloat3(&center);
+		DirectX::XMVECTOR at = DirectX::XMLoadFloat3(&targets[i]);
+		DirectX::XMVECTOR up = DirectX::XMLoadFloat3(&ups[i]);
+		auto view = DirectX::XMMatrixLookAtLH(eye, at, up);
+
+		auto projection = DirectX::XMMatrixPerspectiveFovLH(0.5f * DirectX::XM_PI, static_cast<float>(1024) / 1024, 0.1f, 100.0f);
+
+		XMFLOAT3 position = m_PointLight;
 
 		m_DefaultShader->UpdateCameraBuffer(view, projection, position);
 		m_LineShader->UpdateCameraBuffer(view, projection, position);
@@ -557,4 +774,52 @@ void Application::RenderDebugLines()
 	context->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_LINELIST);
 
 	context->Draw(24, 0);
+}
+
+void Application::CreateRenderToTextureDepthStencilView()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+
+	const int cubeMapSize = 1024;
+
+	m_TextureDepthStencilViews.resize(6);
+
+	// Create texture
+	D3D11_TEXTURE2D_DESC texDesc = {};
+	texDesc.Width = cubeMapSize;
+	texDesc.Height = cubeMapSize;
+	texDesc.MipLevels = 1;
+	texDesc.ArraySize = 6;
+	texDesc.SampleDesc.Count = 1;
+	texDesc.SampleDesc.Quality = 0;
+	texDesc.Format = DXGI_FORMAT_R32_TYPELESS;
+	texDesc.Usage = D3D11_USAGE_DEFAULT;
+	texDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE;
+	texDesc.CPUAccessFlags = 0;
+	texDesc.MiscFlags = D3D11_RESOURCE_MISC_TEXTURECUBE;
+
+	DX::Check(device->CreateTexture2D(&texDesc, 0, m_CubeTex.GetAddressOf()));
+
+	// Create depth stencil view for each side (6 faces)
+	D3D11_DEPTH_STENCIL_VIEW_DESC rtvDesc = {};
+	rtvDesc.Format = DXGI_FORMAT_D32_FLOAT;
+	rtvDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2DARRAY;
+	rtvDesc.Texture2DArray.ArraySize = 1;
+	rtvDesc.Texture2DArray.MipSlice = 0;
+	rtvDesc.Flags = 0;
+
+	for (int i = 0; i < 6; ++i)
+	{
+		rtvDesc.Texture2DArray.FirstArraySlice = i;
+		DX::Check(device->CreateDepthStencilView(m_CubeTex.Get(), &rtvDesc, m_TextureDepthStencilViews[i].GetAddressOf()));
+	}
+
+	// Create shader resource view
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = DXGI_FORMAT_R32_FLOAT;
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.TextureCube.MostDetailedMip = 0;
+	srvDesc.TextureCube.MipLevels = 1;
+
+	DX::Check(device->CreateShaderResourceView(m_CubeTex.Get(), &srvDesc, m_ShadowCubeMap.GetAddressOf()));
 }
