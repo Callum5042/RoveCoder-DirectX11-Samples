@@ -21,7 +21,6 @@ using Microsoft::WRL::ComPtr;
 
 class Window;
 class Renderer;
-class ShadowMap;
 
 class DefaultShader;
 class LineShader;
@@ -63,9 +62,7 @@ private:
 	Timer m_Timer;
 	std::unique_ptr<Window> m_Window = nullptr;
 	std::unique_ptr<Renderer> m_Renderer = nullptr;
-	std::unique_ptr<ShadowMap> m_ShadowMap = nullptr;
 
-	void RenderShadowsPass();
 	void RenderPointShadowPass();
 	void RenderMainPass();
 

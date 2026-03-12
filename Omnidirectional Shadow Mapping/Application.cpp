@@ -34,9 +34,6 @@ Application::Application()
 	m_Renderer = std::make_unique<Renderer>(this);
 	m_Renderer->Create();
 
-	// Create shadow map
-	m_ShadowMap = std::make_unique<ShadowMap>(m_Renderer.get());
-
 	// Used for visualiation
 	this->CreateLineBuffer();
 
@@ -52,9 +49,6 @@ Application::Application()
 	m_FreeCamera = std::make_unique<FreeCamera>(window_width, window_height);
 	m_VisualCamera = std::make_unique<VisualCamera>(window_width, window_height);
 	m_ShadowCamera = std::make_unique<ShadowCamera>(window_width, window_height);
-
-	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
-	m_Renderer->GetDeviceContext()->PSSetSamplers(0, 1, &shadow_sampler);
 
 	// Shadows
 	this->CreateRenderToTextureDepthStencilView();
@@ -114,9 +108,6 @@ int Application::Execute()
 			// Update light buffer
 			m_DefaultShader->UpdateDirectionalLightBuffer(light_direction, m_ShadowCamera->GetView(), m_ShadowCamera->GetProjection());
 			m_DefaultShader->UpdatePointLightBuffer(m_PointLight);
-
-			// Must render the scene to generate the shadow map
-			this->RenderShadowsPass();
 
 			// Render point shadows to generate the shadow map
 			this->RenderPointShadowPass();
@@ -227,35 +218,13 @@ LRESULT Application::HandleMessage(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lP
 	return DefWindowProc(hwnd, msg, wParam, lParam);
 }
 
-void Application::RenderShadowsPass()
+void Application::RenderPointShadowPass()
 {
 	// Unbind shadow map from the pipeline so we can render the depth
 	ID3D11ShaderResourceView* nullSRV = nullptr;
 	m_Renderer->GetDeviceContext()->PSSetShaderResources(0, 1, &nullSRV);
 
-	// Bind the shadow map render target
-	m_ShadowMap->Bind();
-
-	// Bind the shader to the pipeline
-	m_DefaultShader->Use(false);
-
-	// Set camera constant buffer from the shadow camera
-	XMMATRIX view = m_ShadowCamera->GetView();
-	XMMATRIX projection = m_ShadowCamera->GetProjection();
-	XMFLOAT3 position = m_ShadowCamera->GetPosition();
-	m_DefaultShader->UpdateCameraBuffer(view, projection, position);
-
-	// Render the scene
-	this->RenderScene();
-}
-
-void Application::RenderPointShadowPass()
-{
-	// Unbind shadow map from the pipeline so we can render the depth
-	ID3D11ShaderResourceView* nullSRV = nullptr;
-	m_Renderer->GetDeviceContext()->PSSetShaderResources(1, 1, &nullSRV);
-
-	auto projection = DirectX::XMMatrixPerspectiveFovLH(0.5f * DirectX::XM_PI, static_cast<float>(1024) / 1024, 0.1f, 100.0f);
+	auto projection = DirectX::XMMatrixPerspectiveFovLH(0.5f * DirectX::XM_PI, static_cast<float>(1024) / 1024, 1.0f, 100.0f);
 
 	DirectX::XMFLOAT3 center = m_PointLight;
 	DirectX::XMFLOAT3 worldUp(0.0f, 1.0f, 0.0f);
@@ -300,10 +269,10 @@ void Application::RenderPointShadowPass()
 	ComPtr<ID3D11SamplerState> shadow_sampler1 = nullptr;
 	device->CreateSamplerState(&samplerDesc, shadow_sampler1.GetAddressOf());
 
-	context->PSSetSamplers(1, 1, shadow_sampler1.GetAddressOf());
+	context->PSSetSamplers(0, 1, shadow_sampler1.GetAddressOf());
 
 	// Bind the shader to the pipeline
-	m_DefaultShader->Use(false);
+	m_DefaultShader->Use(true);
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -359,21 +328,14 @@ void Application::RenderMainPass()
 	m_Renderer->Clear();
 
 	// Bind the shader to the pipeline
-	m_DefaultShader->Use(true);
+	m_DefaultShader->Use(false);
 
 	// Set camera constant buffer
 	this->UpdateCameraConstantBuffer();
 
 	// Bind shadow map to the pipeline
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
-	ID3D11ShaderResourceView* shadowmap_texture = m_ShadowMap->GetShadowMapTexture();
-	context->PSSetShaderResources(0, 1, &shadowmap_texture);
-
-	ID3D11SamplerState* shadow_sampler = m_ShadowMap->GetShadowSamplerState();
-	context->PSSetSamplers(0, 1, &shadow_sampler);
-
-	// Set point shadow map to the pipeline
-	context->PSSetShaderResources(1, 1, m_ShadowCubeMap.GetAddressOf());
+	context->PSSetShaderResources(0, 1, m_ShadowCubeMap.GetAddressOf());
 
 	// Render the scene
 	this->RenderScene();

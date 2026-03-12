@@ -11,7 +11,7 @@ PixelInput main(VertexInput input)
     pixel_input.positionClipSpace = mul(pixel_input.positionClipSpace, cCameraProjection);
 
     // Transform to world space.
-    pixel_input.position = input.position;
+    pixel_input.position = mul(float4(input.position, 1.0f), cModelTransform).xyz;
 
     // Transform the normals by the inverse world space
     pixel_input.normal = mul(input.normal, (float3x3) cModelTransformInverse).xyz;

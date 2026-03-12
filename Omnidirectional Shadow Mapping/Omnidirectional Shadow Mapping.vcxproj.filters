@@ -139,6 +139,9 @@
     <FxCompile Include="LineVertexShader.hlsl">
       <Filter>Shaders Files\Line</Filter>
     </FxCompile>
+    <FxCompile Include="PointShadowPixelShader.hlsl">
+      <Filter>Shaders Files\Default</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="ShaderData.hlsli">

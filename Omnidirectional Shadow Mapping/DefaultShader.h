@@ -46,6 +46,10 @@ private:
 	void LoadPixelShader();
 	ComPtr<ID3D11PixelShader> m_PixelShader = nullptr;
 
+	// Shadow pixel shader
+	void LoadShadowPixelShader();
+	ComPtr<ID3D11PixelShader> m_ShadowPixelShader = nullptr;
+
 	// ModelViewProjection constant buffer
 	ComPtr<ID3D11Buffer> m_ModelConstantBuffer = nullptr;
 	void CreateModelConstantBuffer();

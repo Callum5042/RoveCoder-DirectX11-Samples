@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include "CompiledPixelShader.hlsl.h"
 #include "CompiledVertexShader.hlsl.h"
+#include "CompiledPointShadowPixelShader.hlsl.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
@@ -54,6 +55,7 @@ void DefaultShader::Load()
 {
 	this->LoadVertexShader();
 	this->LoadPixelShader();
+	this->LoadShadowPixelShader();
 
 	this->CreateModelConstantBuffer();
 	this->CreateCameraConstantBuffer();
@@ -61,7 +63,7 @@ void DefaultShader::Load()
 	this->CreatePointLightBuffer();
 }
 
-void DefaultShader::Use(bool bind_pixel_shader)
+void DefaultShader::Use(bool use_shadow_shader)
 {
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
@@ -72,13 +74,13 @@ void DefaultShader::Use(bool bind_pixel_shader)
 	context->VSSetShader(m_VertexShader.Get(), nullptr, 0);
 
 	// Bind the pixel shader to the pipeline's Pixel Shader stage
-	if (bind_pixel_shader)
+	if (use_shadow_shader)
 	{
-		context->PSSetShader(m_PixelShader.Get(), nullptr, 0);
+		context->PSSetShader(m_ShadowPixelShader.Get(), nullptr, 0);
 	}
 	else
 	{
-		context->PSSetShader(nullptr, nullptr, 0);
+		context->PSSetShader(m_PixelShader.Get(), nullptr, 0);
 	}
 
 	// Bind the world constant buffer to the vertex and pixel shader
@@ -125,6 +127,12 @@ void DefaultShader::LoadPixelShader()
 {
 	ID3D11Device* device = m_Renderer->GetDevice();
 	device->CreatePixelShader(g_PixelShader, sizeof(g_PixelShader), nullptr, m_PixelShader.ReleaseAndGetAddressOf());
+}
+
+void DefaultShader::LoadShadowPixelShader()
+{
+	ID3D11Device* device = m_Renderer->GetDevice();
+	device->CreatePixelShader(g_PointShadowPixelShader, sizeof(g_PointShadowPixelShader), nullptr, m_ShadowPixelShader.ReleaseAndGetAddressOf());
 }
 
 void DefaultShader::CreateModelConstantBuffer()
