@@ -7,7 +7,7 @@ float CalculateShadowFactor(float3 position)
     float depthToLight = length(depthToLightVector);
 
 	// Sample
-    float far_plane = 100.0f;
+    float far_plane = 300.0f;
     float shadowDepth = gShadowMapTexture.Sample(gShadowSampler1, depthToLightVector / far_plane).r;
 
     float bias = 0.0005f;
@@ -20,29 +20,6 @@ float CalculateShadowFactor(float3 position)
         return 1.0f;
     }
 }
-
-//float CalculateShadowFactor(float3 position)
-//{
-//	// Calculate distance to light
-//    float3 depthToLightVector = position - cLightPosition.xyz;
-//	float depthToLight = length(depthToLightVector);
-
-//	// Sample
-//	float far_plane = 100.0f;
-    
-//    float compare = (depthToLight / far_plane);
-//    float shadowDepth = gShadowMapTexture.Sample(gShadowSampler1, compare).r;
-
-//    float bias = 0.0005f;
-//    if (shadowDepth < compare)
-//    { 
-//        return 0.0f;
-//    }
-//    else
-//    {
-//        return 1.0f;
-//    }
-//}
 
 float4 CalculatePointLighting(float3 position, float3 normal)
 {
@@ -58,7 +35,7 @@ float4 CalculatePointLighting(float3 position, float3 normal)
     
     // Attenuate
     float3 attenuate_constants = float3(CLightAttenuate.constant, CLightAttenuate.linear_, CLightAttenuate.quadratic);
-    float attenuate = 1.0f / dot(attenuate_constants, float3(1.0f, light_distance, light_distance * light_distance));
+    float attenuate = 1.0f / dot(attenuate_constants, float3(1.0f, light_distance, light_distance * light_distance)) * 100.0f;
     
     // Diffuse lighting
     float3 light_vector = normalize(cLightPosition.xyz - position);

@@ -227,9 +227,7 @@ void Application::RenderPointShadowPass()
 	auto projection = DirectX::XMMatrixPerspectiveFovLH(0.5f * DirectX::XM_PI, static_cast<float>(1024) / 1024, 1.0f, 100.0f);
 
 	DirectX::XMFLOAT3 center = m_PointLight;
-	DirectX::XMFLOAT3 worldUp(0.0f, 1.0f, 0.0f);
-
-	DirectX::XMFLOAT3 targets[6] =
+	const DirectX::XMFLOAT3 targets[6] =
 	{
 		DirectX::XMFLOAT3(center.x + 1.0f, center.y, center.z), // +X
 		DirectX::XMFLOAT3(center.x - 1.0f, center.y, center.z), // -X
@@ -255,7 +253,7 @@ void Application::RenderPointShadowPass()
 	ID3D11DeviceContext* context = m_Renderer->GetDeviceContext();
 
 	// Slot 1
-	D3D11_SAMPLER_DESC samplerDesc = {};
+	/*D3D11_SAMPLER_DESC samplerDesc = {};
 	samplerDesc.Filter = D3D11_FILTER_ANISOTROPIC;
 	samplerDesc.AddressU = D3D11_TEXTURE_ADDRESS_WRAP;
 	samplerDesc.AddressV = D3D11_TEXTURE_ADDRESS_WRAP;
@@ -269,10 +267,25 @@ void Application::RenderPointShadowPass()
 	ComPtr<ID3D11SamplerState> shadow_sampler1 = nullptr;
 	device->CreateSamplerState(&samplerDesc, shadow_sampler1.GetAddressOf());
 
-	context->PSSetSamplers(0, 1, shadow_sampler1.GetAddressOf());
+	context->PSSetSamplers(0, 1, shadow_sampler1.GetAddressOf());*/
 
 	// Bind the shader to the pipeline
 	m_DefaultShader->Use(true);
+
+	// Normal raster
+	/*D3D11_RASTERIZER_DESC rasterizerState = {};
+	rasterizerState.CullMode = D3D11_CULL_BACK;
+	rasterizerState.FillMode = D3D11_FILL_SOLID;
+	rasterizerState.DepthClipEnable = true;
+
+	rasterizerState.DepthBias = 10000;
+	rasterizerState.DepthBiasClamp = 0.0f;
+	rasterizerState.SlopeScaledDepthBias = 1.0f;
+
+	ComPtr<ID3D11RasterizerState> rasterState = nullptr;
+	DX::Check(device->CreateRasterizerState(&rasterizerState, rasterState.GetAddressOf()));
+
+	context->RSSetState(rasterState.Get());*/
 
 	for (int i = 0; i < 6; i++)
 	{
@@ -285,21 +298,6 @@ void Application::RenderPointShadowPass()
 
 		// Viewport
 		m_Renderer->SetViewport(1024, 1024);
-
-		// Normal raster
-		D3D11_RASTERIZER_DESC rasterizerState = {};
-		rasterizerState.CullMode = D3D11_CULL_BACK;
-		rasterizerState.FillMode = D3D11_FILL_SOLID;
-		rasterizerState.DepthClipEnable = true;
-
-		rasterizerState.DepthBias = 10000;
-		rasterizerState.DepthBiasClamp = 0.0f;
-		rasterizerState.SlopeScaledDepthBias = 1.0f;
-
-		ComPtr<ID3D11RasterizerState> rasterState = nullptr;
-		DX::Check(device->CreateRasterizerState(&rasterizerState, rasterState.GetAddressOf()));
-
-		context->RSSetState(rasterState.Get());
 
 		// Camera
 		DirectX::XMVECTOR eye = DirectX::XMLoadFloat3(&center);
